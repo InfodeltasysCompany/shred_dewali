@@ -1,0 +1,43 @@
+{
+  "cli": {
+    "version": ">= 5.9.1"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development"
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk",
+        "distribution": "internal"
+      },
+      "channel": "preview"
+    },
+    "distribution": {
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "channel": "distribution"
+    },
+    "production": {
+      "channel": "production"
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "shreddersbay@gmail.com",
+        "ascAppId": "6478656422",
+        "appleTeamId": "K2LHY9VWLN"
+      },
+      "android": {
+      "track": "production",
+      "releaseStatus": "completed", 
+      "serviceAccountKeyPath": "./shreddersbay-6e906-8c60866bbf61.json"
+    }
+      
+    }
+  }
+}

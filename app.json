@@ -1,0 +1,91 @@
+{
+  "expo": {
+    "name": "shreddersbay",
+    "slug": "shreddersbay",
+    "version": "1.0.7",
+    "orientation": "portrait",
+    "icon": "./assets/icon2.png",
+    "userInterfaceStyle": "light",
+    "platforms": ["android", "ios"],
+    "permissions": ["INTERNET"],
+    "extra": {
+      "eas": {
+        "projectId": "899a3d51-4ab2-46d5-a140-644e3ad1b7be"
+      }
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#ffffff",
+      "barStyle": "dark-content",
+      "translucent": true,
+      "hidden": false
+    },
+    "splash": {
+      "image": "./assets/adaptive-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shreddersbay",
+      "minVersion": "13.0",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["myapp"]
+          }
+        ]
+      },
+      "statusBar": {
+        "backgroundColor": "#abcdef",
+        "style": "auto"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.shreddersbay",
+      "versionCode": 7,
+      "googleServicesFile": "./google-services.json",
+      "expo.android.googleServicesFile":"./google-services.json"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "owner": "vinitrathore",
+    "scheme": "second_project",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/899a3d51-4ab2-46d5-a140-644e3ad1b7be"
+    },
+    "plugins": [
+      "@react-native-firebase/app",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 33,
+            "targetSdkVersion": 33,
+            "buildToolsVersion": "33.0.0"
+          },
+
+          "ios": {
+            "deploymentTarget": "13.4",
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ]
+  }
+}
