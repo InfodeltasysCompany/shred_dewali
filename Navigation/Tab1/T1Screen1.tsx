@@ -14,6 +14,7 @@ import {
   Dimensions,
   Linking,
   Platform,
+  
 } from "react-native";
 import React, {
   useEffect,
@@ -575,7 +576,7 @@ const onSeachModalclose=()=>{
             <Text style={styles.heading}>ShreddersBay</Text>
           </View>
 
-          <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end", flexDirection: "row-reverse" }} onPress={locationSetupModal}>
+          <Pressable style={{ justifyContent: "flex-end", alignItems: "flex-end", flexDirection: "row-reverse" }} onPress={locationSetupModal}>
             <Ionicons
               name="location-outline"
               style={{ fontSize: 25, fontWeight: "bold", color: "#00457E" }}
@@ -587,7 +588,7 @@ const onSeachModalclose=()=>{
                 <Text style={{ fontSize: 14, fontWeight: '500' }}>{currentAddress.name ||currentAddress.area ||currentAddress.pin_code},  </Text>
               </>
             )}
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
 
