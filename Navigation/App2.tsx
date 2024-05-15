@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import OpenCamAndGalT3S1 from '../Navigation/Tab3/T3Sreen4';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -32,6 +32,7 @@ import SCurrent from './Tab6_sell/SCurrent';
 import SCompleted from './Tab6_sell/SCompleted';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { Addbtnchanged, Addbtndef } from '../components/Addbtn';
+import { AuthContext } from '../redux/ContextApi/UserAuthProvider';
 
 
 const Stack = createStackNavigator();
@@ -63,6 +64,7 @@ const Stack1 = () => {
   )
 }
 const Stack2 = () => {
+
   return (
     <Stack.Navigator>
       <Stack.Screen name='T2Screen1' component={T2Screen1} options={{
@@ -201,6 +203,40 @@ const InsideMYOrder_Sell = () => {
   )
 }
 const App2 = () => {
+
+  const [state, setState] = useContext(AuthContext);
+  const { gUserCred, userCred, userIdApp,f_email, f_mobile, f_id, f_name, f_password,isloginModalVisible  } = state;
+
+
+
+
+  const setIsloginModalVisible=()=>{
+    if(userIdApp){
+        setState(prevState => ({
+            ...prevState,
+            isloginModalVisible:!isloginModalVisible,
+      
+            
+          }));
+    }
+   
+  }
+//   const setUseridapp = ()=>{
+//     setState(prevState => ({
+//         ...prevState,
+//         // gUserCred,
+//         // userCred,
+//         userIdApp: appUserId,
+//         // f_email: fire_mail,
+//         // f_id: fire_id,
+//         // f_name: fire_name,
+//         // f_mobile: fire_mobile,
+//         // f_password: fire_password,
+//         // loginModalvisible:handleloginModalvisible(appUserId)
+
+        
+//       }));
+//   }
   return (
     <NavigationContainer>
           {/* <Tab.Navigator

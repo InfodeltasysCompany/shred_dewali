@@ -66,10 +66,18 @@ const T1Screen1 = ({ navigation }) => {
   const [detaildata, setdetaildata] = useState<any | number>(null);
 
   const [state, setState] = useContext(AuthContext);
-  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password } = state;
+  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password,isloginModalVisible } = state;
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false)
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false)
 
+  const setIsloginModalVisible=()=>{
+    setState(prevState => ({
+      ...prevState,
+      isloginModalVisible:!isloginModalVisible,
+
+      
+    }));
+  }
   const dispatch = useDispatch();
 
   // Access data and error from Redux store
@@ -520,7 +528,8 @@ const onSeachModalclose=()=>{
 
       <View>
         <HandleAddAddressModal visible={isAddressModalOpen} onClose={handleAddresModalOpen} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
-        <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} comp={undefined}/>
+        {/* <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} comp={undefined}/> */}
+        <LoginModal navigation={navigation} visible={isloginModalVisible} setVisible={setIsloginModalVisible}/>
         <Modal
           // animationType="fade"
           transparent={true}

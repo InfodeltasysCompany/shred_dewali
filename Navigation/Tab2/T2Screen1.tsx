@@ -4,18 +4,19 @@ import { View, Text, StyleSheet, Button, ScrollView, TouchableOpacity, Platform,
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { chosenDateTimeAction, myScrapDetailsAction } from '../.././redux/actions/myScrapDetailsAction';
 import ShoppingCart from '../../components/ShoppingCart';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 import DisplayAllAddresses from '../../components/Modal/addressModal/DisplayAllAdresses';
+import LoginModal from '../../components/Credential/LoginModal';
 const imgrul = "https://shreddersbay.com/API/uploads"
 
 
 const T2Screen1 = ({ navigation }) => {
   const [state, setState] = useContext(AuthContext);
-  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password } = state;
+  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password,isloginModalVisible } = state;
   const [userDataLOCAL_STORAGE, setLocalUserData] = useState<{ [key: string]: any } | null>(null);
   const [userId, setUserId] = useState(userIdApp);
   const url = 'https://shreddersbay.com/API/cart_api.php?action=select_id&user_id=';
@@ -345,6 +346,19 @@ const T2Screen1 = ({ navigation }) => {
       console.error('Error occurred:', error);
     }
   };
+//   const [isLoginModalVisible, setIsLoginModalVisible] = useState<Boolean>(false);
+//   // Define setIsloginModalVisible outside the component
+// // Define setIsloginModalVisible outside the component
+// const setIsloginModalVisible = (userIdApp) => {
+//   setIsLoginModalVisible(!userIdApp); // Set login modal to true if userIdApp is not available
+// };
+
+// // Component code
+// useFocusEffect(() => {
+//   // Call setIsloginModalVisible within the hook
+//   setIsloginModalVisible(userIdApp);
+// }); // Include userIdApp in the dependency array
+
   ///////////////////////////////////////////////////////////////////////
 
 
@@ -352,6 +366,8 @@ const T2Screen1 = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <DisplayAllAddresses visible={isAddressChooseModalDisplay} onClose={oncloseAddressPickModal} addrseter={handleChoosenAddress} navigation={navigation} />
+      {/* <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsloginModalVisible}/> */}
+
       <ScrollView
         refreshControl={
           <RefreshControl

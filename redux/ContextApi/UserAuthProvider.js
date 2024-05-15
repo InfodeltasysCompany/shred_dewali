@@ -20,7 +20,7 @@ const UserAuthProvider = (props) => {
     f_name:null,
     f_password:null,
     // token: null, // If needed
-    loginModalvisible:false
+    isloginModalVisible:false
 
   });
 
@@ -53,7 +53,6 @@ const UserAuthProvider = (props) => {
           f_name: fire_name,
           f_mobile: fire_mobile,
           f_password: fire_password,
-          loginModalvisible:handleloginModalvisible(appUserId)
 
           
         }));
