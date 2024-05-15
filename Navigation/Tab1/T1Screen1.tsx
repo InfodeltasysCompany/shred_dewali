@@ -265,9 +265,9 @@ const T1Screen1 = ({ navigation }) => {
 
   }
    const locationSetupModal = async () => {
+    setIsAddressModalOpen(prevState => !prevState)
     const address = await getCurrentLocation();
     setCurrentAddress1(address);
-    setIsAddressModalOpen(!isAddressModalOpen)
 
     
     console.log("address=>", address)
@@ -518,7 +518,7 @@ const onSeachModalclose=()=>{
 
 
       <View>
-        <HandleAddAddressModal visible={isAddressModalOpen} onClose={handleAddresModalOpen} addrseter={getPickChooseAddressfromAddressModal} />
+        <HandleAddAddressModal visible={isAddressModalOpen} onClose={handleAddresModalOpen} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
         <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} comp={undefined}/>
         <Modal
           // animationType="fade"

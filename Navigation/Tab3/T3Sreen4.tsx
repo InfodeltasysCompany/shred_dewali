@@ -549,7 +549,7 @@ onRefresh();
 
   return (
     <>
-    <DisplayAllAddresses visible={isAddressChooseModalDisplay} onClose={handleaddresscloseModal} addrseter={handleaddressetr}/>
+    <DisplayAllAddresses visible={isAddressChooseModalDisplay} onClose={handleaddresscloseModal} addrseter={handleaddressetr} navigation={navigation}/>
       <ScrollView
         contentContainerStyle={styles.scrollViewContainer}
         refreshControl={

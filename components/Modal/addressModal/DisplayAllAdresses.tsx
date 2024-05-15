@@ -7,23 +7,33 @@ import { fetchApiData } from '../../../MyMethods/APIMethodsConstants';
 import OptionsMenu from "react-native-options-menu";
 import HandleAddAddress from './HandleAddAddress';
 import EditAddress from './EditAddress';
+import LoginModal from '../../Credential/LoginModal';
 
 
 
 
-const DisplayAllAddresses = ({ visible, onClose ,addrseter}) => {
+const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
     const [state, setState] = useContext(AuthContext);
     const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password } = state;
     const [currentLocation, setcurrentLocation] = useState(null);
     const [mysavedAddresses, setMysavedAddresses] = useState([]);
-    const [isEditAddressModal, setIsEditAddressModal] = useState(false);
-    const [isAddAddressModal, setIsAddAddressModal] = useState(false);
+    const [isEditAddressModal, setIsEditAddressModal] = useState<Boolean>(false);
+    const [isAddAddressModal, setIsAddAddressModal] = useState<Boolean>(false);
     const [ADDEDITModalAddress, setADDEDITModalAddress] = useState(null)
+    const [isloginModalVisible, setIsloginModalVisible] = useState<Boolean>(false);
+
     const hanleEditAddressModal = () => {
         setIsEditAddressModal(true);
     }
     const hanleAddAddressModal = () => {
-        setIsAddAddressModal(!isAddAddressModal);
+       
+        if (userIdApp) {
+            setIsAddAddressModal(prevState => !prevState);
+        } 
+        else {
+            setIsloginModalVisible(prevState => !prevState);
+        }
+
     }
 
     const handlePickCurrentLocationModal = async () => {
@@ -54,13 +64,20 @@ const DisplayAllAddresses = ({ visible, onClose ,addrseter}) => {
                 },
                 body: formData, // Pass the FormData object as the body
             });
-            if(response.ok){
+            if (response.ok) {
                 Alert.alert("Address Deleted SuccessFully")
             }
         } catch (error) {
 
         }
     }
+    useEffect(() => {
+        if (userIdApp) {
+            setIsloginModalVisible(false);
+        } else {
+            setIsloginModalVisible(true);
+        }
+    }, [userIdApp])
     const [refreshing, setRefreshing] = useState(false)
     const onRefresh = () => {
         getMyAllAddress();
@@ -78,18 +95,18 @@ const DisplayAllAddresses = ({ visible, onClose ,addrseter}) => {
     const handleonCheckboxaddress = (addressId: string, addressDetails: any) => {
 
         if (checkedAddressId === addressId) {
-          // Uncheck the checkbox if it's already checked
-          setCheckedAddressId('');
-          setSelectedAddressDetails({});
+            // Uncheck the checkbox if it's already checked
+            setCheckedAddressId('');
+            setSelectedAddressDetails({});
         } else {
-          // Check the clicked checkbox and uncheck the previously checked checkbox
-          setCheckedAddressId(addressId);
-          setSelectedAddressDetails(addressDetails);
-          addrseter(addressDetails)
-          onClose();
-          console.log(addressDetails);
-          console.log(userIdApp);
-        //   dispatch(setAddress(addressDetails));
+            // Check the clicked checkbox and uncheck the previously checked checkbox
+            setCheckedAddressId(addressId);
+            setSelectedAddressDetails(addressDetails);
+            addrseter(addressDetails)
+            onClose();
+            console.log(addressDetails);
+            console.log(userIdApp);
+            //   dispatch(setAddress(addressDetails));
 
 
 
@@ -107,6 +124,7 @@ const DisplayAllAddresses = ({ visible, onClose ,addrseter}) => {
         >
             <HandleAddAddress visible={isAddAddressModal} onClose={hanleAddAddressModal} item={currentLocation} />
             <EditAddress visible={isEditAddressModal} onClose={hanleEditAddressModal} item={currentLocation} />
+            <LoginModal navigation={navigation} visible={isloginModalVisible} setVisible={setIsloginModalVisible} />
 
             <View style={styles.modalcontainer}>
 
@@ -222,17 +240,17 @@ const DisplayAllAddresses = ({ visible, onClose ,addrseter}) => {
                                                     }}
                                                 >
                                                     {checkedAddressId === address.addr_id && (
-              <View
-                style={{
-                  height: 10,
-                  width: 10,
-                  borderRadius: 13,
-                  backgroundColor: 'black',
-                  padding: 1,
-                  margin: 1.5,
-                }}
-              />
-            )}
+                                                        <View
+                                                            style={{
+                                                                height: 10,
+                                                                width: 10,
+                                                                borderRadius: 13,
+                                                                backgroundColor: 'black',
+                                                                padding: 1,
+                                                                margin: 1.5,
+                                                            }}
+                                                        />
+                                                    )}
                                                 </View>
 
 
@@ -244,8 +262,8 @@ const DisplayAllAddresses = ({ visible, onClose ,addrseter}) => {
                                                         button={require("../../../assets/threedot.jpg")}  // Use Image component
                                                         buttonStyle={{ position: 'absolute', top: 0, right: 0, width: 50, height: 50 }}
                                                         destructiveIndex={1}
-                                                        options={["Edit", "Delete"]}
-                                                        actions={[() => { handleEdit(address) }, () => { handleDelete(address) }]}
+                                                        options={["Delete"]}
+                                                        actions={[() => { handleDelete(address) }]}
                                                     />
 
                                                     <View style={{ padding: 20, marginTop: 30, }}>

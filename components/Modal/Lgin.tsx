@@ -330,10 +330,12 @@ import {
   
              
               ToastAndroid.showWithGravity(
+                
                 "Login Successfully",
                 ToastAndroid.SHORT,
                 ToastAndroid.CENTER
               );
+              setVisible(false);
             } catch (error) {
               console.log("data is not set ");
             }

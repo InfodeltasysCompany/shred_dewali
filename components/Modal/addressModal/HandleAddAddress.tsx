@@ -10,6 +10,7 @@ import {
 } from '@expo/vector-icons';
 import { getCurrentLocation } from "../../../Navigation/Tab3/functions"
 import { setAddress } from '../../../redux/actions/sAddressAction';
+import LoginModal from '../../Credential/LoginModal';
 
 const HandleAddAddress = ({ visible, onClose, item }) => {
 
@@ -20,7 +21,7 @@ const HandleAddAddress = ({ visible, onClose, item }) => {
   const [cities, setCities] = useState([]);
   const [areas, setAreas] = useState([]);
   const [userDataLOCAL_STORAGE, setUserDataLocalStorage] = useState(null);
-  const [iscountrydrpdwnenabled, setIscountrydrpdwnenabled] = useState(false);
+  const [iscountrydrpdwnenabled, setIscountrydrpdwnenabled] = useState(true);
   const [isstatedrpdwnenabled, setIsstatedrpdwnenabled] = useState(false);
   const [iscitydrpdwnenabled, setIscitydrpdwnenabled] = useState(false);
   const [isaddressplacedrpdwnenabled, setIsaddressplacedrpdwnenabled] = useState(false);
@@ -43,32 +44,33 @@ const HandleAddAddress = ({ visible, onClose, item }) => {
   const [pincode, setpincode] = useState<any>('');
   const [currentAddress, setCurrentAddress] = useState<{ postalCode?: string, street?: string, streetNumber?: string, district?: string, name?: string, subregion?: string, region?: string }>({}); // Define type for currentAddress
 
- 
+
   // Fetch countries data
   useEffect(() => {
     fetchCountries();
   }, [])
-  
+
   useEffect(() => {
     // Toggle country dropdown
-    setIscountrydrpdwnenabled(selectedCountryId === '');
-  
-    // Toggle state dropdown
-    setIsstatedrpdwnenabled(selectedStateId === '' && selectedCountryId !== '');
-  
-    // Toggle city dropdown
-    setIscitydrpdwnenabled(selectedCityId === '' && selectedStateId !== '');
-  
-    // Toggle area dropdown
-    setIsaddressplacedrpdwnenabled(selectedAreaId === '' && selectedCityId !== '');
-  
-  }, [selectedCountryId, selectedStateId, selectedCityId, selectedAreaId]);
-  
+    // setIscountrydrpdwnenabled(selectedCountryId === '');
 
+    // Toggle state dropdown
+    setIsstatedrpdwnenabled(selectedCountryId !== '');
+
+    // Toggle city dropdown
+    setIscitydrpdwnenabled(selectedStateId !== '');
+
+    // Toggle area dropdown
+    setIsaddressplacedrpdwnenabled(selectedCityId !== '');
+
+  }, [selectedCountryId, selectedStateId, selectedCityId, selectedAreaId]);
+
+ 
   const errortoggling = () => {
     if (selectedCountryId == "") {
       setIscountrydrpdwnfilled(true)
-    } else {
+    }
+    else {
       setIscountrydrpdwnfilled(false)
     }
     if (selectedStateId == "") {
@@ -97,7 +99,7 @@ const HandleAddAddress = ({ visible, onClose, item }) => {
     } else { setIslandmarkfilled(false) }
 
   }
-  const callreset=()=>{
+  const callreset = () => {
     setHouseno("");
     setSelectedAreaId("");
     setSelectedCityId("");
@@ -106,12 +108,12 @@ const HandleAddAddress = ({ visible, onClose, item }) => {
     setaddress('');
     setlandmark('')
     setpincode('');
-    
-      }
+
+  }
 
   const fetchCurrentLocation = async () => {
     const mylocation = await getCurrentLocation();
-    console.log("my location==>",mylocation)
+    console.log("my location==>", mylocation)
     setCurrentAddress(mylocation);
   }
   const onChangepincode = (text) => {
@@ -130,15 +132,15 @@ const HandleAddAddress = ({ visible, onClose, item }) => {
     setIshousenofiled(false);
   }
   useEffect(() => {
-    if(currentAddress.postalCode){
+    if (currentAddress.postalCode) {
       setpincode(currentAddress.postalCode);
     }
-   
-if(currentAddress.street || currentAddress.streetNumber){
-  setlandmark([currentAddress.street,currentAddress.streetNumber].filter(Boolean).join(', '));
-}
-    
-    
+
+    if (currentAddress.street || currentAddress.streetNumber) {
+      setlandmark([currentAddress.street, currentAddress.streetNumber].filter(Boolean).join(', '));
+    }
+
+
     if (currentAddress.district || currentAddress.name || currentAddress.street || currentAddress.subregion || currentAddress.region) {
       setaddress(
         [currentAddress.district, currentAddress.name, currentAddress.street, currentAddress.subregion, currentAddress.region]
@@ -146,7 +148,7 @@ if(currentAddress.street || currentAddress.streetNumber){
           .join(', ')
       );
     }
-    
+
     console.log("address=>  ", address)
   }, [currentAddress])
 
@@ -269,76 +271,76 @@ if(currentAddress.street || currentAddress.streetNumber){
   };
   const handleSaveAddressbtn = () => {
     // errortoggling();
-    console.log("selectedAreaId"+selectedAreaId+"selectedStateId"+selectedStateId+"selectedcityid"+selectedCityId+"selectedareaid"+selectedAreaId+"address"+address+"landmark"+landmark+"pincode"+pincode+"useidapp"+userIdApp);
-    if(selectedAreaId && selectedStateId && selectedCityId && selectedAreaId && address && landmark && pincode && userIdApp){
+    console.log("selectedAreaId" + selectedAreaId + "selectedStateId" + selectedStateId + "selectedcityid" + selectedCityId + "selectedareaid" + selectedAreaId + "address" + address + "landmark" + landmark + "pincode" + pincode + "useidapp" + userIdApp);
+    if (selectedAreaId && selectedStateId && selectedCityId && selectedAreaId && address && landmark && pincode && userIdApp) {
 
 
-       // Prepare form data
-    const formData = new FormData();
-    formData.append('country_id', selectedCountryId);
-    formData.append('state_id', selectedStateId);
-    formData.append('city_id', selectedCityId);
-    formData.append('area_id', selectedAreaId);
-    formData.append('address', `${houseno},${address}`);
-    formData.append('landmark', landmark);
-    formData.append('pincode', pincode);
-    formData.append('user_id', userIdApp);
-
-
-   
+      // Prepare form data
+      const formData = new FormData();
+      formData.append('country_id', selectedCountryId);
+      formData.append('state_id', selectedStateId);
+      formData.append('city_id', selectedCityId);
+      formData.append('area_id', selectedAreaId);
+      formData.append('address', `${houseno},${address}`);
+      formData.append('landmark', landmark);
+      formData.append('pincode', pincode);
+      formData.append('user_id', userIdApp);
 
 
 
-    // Make the POST request
-    fetch('https://shreddersbay.com/API/address_api.php?action=insert', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        // Add any necessary headers here (e.g., for authorization)
-        // 'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
-        // 'Content-Type': 'multipart/form-data', // This header is automatically set for FormData
-      },
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      // Handle the response data if needed
-      console.log('Success:', data);
-      // Optionally, show an alert or perform any action after a successful request
-      Alert.alert('Success', 'Data submitted successfully', [
-        {
-          text: 'OK',
-          onPress: () => {
-            onClose();
-            callreset();
-          },
-          
 
-      
+
+
+      // Make the POST request
+      fetch('https://shreddersbay.com/API/address_api.php?action=insert', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          // Add any necessary headers here (e.g., for authorization)
+          // 'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
+          // 'Content-Type': 'multipart/form-data', // This header is automatically set for FormData
         },
-      ]);
-    })    
-    .catch(error => {
-      // Handle errors
-      console.error('Error:', error);
-      
-      // Show an alert or perform any action in case of an error
-      // Alert.alert('Error', 'There was an error submitting the data');
-    
-    });
-   
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Handle the response data if needed
+          console.log('Success:', data);
+          // Optionally, show an alert or perform any action after a successful request
+          Alert.alert('Success', 'Data submitted successfully', [
+            {
+              text: 'OK',
+              onPress: () => {
+                onClose();
+                callreset();
+              },
+
+
+
+            },
+          ]);
+        })
+        .catch(error => {
+          // Handle errors
+          console.error('Error:', error);
+
+          // Show an alert or perform any action in case of an error
+          // Alert.alert('Error', 'There was an error submitting the data');
+
+        });
+
     }
     else
-    // setAlertShown(!alertShown);
-    // if (!alertShown) {
-    //   displayAlert(); // Display the full message alert
-    //   setAlertShown(false); // Set the flag to true to indicate the alert has been shown
-    // }
-    errortoggling();
+      // setAlertShown(!alertShown);
+      // if (!alertShown) {
+      //   displayAlert(); // Display the full message alert
+      //   setAlertShown(false); // Set the flag to true to indicate the alert has been shown
+      // }
+      errortoggling();
 
   }
   ////////////////////////////////////////////////////////////
@@ -495,8 +497,8 @@ if(currentAddress.street || currentAddress.streetNumber){
 
             <View style={{ flexDirection: 'row', marginVertical: 10 }}>
               <View style={{ flex: 1, marginRight: 5 }}>
-{ispincodefilled&&<Text style={{ color: 'red' }}>* Required</Text>}
-                
+                {ispincodefilled && <Text style={{ color: 'red' }}>* Required</Text>}
+
                 <TextInput
                   label="Pincode"
                   mode='outlined'
@@ -508,13 +510,13 @@ if(currentAddress.street || currentAddress.streetNumber){
               </View>
               <View style={{ flex: 1, marginLeft: 5 }}>
                 {islandmarkfilled && <Text style={{ color: "red" }}>* Required</Text>}
-                
+
                 <TextInput
                   label="Landmark"
                   mode='outlined'
                   value={landmark}
                   onChangeText={(text) => onChangelandmark(text)}
-                  
+
                 />
               </View>
             </View>
@@ -548,12 +550,21 @@ if(currentAddress.street || currentAddress.streetNumber){
             </View>
 
 
-            <View style={{ marginVertical: 10 }}>
+            {/* <View style={{ marginVertical: 10 }}>
               <TouchableOpacity style={{ marginBottom: 10 }} onPress={fetchCurrentLocation}>
                 <View style={{ backgroundColor: '#2196F3', alignItems: 'center', justifyContent: 'center', height: 50, flexDirection: "row", gap: 10 }}>
                   <MaterialIcons name='my-location' color={"white"} size={30} />
                   <Text style={{ color: 'white' }}>
                     Use my location
+                  </Text>
+                </View>
+              </TouchableOpacity> */}
+            <View style={{ marginVertical: 10 }}>
+              <TouchableOpacity style={{ marginBottom: 10 }} onPress={callreset}>
+                <View style={{ backgroundColor: '#2196F3', alignItems: 'center', justifyContent: 'center', height: 50, flexDirection: "row", gap: 10 }}>
+                  {/* <MaterialIcons name='my-location' color={"white"} size={30} /> */}
+                  <Text style={{ color: 'white', fontSize: 18, }}>
+                    Reset
                   </Text>
                 </View>
               </TouchableOpacity>

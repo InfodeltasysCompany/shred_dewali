@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal,TextInput, } from "react-native";
 
 
-const CloseIcon = ({ onPress }) => (
+export const CloseIcon = ({ onPress }) => (
   <TouchableOpacity onPress={onPress} style={styles.closeButton}>
     <Image
       source={require("../../assets/closeImage.jpg")}

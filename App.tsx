@@ -42,8 +42,9 @@ import ChatBlank from './Navigation/Tab5_buy/ChatBlank';
 import T4Screen3 from './Navigation/Tab4/T4Screen3';
 import { Addbtnchanged, Addbtndef } from './components/Addbtn';
 import { UserAuthProvider } from './redux/ContextApi/UserAuthProvider';
+// import FullPageModal from './components/Credential/FullPageModal';
 
-
+import { FullPageModal } from './components/Credential/FullPageModal';
 
 
 
@@ -64,7 +65,8 @@ const App = () => {
   const Tab = createBottomTabNavigator();
   const TTab = createMaterialTopTabNavigator()
 
-
+  
+  
   const Stack1 = () => {
     return (
       <Stack.Navigator>
@@ -161,6 +163,7 @@ const App = () => {
           headerTitle: '', // Hide the header title
         }} />
         <Stack.Screen name='Auction' component={T3Screen2} />
+
       </Stack.Navigator>
     )
   }
@@ -227,11 +230,11 @@ const App = () => {
   return (
     <UserAuthProvider>
 
-    <Provider store={store}>
+      <Provider store={store}>
 
 
-      <NavigationContainer>
-        {/* <Tab.Navigator
+        <NavigationContainer>
+          {/* <Tab.Navigator
       initialRouteName="Tab1"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
@@ -318,75 +321,91 @@ const App = () => {
         </Tab.Navigator> */}
 
 
-        <Tab.Navigator
-          initialRouteName="Tab1"
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconComponent;
+          <Tab.Navigator
+            initialRouteName="Tab1"
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconComponent;
 
-              // Set icons based on the route name and focused state
-              if (route.name === 'Tab1') {
-                iconComponent = focused ?
-                  <Ionicons name="home" size={size} color={color} /> :
-                  <Ionicons name="home-outline" size={size} color={color} />;
-              } else if (route.name === 'Scrap Cart') {
-                iconComponent = focused ?
-                  <Ionicons name="cart" size={size} color={color} /> :
-                  <Feather name="shopping-cart" size={size} color={color} />;
-              } else if (route.name === 'Scrap Item') {
-                iconComponent = focused ?
-                  // <AntDesign name="pluscircle" size={50} color={color} />
-                  <Addbtnchanged color={color}/>
-                  :
-                  // <Feather name="plus-circle" size={50} color={color} /> ;
-                  <Addbtndef color={'#00457E'}/>
-                  
-              } else if (route.name === 'Chat') {
-                iconComponent = focused ?
-                  <Ionicons name="chatbubbles" size={size} color={color} /> :
-                  <Ionicons name="chatbubbles-outline" size={size} color={color} />;
+                // Set icons based on the route name and focused state
+                if (route.name === 'Tab1') {
+                  iconComponent = focused ?
+                    <Ionicons name="home" size={size} color={color} /> :
+                    <Ionicons name="home-outline" size={size} color={color} />;
+                } else if (route.name === 'Scrap Cart') {
+                  iconComponent = focused ?
+                    <Ionicons name="cart" size={size} color={color} /> :
+                    <Feather name="shopping-cart" size={size} color={color} />;
+                } else if (route.name === 'Scrap Item') {
+                  iconComponent = focused ?
+                    // <AntDesign name="pluscircle" size={50} color={color} />
+                    <Addbtnchanged color={color} />
+                    :
+                    // <Feather name="plus-circle" size={50} color={color} /> ;
+                    <Addbtndef color={'#00457E'} />
 
-              } else if (route.name === 'Setting') {
-                iconComponent = focused ?
-                  <Ionicons name="person" size={size} color={color} /> :
-                  <Ionicons name="person-outline" size={size} color={color} />;
+                } else if (route.name === 'Chat') {
+                  iconComponent = focused ?
+                    <Ionicons name="chatbubbles" size={size} color={color} /> :
+                    <Ionicons name="chatbubbles-outline" size={size} color={color} />;
 
-              }
-              // Add additional conditions for other tab names and icons
+                } else if (route.name === 'Setting') {
+                  iconComponent = focused ?
+                    <Ionicons name="person" size={size} color={color} /> :
+                    <Ionicons name="person-outline" size={size} color={color} />;
 
-              return iconComponent;
-            },
-            tabBarActiveTintColor: '#00457E',
-            tabBarInactiveTintColor: 'gray',
-            
-            style: {
-              backgroundColor: 'black', // Background color of the tab bar
-              borderTopWidth: 1, // Border top width
-              borderTopColor: 'rgba(0, 0, 0, 0.2)', // Border top color
-            },
-            // tabBarActiveBackgroundColor:"black",
-            tabBarStyle: { borderRadius: 0,  height: 50, elevation: 5, backgroundColor:"#e6f4ff" },
+                }
+                // Add additional conditions for other tab names and icons
 
-          })}
-        >
-          <Tab.Screen
-            name="Tab1"
-            component={Stack1}
-            options={{
-              headerShown: false,
-              tabBarLabel: "Home1",
-            }}
-          />
+                return iconComponent;
+              },
+              tabBarActiveTintColor: '#00457E',
+              tabBarInactiveTintColor: 'gray',
 
-          <Tab.Screen
-            name="Scrap Cart"
-            component={Stack2}
-            options={({ navigation }) => ({
-              headerShown: false,
-              tabBarLabel: "Scrap Cart",
+              style: {
+                backgroundColor: 'black', // Background color of the tab bar
+                borderTopWidth: 1, // Border top width
+                borderTopColor: 'rgba(0, 0, 0, 0.2)', // Border top color
+              },
+              // tabBarActiveBackgroundColor:"black",
+              tabBarStyle: { borderRadius: 0, height: 50, elevation: 5, backgroundColor: "#e6f4ff" },
+
             })}
-          />
+          >
+            <Tab.Screen
+              name="Tab1"
+              component={Stack1}
+              options={{
+                headerShown: false,
+                tabBarLabel: "Home1",
+              }}
+            />
 
+            <Tab.Screen
+              name="Scrap Cart"
+              component={Stack2}
+              options={({ navigation }) => ({
+                headerShown: false,
+                tabBarLabel: "Scrap Cart",
+              })}
+            />
+            {/* 
+              <Tab.Screen
+                name="Sell"
+                // component={Stack3}
+                component={FullPageModal}
+                listeners={({ navigation }) => ({
+                  tabPress: (e) => {
+                    e.preventDefault();
+                    navigation.navigate('Sell', { onClose: () => navigation.navigate("Tab1",{screen:'T1Screen'}) });
+                  },
+                })}
+                options={{ tabBarLabel: "Sell", headerTitleAlign: "center" }}
+        
+              /> */}
+          
+
+            
           <Tab.Screen
             name="Scrap Item"
             component={Stack3}
@@ -396,29 +415,31 @@ const App = () => {
             })}
           />
 
-          <Tab.Screen
-            name="Chat"
-            component={Stack5}
-            options={{
-              tabBarLabel: "Chat",
-              headerTitleAlign: "center",
-            }}
-          />
-          <Tab.Screen
-            name="Setting"
-            component={Stack4}
-            options={{
-              tabBarLabel: "Setting",
-              headerShown: false,
-              headerTitle: "Setting",
-            }}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
+            <Tab.Screen
+              name="Chat"
+              component={Stack5}
+              options={{
+                tabBarLabel: "Chat",
+                headerTitleAlign: "center",
+              }}
+            />
 
 
-      
-    </Provider>
+            <Tab.Screen
+              name="Setting"
+              component={Stack4}
+              options={{
+                tabBarLabel: "Setting",
+                headerShown: false,
+                headerTitle: "Setting",
+              }}
+            />
+          </Tab.Navigator>
+        </NavigationContainer>
+
+
+
+      </Provider>
     </UserAuthProvider>
   );
 }

@@ -8,6 +8,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 import LoginModal from '../../components/Credential/LoginModal';
+import ProductCat from './NewSellForms/ProductCat';
 const T3Screen1 = ({ navigation }) => {
 
   return (
@@ -428,342 +429,345 @@ useEffect(() => {
     pollApi();
   }
   return (
-    <View style={{ backgroundColor: "#fff" }}>
-      <View
-        style={{
-          marginTop: 30,
-          marginHorizontal: 10,
-          padding: 30,
-          justifyContent: "center",
-        }}
-      >
-        {/* <Text>this is Dropdowns</Text> */}
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={["#0000ff"]}
-              tintColor="#0000ff"
-            />
-          }
-        >
-          <View>
-            <View>
-              {/* ///////////////////////////drowpdown Pickers////////////////////////// */}
+    // <View style={{ backgroundColor: "#fff" }}>
+    //   <View
+    //     style={{
+    //       marginTop: 30,
+    //       marginHorizontal: 10,
+    //       padding: 30,
+    //       justifyContent: "center",
+    //     }}
+    //   >
+    //     {/* <Text>this is Dropdowns</Text> */}
+    //     <ScrollView
+    //       showsVerticalScrollIndicator={false}
+    //       refreshControl={
+    //         <RefreshControl
+    //           refreshing={refreshing}
+    //           onRefresh={onRefresh}
+    //           colors={["#0000ff"]}
+    //           tintColor="#0000ff"
+    //         />
+    //       }
+    //     >
+    //       <View>
+    //         <View>
+    //           {/* ///////////////////////////drowpdown Pickers////////////////////////// */}
 
-              <View>
-                <View>
-                  {osName === "ios" && (
-                    <>
-                      {/* ///////ios pickers //////////////////////////////////////////////// */}
-                      <View>
-                        <View style={{ marginTop: 10 }}>
-                          <Picker
-                            selectedValue={selectedMetal}
-                            style={{
-                              height: 50,
-                              width: 270,
-                              alignSelf: "center",
-                            }}
-                            itemStyle={{
-                              fontSize: 18,
-                              color: "blue",
-                              backgroundColor: "white",
-                              paddingHorizontal: 10,
-                            }}
-                            onValueChange={(itemValue) =>
-                              handleSelectMetal(itemValue)
-                            }
-                            // mode="dropdown" // Set mode to "dropdown" explicitly
-                          >
-                            <Picker.Item label={`${metalType}`} value="" />
-                            {MetalData.map((item) => (
-                              <Picker.Item
-                                label={item.p_name}
-                                value={item.p_id}
-                                key={item.p_id}
-                              />
-                            ))}
-                          </Picker>
-                        </View>
-                        <View
-                          style={{
-                            marginTop: 100,
-                          }}
-                        >
-                          <Picker
-                            selectedValue={selectedSubMetal}
-                            style={{
-                              height: 50,
-                              width: 270,
-                              alignSelf: "center",
-                            }}
-                            itemStyle={{
-                              fontSize: 18,
-                              color: "blue",
-                              backgroundColor: "white",
-                              paddingHorizontal: 10,
-                            }}
-                            onValueChange={(itemValue) =>
-                              setSelectedSubMetal(itemValue)
-                            }
-                            mode="dropdown" // Set mode to "dropdown" explicitly
-                          >
-                            <Picker.Item label={`${submetalType}`} value="" />
-                            {SubMetalData.map((item, index) => (
-                              <Picker.Item
-                                label={item.p_type_name}
-                                value={item.p_type_name}
-                                key={index}
-                              />
-                            ))}
-                          </Picker>
-                        </View>
-                      </View>
-                    </>
-                  )}
-                  {osName === "android" && (
-                    <>
-                      {/* //////////////////////////////////android pickers ///////////////////////////// */}
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          borderWidth: 1,
-                          padding: 0,
-                          borderColor: "lightgray",
-                          borderRadius: 10,
-                          marginTop: 10,
-                        }}
-                      >
-                        <Picker
-                          selectedValue={selectedMetal}
-                          style={{ height: 50, width: 270 }}
-                          itemStyle={{
-                            fontSize: 18,
-                            color: "blue",
-                            backgroundColor: "lightgray",
-                            paddingHorizontal: 10,
-                          }}
-                          onValueChange={(itemValue) =>
-                            handleSelectMetal(itemValue)
-                          }
-                        >
-                          <Picker.Item label={`${metalType}`} value="" />
-                          {MetalData.map((item) => (
-                            <Picker.Item
-                              label={item.p_name}
-                              value={item.p_id}
-                              key={item.p_id}
-                            />
-                          ))}
-                        </Picker>
-                      </View>
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          borderWidth: 1,
-                          padding: 0,
-                          borderColor: "lightgray",
-                          borderRadius: 10,
-                          marginTop: 30,
-                        }}
-                      >
-                        <Picker
-                          selectedValue={selectedSubMetal}
-                          style={{ height: 50, width: 270 }}
-                          itemStyle={{
-                            fontSize: 18,
-                            color: "blue",
-                            backgroundColor: "lightgray",
-                            paddingHorizontal: 10,
-                          }}
-                          onValueChange={(itemValue) =>
-                            setSelectedSubMetal(itemValue)
-                          }
-                        >
-                          <Picker.Item label={`${submetalType}`} value="" />
-                          {SubMetalData.map((item, index) => (
-                            <Picker.Item
-                              label={item.p_type_name}
-                              value={item.p_type_name}
-                              key={index}
-                            />
-                          ))}
-                        </Picker>
-                      </View>
-                    </>
-                  )}
-                </View>
-              </View>
-              {/* //////////////////////////////////////////////////////////// */}
+    //           <View>
+    //             <View>
+    //               {osName === "ios" && (
+    //                 <>
+    //                   {/* ///////ios pickers //////////////////////////////////////////////// */}
+    //                   <View>
+    //                     <View style={{ marginTop: 10 }}>
+    //                       <Picker
+    //                         selectedValue={selectedMetal}
+    //                         style={{
+    //                           height: 50,
+    //                           width: 270,
+    //                           alignSelf: "center",
+    //                         }}
+    //                         itemStyle={{
+    //                           fontSize: 18,
+    //                           color: "blue",
+    //                           backgroundColor: "white",
+    //                           paddingHorizontal: 10,
+    //                         }}
+    //                         onValueChange={(itemValue) =>
+    //                           handleSelectMetal(itemValue)
+    //                         }
+    //                         // mode="dropdown" // Set mode to "dropdown" explicitly
+    //                       >
+    //                         <Picker.Item label={`${metalType}`} value="" />
+    //                         {MetalData.map((item) => (
+    //                           <Picker.Item
+    //                             label={item.p_name}
+    //                             value={item.p_id}
+    //                             key={item.p_id}
+    //                           />
+    //                         ))}
+    //                       </Picker>
+    //                     </View>
+    //                     <View
+    //                       style={{
+    //                         marginTop: 100,
+    //                       }}
+    //                     >
+    //                       <Picker
+    //                         selectedValue={selectedSubMetal}
+    //                         style={{
+    //                           height: 50,
+    //                           width: 270,
+    //                           alignSelf: "center",
+    //                         }}
+    //                         itemStyle={{
+    //                           fontSize: 18,
+    //                           color: "blue",
+    //                           backgroundColor: "white",
+    //                           paddingHorizontal: 10,
+    //                         }}
+    //                         onValueChange={(itemValue) =>
+    //                           setSelectedSubMetal(itemValue)
+    //                         }
+    //                         mode="dropdown" // Set mode to "dropdown" explicitly
+    //                       >
+    //                         <Picker.Item label={`${submetalType}`} value="" />
+    //                         {SubMetalData.map((item, index) => (
+    //                           <Picker.Item
+    //                             label={item.p_type_name}
+    //                             value={item.p_type_name}
+    //                             key={index}
+    //                           />
+    //                         ))}
+    //                       </Picker>
+    //                     </View>
+    //                   </View>
+    //                 </>
+    //               )}
+    //               {osName === "android" && (
+    //                 <>
+    //                   {/* //////////////////////////////////android pickers ///////////////////////////// */}
+    //                   <View
+    //                     style={{
+    //                       justifyContent: "center",
+    //                       borderWidth: 1,
+    //                       padding: 0,
+    //                       borderColor: "lightgray",
+    //                       borderRadius: 10,
+    //                       marginTop: 10,
+    //                     }}
+    //                   >
+    //                     <Picker
+    //                       selectedValue={selectedMetal}
+    //                       style={{ height: 50, width: 270 }}
+    //                       itemStyle={{
+    //                         fontSize: 18,
+    //                         color: "blue",
+    //                         backgroundColor: "lightgray",
+    //                         paddingHorizontal: 10,
+    //                       }}
+    //                       onValueChange={(itemValue) =>
+    //                         handleSelectMetal(itemValue)
+    //                       }
+    //                     >
+    //                       <Picker.Item label={`${metalType}`} value="" />
+    //                       {MetalData.map((item) => (
+    //                         <Picker.Item
+    //                           label={item.p_name}
+    //                           value={item.p_id}
+    //                           key={item.p_id}
+    //                         />
+    //                       ))}
+    //                     </Picker>
+    //                   </View>
+    //                   <View
+    //                     style={{
+    //                       justifyContent: "center",
+    //                       borderWidth: 1,
+    //                       padding: 0,
+    //                       borderColor: "lightgray",
+    //                       borderRadius: 10,
+    //                       marginTop: 30,
+    //                     }}
+    //                   >
+    //                     <Picker
+    //                       selectedValue={selectedSubMetal}
+    //                       style={{ height: 50, width: 270 }}
+    //                       itemStyle={{
+    //                         fontSize: 18,
+    //                         color: "blue",
+    //                         backgroundColor: "lightgray",
+    //                         paddingHorizontal: 10,
+    //                       }}
+    //                       onValueChange={(itemValue) =>
+    //                         setSelectedSubMetal(itemValue)
+    //                       }
+    //                     >
+    //                       <Picker.Item label={`${submetalType}`} value="" />
+    //                       {SubMetalData.map((item, index) => (
+    //                         <Picker.Item
+    //                           label={item.p_type_name}
+    //                           value={item.p_type_name}
+    //                           key={index}
+    //                         />
+    //                       ))}
+    //                     </Picker>
+    //                   </View>
+    //                 </>
+    //               )}
+    //             </View>
+    //           </View>
+    //           {/* //////////////////////////////////////////////////////////// */}
 
-              <View
-                style={[
-                  styles.radioButtonContainer,
-                  osName === "ios" && styles.iosMarginTop,
-                ]}
-              >
-                <View>
-                  <TextInput
-                    // placeholder={Enter ${weight} in kg}
-                    placeholder="Enter Weight in kg"
-                    value={textInputValue}
-                    onChangeText={handleNumericInputChange}
-                    style={styles.textInput}
-                    keyboardType="numeric"
-                  />
-                </View>
-                {productname || price ? (
-                  <Text style={{ color: "blue" }}>
-                    {" "}
-                    price of {productname}:-{price}{" "}
-                  </Text>
-                ) : null}
-              </View>
-              <View style={styles.imageContainer}>
-                {capturedImage && (
-                  <Image source={{ uri: capturedImage }} style={styles.image} />
-                )}
-                {selectedImage && (
-                  <Image source={{ uri: selectedImage }} style={styles.image} />
-                )}
-              </View>
-              <View style={styles.buttonsContainer}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignSelf: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <View>
-                    {/* <TouchableOpacity  onPress={pickImage} disabled={!hasPermission} > */}
-                    <TouchableOpacity
-                      onPress={pickImage}
-                      disabled={!hasPermission}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 18,
-                          color: "black",
+    //           <View
+    //             style={[
+    //               styles.radioButtonContainer,
+    //               osName === "ios" && styles.iosMarginTop,
+    //             ]}
+    //           >
+    //             <View>
+    //               <TextInput
+    //                 // placeholder={Enter ${weight} in kg}
+    //                 placeholder="Enter Weight in kg"
+    //                 value={textInputValue}
+    //                 onChangeText={handleNumericInputChange}
+    //                 style={styles.textInput}
+    //                 keyboardType="numeric"
+    //               />
+    //             </View>
+    //             {productname || price ? (
+    //               <Text style={{ color: "blue" }}>
+    //                 {" "}
+    //                 price of {productname}:-{price}{" "}
+    //               </Text>
+    //             ) : null}
+    //           </View>
+    //           <View style={styles.imageContainer}>
+    //             {capturedImage && (
+    //               <Image source={{ uri: capturedImage }} style={styles.image} />
+    //             )}
+    //             {selectedImage && (
+    //               <Image source={{ uri: selectedImage }} style={styles.image} />
+    //             )}
+    //           </View>
+    //           <View style={styles.buttonsContainer}>
+    //             <View
+    //               style={{
+    //                 flexDirection: "row",
+    //                 alignSelf: "center",
+    //                 justifyContent: "space-between",
+    //               }}
+    //             >
+    //               <View>
+    //                 {/* <TouchableOpacity  onPress={pickImage} disabled={!hasPermission} > */}
+    //                 <TouchableOpacity
+    //                   onPress={pickImage}
+    //                   disabled={!hasPermission}
+    //                 >
+    //                   <Text
+    //                     style={{
+    //                       fontSize: 18,
+    //                       color: "black",
 
-                          borderWidth: 2,
-                          borderColor: "#1f2e2e",
-                          padding: 5,
-                          borderRadius: 7,
-                          marginRight: 10,
-                        }}
-                      >
-                        {" "}
-                        Open Gallery
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <FontAwesome
-                    name="camera"
-                    style={{ fontSize: 30 }}
-                    onPress={takePicture}
-                    disabled={!hasPermission}
-                  />
-                </View>
-              </View>
-              <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible}/>
-              <View style={{ marginTop: 20 }}>
+    //                       borderWidth: 2,
+    //                       borderColor: "#1f2e2e",
+    //                       padding: 5,
+    //                       borderRadius: 7,
+    //                       marginRight: 10,
+    //                     }}
+    //                   >
+    //                     {" "}
+    //                     Open Gallery
+    //                   </Text>
+    //                 </TouchableOpacity>
+    //               </View>
+    //               <FontAwesome
+    //                 name="camera"
+    //                 style={{ fontSize: 30 }}
+    //                 onPress={takePicture}
+    //                 disabled={!hasPermission}
+    //               />
+    //             </View>
+    //           </View>
+    //           <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible}/>
+    //           <View style={{ marginTop: 20 }}>
                 
-                <View>
-                  {((gUserCred !== null && typeof gUserCred === 'object')||(userCred !== null && typeof userCred === 'object') )&&  userIdApp ? (
-                    <TouchableOpacity onPress={handleSubmit}>
-                      <Text
-                        style={{
-                          borderColor: "#1f2e2e",
-                          borderWidth: 2,
-                          padding: 10,
-                          marginBottom: 6,
-                          borderRadius: 5,
-                          fontSize: 17,
-                          color: "#fff",
-                          backgroundColor: "#1f2e2e",
-                          fontWeight: "bold",
-                          textAlign: "center",
-                        }}
-                      >
-                        Add Scrap
-                      </Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity>
-                      <Text
-                        style={{
-                          borderColor: "#1f2e2e",
-                          borderWidth: 2,
-                          padding: 10,
-                          marginBottom: 6,
-                          borderRadius: 5,
-                          fontSize: 17,
-                          color: "#fff",
-                          backgroundColor: "#1f2e2e",
-                          fontWeight: "bold",
-                          textAlign: "center",
-                        }}
-                        onPress={() => {
-                          setIsLoginModalVisible(true)
-                        }}
-                      >
-                        Add Scrap.
-                      </Text>
-                    </TouchableOpacity>
-                  )}
+    //             <View>
+    //               {((gUserCred !== null && typeof gUserCred === 'object')||(userCred !== null && typeof userCred === 'object') )&&  userIdApp ? (
+    //                 <TouchableOpacity onPress={handleSubmit}>
+    //                   <Text
+    //                     style={{
+    //                       borderColor: "#1f2e2e",
+    //                       borderWidth: 2,
+    //                       padding: 10,
+    //                       marginBottom: 6,
+    //                       borderRadius: 5,
+    //                       fontSize: 17,
+    //                       color: "#fff",
+    //                       backgroundColor: "#1f2e2e",
+    //                       fontWeight: "bold",
+    //                       textAlign: "center",
+    //                     }}
+    //                   >
+    //                     Add Scrap
+    //                   </Text>
+    //                 </TouchableOpacity>
+    //               ) : (
+    //                 <TouchableOpacity>
+    //                   <Text
+    //                     style={{
+    //                       borderColor: "#1f2e2e",
+    //                       borderWidth: 2,
+    //                       padding: 10,
+    //                       marginBottom: 6,
+    //                       borderRadius: 5,
+    //                       fontSize: 17,
+    //                       color: "#fff",
+    //                       backgroundColor: "#1f2e2e",
+    //                       fontWeight: "bold",
+    //                       textAlign: "center",
+    //                     }}
+    //                     onPress={() => {
+    //                       setIsLoginModalVisible(true)
+    //                     }}
+    //                   >
+    //                     Add Scrap.
+    //                   </Text>
+    //                 </TouchableOpacity>
+    //               )}
                   
                   
-                  <TouchableOpacity>
-                    <Text
-                      style={{
-                        borderColor: "#1f2e2e",
-                        borderWidth: 2,
-                        padding: 10,
-                        borderRadius: 5,
-                        fontSize: 17,
-                        color: "#fff",
-                        backgroundColor: "#1f2e2e",
-                        fontWeight: "bold",
-                        textAlign: "center",
-                      }}
-                      onPress={resetDropdowns}
-                      // onPress={hsubmit}
-                    >
-                      Reset
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text
-                      style={{
-                        borderColor: "#1f2e2e",
-                        borderWidth: 2,
-                        padding: 10,
-                        borderRadius: 5,
-                        marginTop: 5,
-                        fontSize: 17,
-                        color: "#fff",
-                        backgroundColor: "#1f2e2e",
-                        fontWeight: "bold",
-                        textAlign: "center",
-                      }}
-                      onPress={() => navigation.navigate("Auction")}
-                    >
-                      Auction
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              {/* </ScrollView> */}
-            </View>
-          </View>
-        </ScrollView>
-        <View></View>
-      </View>
-    </View>
+    //               <TouchableOpacity>
+    //                 <Text
+    //                   style={{
+    //                     borderColor: "#1f2e2e",
+    //                     borderWidth: 2,
+    //                     padding: 10,
+    //                     borderRadius: 5,
+    //                     fontSize: 17,
+    //                     color: "#fff",
+    //                     backgroundColor: "#1f2e2e",
+    //                     fontWeight: "bold",
+    //                     textAlign: "center",
+    //                   }}
+    //                   onPress={resetDropdowns}
+    //                   // onPress={hsubmit}
+    //                 >
+    //                   Reset
+    //                 </Text>
+    //               </TouchableOpacity>
+    //               <TouchableOpacity>
+    //                 <Text
+    //                   style={{
+    //                     borderColor: "#1f2e2e",
+    //                     borderWidth: 2,
+    //                     padding: 10,
+    //                     borderRadius: 5,
+    //                     marginTop: 5,
+    //                     fontSize: 17,
+    //                     color: "#fff",
+    //                     backgroundColor: "#1f2e2e",
+    //                     fontWeight: "bold",
+    //                     textAlign: "center",
+    //                   }}
+    //                   onPress={() => navigation.navigate("Auction")}
+    //                 >
+    //                   Auction
+    //                 </Text>
+    //               </TouchableOpacity>
+    //             </View>
+    //           </View>
+    //           {/* </ScrollView> */}
+    //         </View>
+    //       </View>
+    //     </ScrollView>
+    //     <View></View>
+    //   </View>
+    // </View>
+    <>
+    <ProductCat/>
+    </>
   );
 }
 

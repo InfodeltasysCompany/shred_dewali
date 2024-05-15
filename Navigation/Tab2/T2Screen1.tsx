@@ -351,7 +351,7 @@ const T2Screen1 = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <DisplayAllAddresses visible={isAddressChooseModalDisplay} onClose={oncloseAddressPickModal} addrseter={handleChoosenAddress} />
+      <DisplayAllAddresses visible={isAddressChooseModalDisplay} onClose={oncloseAddressPickModal} addrseter={handleChoosenAddress} navigation={navigation} />
       <ScrollView
         refreshControl={
           <RefreshControl
