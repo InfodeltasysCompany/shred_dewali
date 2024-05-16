@@ -31,7 +31,8 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
             setIsAddAddressModal(prevState => !prevState);
         } 
         else {
-            setIsloginModalVisible(prevState => !prevState);
+            // navigation.navigate("LoginModal")
+            setIsloginModalVisible(!isloginModalVisible)
         }
 
     }
@@ -72,11 +73,7 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
         }
     }
     useEffect(() => {
-        if (userIdApp) {
-            setIsloginModalVisible(false);
-        } else {
-            setIsloginModalVisible(true);
-        }
+      
     }, [userIdApp])
     const [refreshing, setRefreshing] = useState(false)
     const onRefresh = () => {

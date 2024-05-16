@@ -147,7 +147,7 @@ const [visible, setVisible] = useState(true)
 
 
 
-  if (userIdApp) {
+  
     return (
       <View
       style={{
@@ -329,26 +329,10 @@ const [visible, setVisible] = useState(true)
     </View>
 
     )
-  } else {
-    return (
-     
-<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  <LoginModal navigation={navigation} visible={visible} setVisible={setVisible} />
-  <View style={{alignContent:'center',justifyContent:"center"}}>
-    <View style={{alignContent:'center',justifyContent:'center'}}>
+  
 
-    <Text style={{ fontSize:26,margin:30 }}>Log in now to get started!</Text>
-    </View>
-    <TouchableOpacity onPress={() => setVisible(true)} style={{alignItems:'center',justifyContent:'center'}}>
-    <AntDesign name='adduser' size={350} color={"black"}/>
-
-      <Text style={{ color: 'blue', fontSize: 36, textDecorationLine: 'underline' }}>Login</Text>
-    </TouchableOpacity>
-  </View>
-</View>
-
-    )
-  }
+    
+  
 }
 
 export default T4Screen1

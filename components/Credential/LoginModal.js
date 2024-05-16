@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet, Modal,TextInput, } from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet, Modal,TextInput, Pressable, } from "react-native";
 import Lgin from "../Modal/Lgin";
 import Sign_up from "../Modal/Sign_up";
 import { useContext } from "react";
@@ -8,12 +8,12 @@ import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 
 
 const CloseIcon = ({ onPress }) => (
-  <TouchableOpacity onPress={onPress} style={styles.closeButton}>
+  <Pressable onPress={onPress} style={styles.closeButton}>
     <Image
       source={require("../../assets/closeImage.jpg")}
       style={{ width: 50, height: 50,padding:10 }}
     />
-  </TouchableOpacity>
+  </Pressable>
 );
 
 const LoginModal = ({ navigation, visible,setVisible}) => {
@@ -24,9 +24,13 @@ const LoginModal = ({ navigation, visible,setVisible}) => {
   const handleIsshowLogin=()=>{
     setIsShowlogin(!isShowlogin)
   }
+
   const closeModal=()=>{
-    setVisible(false)
-    navigation.navigate("Tab1",{screen:"T1Screen1"})
+    if(!(setVisible === undefined)){
+      setVisible(!visible)
+    }
+    console.log(typeof(setVisible))
+    navigation.navigate("Main")
 
   }
  
@@ -42,10 +46,10 @@ const LoginModal = ({ navigation, visible,setVisible}) => {
           {
             isShowlogin ? <View style={styles.content}>
             {/* {React.cloneElement(component1, { closeModal })} */}
-            <Lgin handleIsshowLogin={handleIsshowLogin} visible={visible} setVisible={setVisible}/>
+            <Lgin handleIsshowLogin={handleIsshowLogin} visible={visible} setVisible={setVisible} navigation={navigation}/>
           </View>:<View style={styles.content}>
               {/* {React.cloneElement(component2, { closeModal })} */}
-              <Sign_up handleIsshowLogin={handleIsshowLogin}/>
+              <Sign_up handleIsshowLogin={handleIsshowLogin} navigation={navigation}/>
             </View>
           }
         </View>

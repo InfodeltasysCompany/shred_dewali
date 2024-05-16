@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 // import ConCompo from './components/ConCompo'
 import { AntDesign, Feather, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from 'react-native-vector-icons'
@@ -41,12 +41,13 @@ import SCancel from './Navigation/Tab6_sell/SCancel';
 import ChatBlank from './Navigation/Tab5_buy/ChatBlank';
 import T4Screen3 from './Navigation/Tab4/T4Screen3';
 import { Addbtnchanged, Addbtndef } from './components/Addbtn';
-import { UserAuthProvider } from './redux/ContextApi/UserAuthProvider';
+import { AuthContext, UserAuthProvider } from './redux/ContextApi/UserAuthProvider';
 // import FullPageModal from './components/Credential/FullPageModal';
 
 import { FullPageModal } from './components/Credential/FullPageModal';
 import App2 from './Navigation/App2';
 const App = () => {
+
   const Stack = createStackNavigator();
   const Tab = createBottomTabNavigator();
   const TTab = createMaterialTopTabNavigator()

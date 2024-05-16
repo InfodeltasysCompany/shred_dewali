@@ -24,7 +24,7 @@ import React, {
   useContext,
 } from "react";
 import { StatusBar } from 'expo-status-bar'
-import { RouteProp } from "@react-navigation/native";
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../redux/actions/dashAction";
 import { StyleSheet } from "react-native";
@@ -58,6 +58,7 @@ import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import LoginModal from "../../components/Credential/LoginModal";
 import HandleAddAddressModal from "../../components/Modal/addressModal/DisplayAllAdresses";
 import SearchModal from "../../components/Modal/Search/SearchModal";
+import SearchModalContent from "../../components/Modal/Search/SearchModalContent";
 
 const T1Screen1 = ({ navigation }) => {
   const imgurl = "https://shreddersbay.com/API/uploads/";
@@ -141,7 +142,7 @@ const T1Screen1 = ({ navigation }) => {
     setImagename(filename);
     console.log(filename);
     setbookingId(bookingId);
-    setModalVisible(true);
+    setModalVisible(!modalVisible);
     console.log("booking_id", bookingId);
     try {
       const formdata = new FormData();
@@ -189,7 +190,7 @@ const T1Screen1 = ({ navigation }) => {
     const auctiondetail = auctionDetailData[0];
     console.log("images:-" + auctiondetail.filename)
     setImagename(auctiondetail.filename);
-    setModalVisible(true);
+    setModalVisible(!modalVisible);
     setdetaildata(auctionDetailData);
   };
 
@@ -217,7 +218,7 @@ const T1Screen1 = ({ navigation }) => {
           text: "Yes",
           onPress: () => {
             // Do something when "Yes" is pressed
-            navigation.navigate("Login");
+            navigation.navigate("LoginModal");
           },
         },
       ],
@@ -282,6 +283,7 @@ const T1Screen1 = ({ navigation }) => {
     console.log("address=>", address)
 
   }
+  
   useEffect(() => {
     if(currentAddress==null){
       locationSetup();
@@ -289,6 +291,13 @@ const T1Screen1 = ({ navigation }) => {
     getAuctionResponse();
     getOrderResponse();
   }, []);
+  useEffect(() => {
+    if(currentAddress==null){
+      locationSetup();
+    }
+    getAuctionResponse();
+    // getOrderResponse();
+  }, [currentAddress]);
   useEffect(()=>{
     getAuctionResponse();
     getOrderResponse();
@@ -528,8 +537,9 @@ const onSeachModalclose=()=>{
 
       <View>
         <HandleAddAddressModal visible={isAddressModalOpen} onClose={handleAddresModalOpen} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
-        {/* <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} comp={undefined}/> */}
-        <LoginModal navigation={navigation} visible={isloginModalVisible} setVisible={setIsloginModalVisible}/>
+        <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} comp={<SearchModalContent/>}/>
+        {/* {isLoginModalVisible && <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} />} */}
+
         <Modal
           // animationType="fade"
           transparent={true}
@@ -627,7 +637,7 @@ const onSeachModalclose=()=>{
             </View>
           </TouchableOpacity>
           )} */}
-          <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} />
+          {/* <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} /> */}
 
           <TouchableOpacity>
             <View style={styles.heading1}>
@@ -669,7 +679,7 @@ const onSeachModalclose=()=>{
                
                   {orderData&&orderData.map((item,index)=>(
                     <View key={index} style={styles.card}>
-                    <TouchableOpacity
+                    <Pressable
                       onPress={() =>
                         handleDetailPress(item.booking_id, item.filename)
                       }
@@ -699,7 +709,7 @@ const onSeachModalclose=()=>{
                           {item.address}
                         </Text>
                       </View>
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
                   ))}
               </View>
@@ -789,7 +799,7 @@ const onSeachModalclose=()=>{
                   ))} */}
                   {auctionData&&auctionData.map((item,index)=>(
                       <View key={index} style={styles.card}>
-                      <TouchableOpacity
+                      <Pressable
                         onPress={() =>
                           handleAuctionDetailPres(item.auction_id)
                         }
@@ -822,7 +832,7 @@ const onSeachModalclose=()=>{
                             {item.address}
                           </Text>
                         </View>
-                      </TouchableOpacity>
+                      </Pressable>
                     </View>
                   ))}
               </View>
