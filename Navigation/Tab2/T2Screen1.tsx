@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useId, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { View, Text, StyleSheet, Button, ScrollView, TouchableOpacity, Platform, Image, Alert, RefreshControl, Touchable } from 'react-native';
+import { View, Text, StyleSheet, Button, ScrollView, TouchableOpacity, Platform, Image, Alert, RefreshControl, Touchable, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
@@ -330,6 +330,11 @@ const T2Screen1 = ({ navigation }) => {
             // Insertion successfuld
             // navigation.navigate('Tab1', { screen: 'T2Screen2' });
             console.log('Data inserted successfully!');
+            ToastAndroid.showWithGravity(
+              "Order Placed successfully",
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER
+            );
             navigation.navigate('Tab1', { screen: 'T2Screen2' });
           } else {
             // Insertion failed

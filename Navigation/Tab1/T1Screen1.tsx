@@ -288,6 +288,7 @@ const T1Screen1 = ({ navigation }) => {
     if(currentAddress==null){
       locationSetup();
     }
+    locationSetup();
     getAuctionResponse();
     getOrderResponse();
   }, []);
@@ -612,7 +613,7 @@ const onSeachModalclose=()=>{
       </View>
 
       <View style={styles.container1}>
-        <TextInput
+        {/* <TextInput
           placeholder="search"
           clearButtonMode="always"
           autoCapitalize="none"
@@ -621,7 +622,12 @@ const onSeachModalclose=()=>{
           onFocus={()=>{
             setIsSearchModalVisible(true);
           }}
-        />
+        /> */}
+        <Pressable onPress={()=>{setIsSearchModalVisible(true)}}>
+          <View style={styles.searchbox}>
+        <Text style={{marginLeft:10,color:'gray'}}>search your scrap here...</Text>
+          </View>
+        </Pressable>
 
         <View style={[userIdApp ? { flexDirection: "row", marginLeft: 15, justifyContent: "center" } : { flexDirection: 'row', justifyContent: "center" }]}>
           {/* {!userIdApp &&(
@@ -643,7 +649,11 @@ const onSeachModalclose=()=>{
             <View style={styles.heading1}>
               <FontAwesome
                 name="shopping-cart"
-                onPress={() => navigation.navigate("T2Screen1")}
+                onPress={
+                  () => {
+                    // navigation.navigate("T2Screen1");
+                  }
+                }
                 size={30}
                 color={"#00457E"}
               />
@@ -936,8 +946,9 @@ const styles = StyleSheet.create({
   //
 
   heading1: {
-    marginTop: 10,
-    marginLeft: 7,
+    marginTop: 20,
+    marginLeft: 15,
+    margin:10,
   },
 
   accept: {
@@ -1048,7 +1059,7 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 35,
     padding: 10,
     backgroundColor: "#00457E'",
   },
@@ -1134,11 +1145,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginTop: 10,
     borderWidth: 1,
-    borderColor: "#000",
+    borderColor: "gray",
     borderRadius: 8,
     borderBottomWidth: 1,
-    width: "80%",
-    height: "60%",
+    width: 320,
+    height: 50,
+    justifyContent:'center',
   },
   image: {
     height: 100,

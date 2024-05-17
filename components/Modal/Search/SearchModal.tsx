@@ -1,14 +1,15 @@
 
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal,TextInput, } from "react-native";
-
+import { AntDesign } from "@expo/vector-icons";
 
 const CloseIcon = ({ onPress }) => (
   <TouchableOpacity onPress={onPress} style={styles.closeButton}>
-    <Image
+    {/* <Image
       source={require("../../../assets/closeImage.jpg")}
       style={{ width: 50, height: 50,padding:10 }}
-    />
+    /> */}
+    <AntDesign name="arrowleft" size={35} style={{}}/>
   </TouchableOpacity>
 );
 
@@ -18,11 +19,11 @@ const SearchModal = ({ closeModal,visible,comp }) => {
       <View style={{ flex: 1 }}>
         <CloseIcon onPress={closeModal} />
         <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          style={{ flex: 1, justifyContent: "center",  }}
         >
           
           <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+            style={{ flex: 1,  }}
           >
             {comp}
           </View>
@@ -35,8 +36,10 @@ const SearchModal = ({ closeModal,visible,comp }) => {
 const styles = StyleSheet.create({
   closeButton: {
     position: "absolute",
-    // top: 10,
-    right: 1,
+    top: 17,
+    // right: 1,
+    left:4,
+    right:5,
   },
   container: {
     flex: 1,
@@ -52,9 +55,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "black",
     width: "80%",
-    padding: 10,
+    padding: 25,
     marginBottom: 20,
     fontSize: 18,
+    
   },
   resendButton: {
     backgroundColor: "blue",
