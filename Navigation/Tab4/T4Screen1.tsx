@@ -163,7 +163,7 @@ const [visible, setVisible] = useState(true)
           backgroundColor: "#3399ff",
           borderTopRightRadius: 10,
           borderTopLeftRadius: 10,
-          marginTop: 10,
+          marginTop: 20,
         }}
       >
         <View>

@@ -342,7 +342,7 @@ const T1Screen1 = ({ navigation }) => {
   const [isandroidUpdateModalVisible, setIsandroidUpdateModalVisible] =
     useState(false);
   const setUpdateModal = async () => {
-    setIsandroidUpdateModalVisible(false);
+    // setIsandroidUpdateModalVisible(false);
     await Updates.fetchUpdateAsync();
     await Updates.reloadAsync();
   };
@@ -360,7 +360,7 @@ const T1Screen1 = ({ navigation }) => {
         if (update.isAvailable) {
           //  await Updates.fetchUpdateAsync();
           //  await Updates.reloadAsync();
-          setIsandroidUpdateModalVisible(true);
+          setIsandroidUpdateModalVisible(!isandroidUpdateModalVisible);
         } else {
           setIsandroidUpdateModalVisible(false);
         }
@@ -852,14 +852,14 @@ const onSeachModalclose=()=>{
           </View>
 
           
-
+{/* 
           <View>
             <Aluminium />
           </View>
 
           <View>
             <CopperImage />
-          </View>
+          </View> */}
         </ScrollView>
       </View>
     </View>
@@ -1394,41 +1394,41 @@ export const AskForAppUpdate: React.FC<{
   isAndroidUpdateModal: boolean;
   setUpdateModal: () => void;
 }> = ({ isAndroidUpdateModal, setUpdateModal }) => {
-  // const handleUpdateModal =async()=>{
-  //   const url ="https://play.google.com/store/apps/details?id=com.shreddersbay";
-  //   try {
-  //     const supported = await Linking.canOpenURL(url);
-  //     if(supported){
-  //       await Linking.openURL(url);
-  //     }else{
-  //       console.log(`Don't know how to Open Url: ${url}`);
-
-  //     }
-  //   } catch (error) {
-  //     console.log(`Error occured while opening the url: ${error}`);
-
-  //   }
-  // }
-  const handleUpdateModal = async () => {
-    let url = "";
-
-    if (Platform.OS === "android") {
-      url = "https://play.google.com/store/apps/details?id=com.shreddersbay";
-    } else if (Platform.OS === "ios") {
-      url = "https://www.example.com/ios"; // Replace with your iOS URL
-    }
-
+  const handleUpdateModal =async()=>{
+    const url ="https://play.google.com/store/apps/details?id=com.shreddersbay";
     try {
       const supported = await Linking.canOpenURL(url);
-      if (supported) {
+      if(supported){
         await Linking.openURL(url);
-      } else {
+      }else{
         console.log(`Don't know how to Open Url: ${url}`);
+
       }
     } catch (error) {
-      console.log(`Error occurred while opening the URL: ${error}`);
+      console.log(`Error occured while opening the url: ${error}`);
+
     }
-  };
+  }
+  // const handleUpdateModal = async () => {
+  //   let url = "";
+
+  //   if (Platform.OS === "android") {
+  //     url = "https://play.google.com/store/apps/details?id=com.shreddersbay";
+  //   } else if (Platform.OS === "ios") {
+  //     url = "https://www.example.com/ios"; // Replace with your iOS URL
+  //   }
+
+  //   try {
+  //     const supported = await Linking.canOpenURL(url);
+  //     if (supported) {
+  //       await Linking.openURL(url);
+  //     } else {
+  //       console.log(`Don't know how to Open Url: ${url}`);
+  //     }
+  //   } catch (error) {
+  //     console.log(`Error occurred while opening the URL: ${error}`);
+  //   }
+  // };
 
   return (
     <Modal

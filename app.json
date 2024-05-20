@@ -2,7 +2,7 @@
   "expo": {
     "name": "shreddersbay",
     "slug": "shreddersbay",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/icon2.png",
     "userInterfaceStyle": "light",
@@ -48,7 +48,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.shreddersbay",
-      "versionCode": 8,
+      "versionCode": 9,
       "googleServicesFile": "./google-services.json",
       "expo.android.googleServicesFile":"./google-services.json"
     },

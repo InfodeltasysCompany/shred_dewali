@@ -33,11 +33,17 @@
         "appleTeamId": "K2LHY9VWLN"
       },
       "android": {
-      "track": "production",
-      "releaseStatus": "completed", 
-      "serviceAccountKeyPath": "./shreddersbay-6e906-8c60866bbf61.json"
-    }
-      
+        "track": "production",
+        "releaseStatus": "completed",
+        "serviceAccountKeyPath": "./shreddersbay-6e906-a7c6efa6dc5c.json"
+      }
+    },
+    "distribution": {
+      "android": {
+        "track": "production",
+        "releaseStatus": "completed",
+        "serviceAccountKeyPath": "./shreddersbay-6e906-a7c6efa6dc5c.json"
+      }
     }
   }
 }
