@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   Animated,
   Pressable,
+  ToastAndroid,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -29,6 +30,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { EvilIcons } from "@expo/vector-icons";
 import DisplayAllAddresses from "../../components/Modal/addressModal/DisplayAllAdresses";
 import ImageSlider from 'react-native-image-slider';
+import { CommonActions } from "@react-navigation/native";
 
 const imgurl = "https://shreddersbay.com/API/uploads/";
 
@@ -537,6 +539,17 @@ const T3Screen4 = ({ navigation }) => {
 
         if (response.ok) {
           console.log("Auction created successfully!");
+          ToastAndroid.showWithGravity(
+            "Auction Created successfully",
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER
+          );
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'T1Screen1' }],
+            })
+          );
           navigation.navigate("Tab1", { screen: "T1Screen1" });
         } else {
           console.error("Failed to create auction.");

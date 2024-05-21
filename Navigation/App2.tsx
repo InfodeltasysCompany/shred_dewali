@@ -160,8 +160,8 @@ const Stack4 = () => {
       <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
       <Stack.Screen name='Signup' component={Signup} options={{ headerShown: false }} />
       <Stack.Screen name='T1Screen1' component={T1Screen1} options={{ headerShown: false }} />
-      <Stack.Screen name='MyOrderBuy' component={InsideMYOrder_Buy} />
-      <Stack.Screen name='MyOrderSell' component={InsideMYOrder_Sell} />
+      <Stack.Screen name='BuyOrder-Detail' component={InsideMYOrder_Buy} />
+      <Stack.Screen name='SellOrder-Detail' component={InsideMYOrder_Sell} />
       <Stack.Screen name='T2Screen2' component={T2Screen2} options={{
         headerTitle: 'Add Address',
         headerTitleAlign: 'center',
@@ -196,16 +196,16 @@ const Stack5 = () => {
 const InsideMYOrder_Buy = () => {
   return (
     <TTab.Navigator>
-      <TTab.Screen name='BCurrent' component={BCurrent} />
-      <TTab.Screen name='BCompleted' component={BCompleted} />
+      <TTab.Screen name='Current' component={BCurrent} />
+      <TTab.Screen name='Completed' component={BCompleted} />
     </TTab.Navigator>
   )
 }
 const InsideMYOrder_Sell = () => {
   return (
     <TTab.Navigator>
-      <TTab.Screen name='SCurrent' component={SCurrent} />
-      <TTab.Screen name='SCompleted' component={SCompleted} />
+      <TTab.Screen name='Current' component={SCurrent} />
+      <TTab.Screen name='Completed' component={SCompleted} />
       {/* <TTab.Screen name='SCancel' component={SCancel} /> */}
 
     </TTab.Navigator>

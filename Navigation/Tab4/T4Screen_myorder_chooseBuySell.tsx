@@ -5,18 +5,25 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 const T4Screen_myorder_chooseBuySell = ({navigation}) => {
    const myorder_buy = () => {
     console.log("working fine");
-    navigation.navigate('MyOrderBuy');
+    navigation.navigate('BuyOrder-Detail');
     // navigation.navigate('T3Screen2');
 
   };
   const myorder_sell = () => {
     console.log("working fine");
-    navigation.navigate('MyOrderSell');
+    navigation.navigate('SellOrder-Detail');
     // navigation.navigate('T3Screen2');
 
   };
   return (
-    <View style={{}}>
+    <View 
+    style=
+     {{
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',     
+     }}
+     >
 
       <View style={styles.btn}>
         <TouchableOpacity onPress={myorder_buy}>
@@ -46,20 +53,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 30,
     backgroundColor: "#ddd",
-    marginLeft: 40,
-    borderRadius: 45, // Half of the height to make it circular
+    borderRadius: 45, 
     borderWidth: 2,
     borderColor: "#999",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 4,
-    elevation: 5, // For Android
+    elevation: 5, 
   },
   txt: {
     fontSize: 30,
     alignSelf: "center",
     fontWeight: "400",
+    color: 'black',
   },
 });
 

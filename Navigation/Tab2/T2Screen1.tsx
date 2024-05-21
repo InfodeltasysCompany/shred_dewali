@@ -35,7 +35,7 @@ const T2Screen1 = ({ navigation }) => {
   useEffect(() => {
     // fetchUserData();
     fetchApiData(userIdApp);
-  }, [userIdApp]);
+  }, [userIdApp,data,data1]);
 
 
 
@@ -430,7 +430,8 @@ const T2Screen1 = ({ navigation }) => {
           <View>
             <UpcomingDate data={data} navigation={navigation} oncloseAddressPickModal={oncloseAddressPickModal}
             />
-            {choosenAddress && <View style={{ justifyContent: 'center', alignItems: 'center', borderRadius: 12 }}>
+            {choosenAddress ?
+             <View style={{ justifyContent: 'center', alignItems: 'center', borderRadius: 12 }}>
               <TouchableOpacity onPress={continueWithChoosenDate}
                 style={{
                   paddingVertical: 15,
@@ -451,7 +452,7 @@ const T2Screen1 = ({ navigation }) => {
                   Publish your Ad
                 </Text>
               </TouchableOpacity>
-            </View>}
+            </View>:null}
             
 
           </View>
@@ -709,7 +710,7 @@ const UpcomingDate: React.FC<UpcomingDateProps> = ({ data, navigation, oncloseAd
             textAlign: 'center',
           }}
         >
-          Continue
+          Add Address
         </Text>
       </TouchableOpacity>
 

@@ -312,7 +312,7 @@ const T1Screen1 = ({ navigation }) => {
       locationSetup();
     }
     getAuctionResponse();
-    // getOrderResponse();
+    getOrderResponse();
   }, [currentAddress]);
   useEffect(()=>{
     getAuctionResponse();
@@ -400,7 +400,7 @@ const T1Screen1 = ({ navigation }) => {
   const [toChatUserIdFbse, setToChatUserIdFbse] = useState("");
   const [toChatUserMobileFbse, setToChatUserMobileFbse] = useState("");
   const [isModalVisible2, setIsModalVisible2] = useState(false);
-  const maxLength = 15;
+  const maxLength = 10;
   const togglemodal2 = () => {
     setIsModalVisible2(!isModalVisible2);
   };
@@ -641,6 +641,8 @@ const onSeachModalclose=()=>{
         /> */}
         <Pressable onPress={()=>{setIsSearchModalVisible(true)}}>
           <View style={styles.searchbox}>
+            
+
         <Text style={{marginLeft:10,color:'gray'}}>search your scrap here...</Text>
           </View>
         </Pressable>
@@ -724,14 +726,14 @@ const onSeachModalclose=()=>{
                         <Text style={styles.textContainer5}>
                           <FontAwesome
                             name="rupee"
-                            style={{ fontSize: 20 }}
+                            style={{ fontSize: 15 }}
                           />{" "}
                           {item.price}
                         </Text>
                         <Text style={styles.textContainer6}>
                           <EvilIcons
                             name="location"
-                            style={{ fontSize: 22 }}
+                            style={{ fontSize: 15 }}
                           />{" "}
                           {item.address.length > maxLength ? item.address.substring(0, maxLength) + '...' : item.address}
                         </Text>
@@ -748,82 +750,7 @@ const onSeachModalclose=()=>{
             </View>
             <View style={styles.container5}>
               <View style={styles.card1}>
-                {/* {userIdApp === null
-                  ? actionData.map((item, index) => (
-                    <View key={index} style={styles.card}>
-                      <TouchableOpacity
-                        onPress={() =>
-                          handleAuctionDetailPres(item.auction_id)
-                        }
-                      >
-                        <View style={styles.imageContainer}>
-                          <Image
-                            source={{
-                              uri: imgurl + item.filename.split(",")[0],
-                            }}
-                            style={styles.image}
-                          />
-                        </View>
-
-                        <View style={styles.textContainer}>
-                          <Text style={styles.textContainer2}>
-                            {item.p_name}
-                          </Text>
-                          <Text style={styles.textContainer5}>
-                            <FontAwesome
-                              name="rupee"
-                              style={{ fontSize: 20 }}
-                            />{" "}
-                            {item.price}
-                          </Text>
-                          <Text style={styles.textContainer6}>
-                            <EvilIcons
-                              name="location"
-                              style={{ fontSize: 22 }}
-                            />{" "}
-                            {item.address}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  ))
-                  : auctionFiteredData.map((item, index) => (
-                    <View key={index} style={styles.card}>
-                      <TouchableOpacity
-                        onPress={() =>
-                          handleAuctionDetailPres(item.auction_id)
-                        }
-                      >
-                        <View style={styles.imageContainer}>
-                          <Image
-                            source={{
-                              uri: imgurl + item.filename.split(",")[0],
-                            }}
-                            style={styles.image}
-                          />
-                        </View>
-                        <View style={styles.textContainer}>
-                          <Text style={styles.textContainer2}>
-                            {item.p_name}
-                          </Text>
-                          <Text style={styles.textContainer5}>
-                            <FontAwesome
-                              name="rupee"
-                              style={{ fontSize: 20 }}
-                            />{" "}
-                            {item.price}
-                          </Text>
-                          <Text style={styles.textContainer6}>
-                            <EvilIcons
-                              name="location"
-                              style={{ fontSize: 22 }}
-                            />{" "}
-                            {item.address}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  ))} */}
+               
                   {auctionData&&auctionData.map((item,index)=>(
                       <View key={index} style={styles.card}>
                       <Pressable
@@ -847,16 +774,16 @@ const onSeachModalclose=()=>{
                           <Text style={styles.textContainer5}>
                             <FontAwesome
                               name="rupee"
-                              style={{ fontSize: 20 }}
+                              style={{ fontSize: 15 }}
                             />{" "}
                             {item.price}
                           </Text>
                           <Text style={styles.textContainer6}>
                             <EvilIcons
                               name="location"
-                              style={{ fontSize: 22 }}
+                              style={{ fontSize: 15 }}
                             />{" "}
-                            {item.address}
+                            {item.address.length > maxLength ? item.address.substring(0, maxLength) + '...' : item.address}
                           </Text>
                         </View>
                       </Pressable>
@@ -1015,11 +942,10 @@ const styles = StyleSheet.create({
   card: {
     width: "48%",
     marginBottom: 10,
-    padding: 1,
     backgroundColor: "#fff",
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: "gray",
+    borderColor: "lightgray",
     
   },
 
@@ -1033,11 +959,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
+ 
   textContainer2: {
-    fontSize: 22,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: "500",
     color: "black",
     marginBottom: 5,
+    fontFamily: 'sans-serif',
   },
 
   textContainer4: {
@@ -1046,14 +974,14 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginRight: 5,
   },
+  
   textContainer5: {
-    fontSize: 19,
-    color: "black",
+    fontSize: 15,
+    color: "darkgray",
     marginBottom: 2,
   },
-
   textContainer6: {
-    fontSize: 15,
+    fontSize: 12,
     marginTop: 10,
     color: "gray",
     marginBottom: 2,
@@ -1168,7 +1096,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderRadius: 8,
     borderBottomWidth: 1,
-    width: 320,
+    width: 370,
     height: 50,
     justifyContent:'center',
   },

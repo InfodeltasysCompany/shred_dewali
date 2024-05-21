@@ -409,6 +409,12 @@ import {
       }
     };
   
+
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const togglePasswordVisibility = () => {
+      setIsPasswordVisible(!isPasswordVisible);
+    };
+
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.container1}>
@@ -445,20 +451,30 @@ import {
               />
               <TextInput
                 placeholder="Password"
-                secureTextEntry={true}
+                secureTextEntry={!isPasswordVisible}
                 value={password}
                 onChangeText={handlePasswordChange}
                 textContentType="password"
                 style={styles.textinput}
               />
   
-              <TouchableOpacity onPress={() => { }}>
-                <Text style={{ fontSize: 17, marginTop: 14, color: "#002699" }}>
+              <Text style={{ color: "red" }}>{passwordError}</Text>
+                <TouchableOpacity onPress={togglePasswordVisibility}>
+                      <Ionicons
+                        name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                        size={30}
+                        style={styles.eyes}
+                        color="#666"
+                      />
+                </TouchableOpacity>
+             
+            </View>
+            <TouchableOpacity onPress={() => { }}>
+                <Text style={{ fontSize: 17, marginTop: 14, color: "#002699",
+                 textAlign: 'right' }}>
                   Forgot?
                 </Text>
               </TouchableOpacity>
-            </View>
-            <Text style={{ color: "red" }}>{passwordError}</Text>
           </View>
   
           <View>
@@ -594,6 +610,10 @@ import {
       paddingHorizontal: 20,
       paddingVertical: 8,
       marginRight: 10,
+    },
+
+    eyes:{
+     marginTop: 10,
     },
     container5: {
       borderColor: "blue",

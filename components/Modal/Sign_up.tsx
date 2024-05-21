@@ -464,6 +464,16 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
     }
   };
 
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container1}>
@@ -519,18 +529,23 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
               placeholder="Password"
               value={password}
               onChangeText={handlePasswordChange}
-              secureTextEntry={true}
+              secureTextEntry={!isPasswordVisible}
               textContentType="password"
               style={styles.textinput}
             />
             <Text style={styles.error}>{passwordError}</Text>
 
-            <TouchableOpacity onPress={() => {}}>
-              <Text style={{ fontSize: 17, marginTop: 14, color: "#002699" }}>
-                Forgot?
-              </Text>
-            </TouchableOpacity>
+            <TouchableOpacity onPress={togglePasswordVisibility}>
+                      <Ionicons
+                        name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                        size={30}
+                        style={styles.eyes}
+                        color="#666"
+                      />
+                </TouchableOpacity>
+           
           </View>
+         
 
           <View style={styles.container3}>
             <Ionicons
@@ -543,12 +558,22 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
               placeholder="ConfirmPassword"
               value={confirmPassword}
               onChangeText={handleConfirmPasswordChange}
-              secureTextEntry={true}
+              secureTextEntry={!isConfirmPasswordVisible}
               textContentType="password"
               style={styles.textinput}
             />
             <Text style={styles.error}>{confirmPasswordError}</Text>
+
+            <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
+                      <Ionicons
+                        name={isConfirmPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                        size={30}
+                        style={styles.eyes}
+                        color="#666"
+                      />
+              </TouchableOpacity>
           </View>
+
 
           <View style={styles.container2}>
             <MaterialCommunityIcons
@@ -725,6 +750,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 8,
     marginRight: 10,
+  },
+
+  eyes:{
+    marginTop: 10,
   },
 
   icon1: {},

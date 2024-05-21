@@ -5,7 +5,6 @@ import LoginModal from '../../components/Credential/LoginModal';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Feather, Ionicons, MaterialCommunityIcons,AntDesign } from '@expo/vector-icons';
-import DisplayAllAddresses from '../../components/Modal/addressModal/DisplayAllAdresses';
 
 const T4Screen1 = ({ navigation }) => {
 
@@ -57,16 +56,9 @@ const [visible, setVisible] = useState(true)
     navigation.navigate("My Order");
   };
 
-  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
-  const [currentAddress, setCurrentAddress] = useState(null);
-  const handleAddresModalOpen = () => {
-    setIsAddressModalOpen(!isAddressModalOpen)
-    // locationSetup();
-  }
-  const getPickChooseAddressfromAddressModal =(addr)=>{
-    console.log("Choosen address=>",addr);
-    setCurrentAddress(addr)
-  }
+  const AddAdress = () => {
+    navigation.navigate("T2Screen2");
+  };
 
   const getProfile = async (uid) => {
     console.log("profileid is from getprofile:", uid);
@@ -155,32 +147,31 @@ const [visible, setVisible] = useState(true)
 
 
 
-  
+  if (userIdApp) {
     return (
       <View
       style={{
         padding: 5,
         backgroundColor: "#fff",
         borderRadius: 30,
-        marginTop: 10,
+        height: '100%',
+        marginTop: 40,
       }}
     >
-              <DisplayAllAddresses visible={isAddressModalOpen} onClose={handleAddresModalOpen} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
-
       <View
         style={{
           padding: 20,
-          backgroundColor: "#3399ff",
+          backgroundColor: "#00457E",
           borderTopRightRadius: 10,
           borderTopLeftRadius: 10,
-          marginTop: 20,
+          marginTop: 10,
         }}
       >
         <View>
           <Text
             style={{
               color: "white",
-              fontSize: 20,
+              fontSize: 25,
             }}
           >
             {profileData[0]?.name}
@@ -188,10 +179,16 @@ const [visible, setVisible] = useState(true)
         </View>
       </View>
 
-      <View style={{ marginTop: 20 }}>
+
+      <View>
+        <Text  style={styles.text3}>Account Settings</Text>
+      </View>
+
+
+      <View style={{ marginTop: 20 , }}>
         <TouchableWithoutFeedback
           onPress={orderDetail}
-          style={{ marginVertical: 7 }}
+          style={{ marginVertical: 7, }}
         >
           <View style={styles.button}>
             <View style={styles.icon}>
@@ -228,7 +225,7 @@ const [visible, setVisible] = useState(true)
 
         <TouchableWithoutFeedback
           style={{ marginVertical: 7 }}
-          onPress={handleAddresModalOpen}
+          onPress={AddAdress}
         >
           <View style={styles.button}>
             <View style={styles.icon}>
@@ -339,10 +336,26 @@ const [visible, setVisible] = useState(true)
     </View>
 
     )
-  
+  } else {
+    return (
+     
+<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  <LoginModal navigation={navigation} visible={visible} setVisible={setVisible} />
+  <View style={{alignContent:'center',justifyContent:"center"}}>
+    <View style={{alignContent:'center',justifyContent:'center'}}>
 
-    
-  
+    <Text style={{ fontSize:26,margin:30 }}>Log in now to get started!</Text>
+    </View>
+    <TouchableOpacity onPress={() => setVisible(true)} style={{alignItems:'center',justifyContent:'center'}}>
+    <AntDesign name='adduser' size={350} color={"black"}/>
+
+      <Text style={{ color: 'blue', fontSize: 36, textDecorationLine: 'underline' }}>Login</Text>
+    </TouchableOpacity>
+  </View>
+</View>
+
+    )
+  }
 }
 
 export default T4Screen1
@@ -379,6 +392,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between", // To evenly space the two elements
     alignItems: "center", // Align items vertically
     paddingHorizontal: 20,
+    
     paddingVertical: 8,// Add padding as needed
     // Other styles
   },
@@ -390,10 +404,23 @@ const styles = StyleSheet.create({
 
   text1: {
     fontSize: 18,
-    fontWeight: "500",
     textAlign: "center",
-    color: "black",
+    color: "#000",
+    fontFamily: 'sans-sarif',
   },
+
+  text3: {
+    fontSize: 22,
+    textAlign: "left",
+    color: "#000",
+    fontWeight:'700',
+    paddingHorizontal: 25,
+    paddingVertical: 2,
+    marginTop: 20,
+    fontFamily: 'sans-sarif',
+  },
+
+
   text2: {
     fontSize: 14,
   },

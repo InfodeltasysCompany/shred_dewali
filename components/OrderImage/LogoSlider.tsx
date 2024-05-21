@@ -62,11 +62,12 @@ const styles = StyleSheet.create({
   },
   order: {
 
-    fontSize: 25,
+    fontSize: 20,
     color: '#00457E',
     // fontFamily: 'sans-sarif',
     marginBottom: 20,
-    marginTop: 20
+    marginTop: 20,
+    fontWeight: "500",
 
 
   },

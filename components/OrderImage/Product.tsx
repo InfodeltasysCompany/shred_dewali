@@ -1,170 +1,7 @@
 
-
-// import React, { useState ,useRef, useEffect} from 'react';
-// import { View, ScrollView,StyleSheet, Dimensions, Text, Image, TouchableOpacity } from 'react-native';
-
-// const { width } = Dimensions.get('window');
-
-// const Product = ({ item, handlebuypress, getusers }) => {
-//   const scrollViewRef = useRef<ScrollView>(null);
-//     const [active, setActive] = useState(0);
-
-
-//   const imgurl = "https://shreddersbay.com/API/uploads/";
-//   const [currentIndex, setCurrentIndex] = useState(0);
-
-//   const handleScroll = (event) => {
-//     const slide = Math.ceil(event.nativeEvent.contentOffset.x / event.nativeEvent.layoutMeasurement.width);
-//     setActive(slide);
-//   };
-  
-//   useEffect(() => {
-//     const timer = setInterval(() => {
-//       const nextSlide = (active + 1) % item.filename && item.filename.split(",").length;
-//       scrollViewRef.current.scrollTo({ x: nextSlide * width, animated: true });
-//     }, 1000); // Change image every 3 seconds
-
-//     return () => {
-//       clearInterval(timer); // Clean up the interval when the component unmounts
-//     };
-//   }, [active, item.filename && item.filename.split(",").length]);
-  
-
-//   return (
-//     <View style={styles.container}>
-//       <ScrollView  ref={scrollViewRef}
-//         horizontal
-//         pagingEnabled
-//         showsHorizontalScrollIndicator={false}
-//         onScroll={handleScroll}
-//         style={styles.scrollView}
-//         scrollEventThrottle={16}>
-//         {item.filename && item.filename.split(",").map((imageUrl, index) => (
-//           <Image key={index} style={{ height: 200, width: 350 }} source={{ uri: imgurl + imageUrl }} />
-//         ))}
-//       </ScrollView>
-     
-//        {/* <View style={styles.indicatorContainer}>
-//         {item.filename && item.filename.split(",").map((_, index) => (
-//           <TouchableOpacity
-//             key={index}
-//             style={[
-//               styles.indicator,
-//               { backgroundColor: index === currentIndex ? '#007AFF' : '#C4C4C4' },
-//             ]}
-//             onPress={() => scrollToIndex(index)}
-//           />
-//         ))}
-//       </View> */}
-//       <View style={styles.pagination}>
-//         {item.filename && item.filename.split(",").map((_, index) => (
-//           <Text key={index} style={[styles.paginationDot, index === active && styles.paginationDotActive]}>&bull;</Text>
-//         ))}
-//       </View>
-//       <View>
-//         <Text style={styles.detail}>PRODUCT DETAIL</Text>
-//         <Text style={styles.text}>Booking_ID: {item.booking_id}</Text>
-//         <Text style={styles.text}>Product_Name: {item.p_name}</Text>
-//         <Text style={styles.text}>Approx Price: {item.price}</Text>
-//         <Text style={styles.text}>Booking_Date: {item.booking_date}</Text>
-//         <Text style={styles.text}>Schedule Date: {item.schedule_date}</Text>
-//         <Text style={styles.text}>Weight: {item.weight}</Text>
-//       </View>
-//       <View>
-//         <Text style={styles.detail}>CUSTOMER DETAIL</Text>
-//         <Text style={styles.text}>Name: {item.name}</Text>
-//         <Text style={styles.text}>Mobile: {item.mobile}</Text>
-//         <Text style={styles.text}>Area: {item.area}</Text>
-//         <Text style={styles.text}>Address: {item.address}</Text>
-//         <Text style={styles.text}>Landmark: {item.landmark}</Text>
-//         <Text style={styles.text}>Pincode: {item.pin_code}</Text>
-//       </View>
-//       <View style={styles.buttonContainer}>
-//         <TouchableOpacity onPress={handlebuypress} style={styles.button}>
-//           <Text style={styles.buttonText}>Buy</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity onPress={getusers} style={styles.button}>
-//           <Text style={styles.buttonText}>Chat</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
-// };
-
-// export default Product;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     marginTop: 50,
-//     alignItems: 'center',
-//   },
-//   paginationDot: {
-//     color: '#888',
-//     margin: 3,
-//     fontSize: 30,
-//   },
-//   paginationDotActive: {
-//     color: '#000',
-//   },
-//   indicatorContainer: {
-//     flexDirection: 'row',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginTop: 10,
-//   },
-//   pagination: {
-//     flexDirection: 'row',
-//     position: 'absolute',
-//     bottom: 10,
-//     alignSelf: 'center',
-//   },
-//   indicator: {
-//     width: 10,
-//     height: 10,
-//     borderRadius: 5,
-//     marginHorizontal: 5,
-//   },
-//   scrollView: {
-//     flex: 1,
-//   },
-//   detail: {
-//     alignSelf: 'center',
-//     fontWeight: '700',
-//     fontSize: 20,
-//     color: '#cccc00',
-//     borderBottomWidth: 0.7,
-//     marginBottom: 5,
-//   },
-//   text: {
-//     color: 'black',
-//     fontWeight: '600',
-//     fontSize: 16,
-//   },
-//   buttonContainer: {
-//     flexDirection: 'row',
-//     marginTop: 20,
-//   },
-//   button: {
-//     paddingVertical: 10,
-//     paddingHorizontal: 20,
-//     marginHorizontal: 10,
-//     backgroundColor: '#cccc00',
-//     borderRadius: 20,
-//   },
-//   buttonText: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//     color: 'black',
-//   },
-// });
-
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
-import { View, ScrollView, StyleSheet, Dimensions, Image, Text, TouchableOpacity, TouchableHighlight } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { View, ScrollView, StyleSheet, Dimensions, Image, Text, TouchableOpacity, TouchableHighlight, useWindowDimensions } from 'react-native';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 const { width } = Dimensions.get('window');
 import ImageSlider from 'react-native-image-slider';
@@ -209,14 +46,22 @@ const Product = ({ item, handlebuypress, getusers }) => {
   //   };
   // }, [active, item.filename]);
 
-
+  const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: 'first', title: 'First' },
-    { key: 'second', title: 'Second' },
+    { key: 'first', title: 'PRODUCT' },
+    { key: 'second', title: 'CUSTOMER' },
   ]);
   
-
+  const renderTabBar = props => (
+    <TabBar
+      {...props}
+      indicatorStyle={{ backgroundColor: 'white' }} // Indicator color
+      style={{ backgroundColor: '#00457E' }} // Tab bar background color
+      labelStyle={{ color: 'white' }} // Text color
+    />
+  );
+  
   return (
     <View style={styles.container}>
       {/* <ScrollView
@@ -244,7 +89,7 @@ const Product = ({ item, handlebuypress, getusers }) => {
         images={images}
         customSlide={({ index, item, style, width }) => (
           <View key={index} style={[style]}>
-            <Image source={{ uri: item }} style={{ width: 500, height: 300 }} />
+            <Image source={{ uri: item }} style={{ width: "100%", height: 300 }} />
           </View>
         )}
         customButtons={(position, move) => (
@@ -272,6 +117,7 @@ const Product = ({ item, handlebuypress, getusers }) => {
    
       <TabView
         navigationState={{ index, routes }}
+        renderTabBar={renderTabBar}
         renderScene={({ route }) => {
           switch (route.key) {
             case 'first':
@@ -283,7 +129,8 @@ const Product = ({ item, handlebuypress, getusers }) => {
           }
        }}
   onIndexChange={setIndex}
-  style={{ width: 350, height: "40%" }}
+  initialLayout={{ width: layout.width }}
+  style={{ width: 350, height: "40%", backgroundColor: '#FFFFFF' }}
 />
 
    
@@ -448,17 +295,26 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     fontWeight: '700',
     fontSize: 20,
-    color: '#3399ff',
+    color: '#00457E',
     borderBottomWidth: 0.7,
-    borderBottomColor: '#3399ff',
+    borderBottomColor:'#00457E',
     marginBottom: 20,
   },
   text: {
-    color: '#3399ff',
+    color: '#00457E',
     fontWeight: '500',
     fontSize: 16,
     flex: 1,
     
+  },
+  tabBar: {
+    backgroundColor: '#00457E', // Tab bar background color
+  },
+  indicator: {
+    backgroundColor: 'white', // Indicator color
+  },
+  label: {
+    color: 'white', // Text color
   },
 
   separator:{
@@ -484,7 +340,7 @@ paddingHorizontal: 5,
     flex: 1,
     paddingVertical: 10,
     marginHorizontal: 5,
-    backgroundColor: '#3399ff',
+    backgroundColor: '#00457E',
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "white",
@@ -505,7 +361,7 @@ paddingHorizontal: 5,
   buttonTextChat: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#3399ff',
+    color: '#00457E',
   },
 
   buttonTextBuy: {
