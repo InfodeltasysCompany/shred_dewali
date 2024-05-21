@@ -9,6 +9,10 @@ import {
   ScrollView,
   Platform,
   RefreshControl,
+  TouchableHighlight,
+  TouchableOpacity,
+  Animated,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -24,6 +28,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { EvilIcons } from "@expo/vector-icons";
 import DisplayAllAddresses from "../../components/Modal/addressModal/DisplayAllAdresses";
+import ImageSlider from 'react-native-image-slider';
 
 const imgurl = "https://shreddersbay.com/API/uploads/";
 
@@ -46,10 +51,10 @@ const T3Screen4 = ({ navigation }) => {
   //////////////////////////////////////
   const [isAddressChooseModalDisplay, setIsAddressChooseModalDisplay] = useState(false);
   const [choosenAddress, setChoosenAddress] = useState(null);
-  const handleaddresscloseModal =()=>{
+  const handleaddresscloseModal = () => {
     setIsAddressChooseModalDisplay(!isAddressChooseModalDisplay);
   }
-  const handleaddressetr=(addr)=>{
+  const handleaddressetr = (addr) => {
     setIsAddressChooseModalDisplay(addr);
     setaddress(addr);
     setAddrId(addr.addr_id);
@@ -94,12 +99,12 @@ const T3Screen4 = ({ navigation }) => {
     }
   };
   useEffect(() => {
-    
+
     delRest();////////////////////////////////////////////////////
 
     // if (counter < 5) {
     //   // Your function to run 5 times
-      
+
     //   // Increment the counter
     //   console.log("counter==>",counter)
     // }
@@ -140,7 +145,7 @@ const T3Screen4 = ({ navigation }) => {
     //       method: "DELETE",
     //     }
     //   );
-      
+
     //   if (response.ok) {
     //     console.log("Item deleted successfully"+id);
     //     // console.log("Address delete response:", response);
@@ -199,7 +204,7 @@ const T3Screen4 = ({ navigation }) => {
       //     console.error("Error deleting item:", error);
       //   }
       // }
-      const deleteAddresses=async(matchedAddrIds)=> {
+      const deleteAddresses = async (matchedAddrIds) => {
         if (!Array.isArray(matchedAddrIds) || matchedAddrIds.length === 0) {
           console.error("No addresses to delete");
           return;
@@ -220,7 +225,7 @@ const T3Screen4 = ({ navigation }) => {
 
             if (response.ok) {
               console.log(`Address with ID ${addrId} deleted successfully`);
-              
+
             } else {
               console.error(
                 `Failed to delete address with ID ${addrId}: ${response.statusText}`
@@ -236,7 +241,7 @@ const T3Screen4 = ({ navigation }) => {
     } catch (error) {
       // Handle errors
     }
-    
+
 
     ///////////////////////////////////////////////managing....////////////////////////////////////////////////////////////
     ////////////////////////////set local address//////////////////////////
@@ -280,10 +285,10 @@ const T3Screen4 = ({ navigation }) => {
   //   if (userIds) {
   //     const url = `https://shreddersbay.com/API/auctioncart_api.php?action=select_id&user_id=${userIds}`;
   //     try {
-        
+
   //   if (counter < 5) {
   //     // Your function to run 5 times
-      
+
   //     // Increment the counter
   //     const auctionCart = await getApiResponse(url);
   //     if (auctionCart !== null && auctionCart.length > 1) {
@@ -334,11 +339,11 @@ const T3Screen4 = ({ navigation }) => {
           if (auctionCart !== null && auctionCart.length > 1) {
             const lastCartId = auctionCart[auctionCart.length - 1].cart_id;
             const apiUrlBase = "https://shreddersbay.com/API/auctioncart_api.php?action=delete&cart_id=";
-  
+
             for (let i = 0; i < auctionCart.length - 1; i++) {
               const element = auctionCart[i];
               const apiUrl = `${apiUrlBase}${element.cart_id}`;
-  
+
               try {
                 if (element.cart_id !== lastCartId) {
                   await deleteAllExceptLast(apiUrl);
@@ -348,10 +353,10 @@ const T3Screen4 = ({ navigation }) => {
               }
             }
           }
-  
+
           console.log("auction cart :-", auctionCart);
           delRest();
-  
+
           const lastItem = auctionCart[auctionCart.length - 1];
           return lastItem; // Return the last item
         }
@@ -361,7 +366,7 @@ const T3Screen4 = ({ navigation }) => {
       }
     }
   };
-  
+
   // const fetchData1 = async () => {
   //   const lastItem = await getData(); // Call getData and await the result
   //   if (lastItem) {
@@ -377,22 +382,31 @@ const T3Screen4 = ({ navigation }) => {
     if (auctionCart && auctionCart.length > 0) {
       const lastItem = auctionCart[auctionCart.length - 1]; // Get the last item from the data array
       setresData([lastItem]); // Update resData with the last item
-    }else{
-        const lastItem = await getData(); // Call getData and await the result
-    if (lastItem) {
-      setresData([lastItem]); // Update resData with the last item
-    }
+    } else {
+      const lastItem = await getData(); // Call getData and await the result
+      if (lastItem) {
+        setresData([lastItem]); // Update resData with the last item
+      }
     }
   };
-  
+
   useEffect(() => {
     fetchData1();
   }, [userIds, counter]);
-  useEffect(()=>{
-onRefresh();
-  },[])
-  
-  
+  useEffect(() => {
+    onRefresh();
+  }, [])
+
+  const [images, setImages] = useState([]);
+
+  // useEffect(() => {
+  //   if (resData[0]&& resData[0].filename) {
+  //     const imageUrls = resData.filename.split(",").map(filename => imgurl + filename.trim());
+  //     setImages(imageUrls);
+  //   }
+  // }, [resData]);
+
+
   const onDateChange = (event, selected) => {
     const currentDate = selected || selectedDate;
     setShowPicker(Platform.OS === "ios");
@@ -540,6 +554,16 @@ onRefresh();
     }
   };
 
+
+  // const [images1, setImages1] = useState([]);
+
+  // useEffect(() => {
+  //   if (resData[0] && resData[0].filename) {
+  //     const imageUrls = resData[0].filename.split(",").map(filename => imgurl + filename.trim());
+  //     setImages1(imageUrls);
+  //   }
+  // }, [resData[0]]);
+
   const onRefresh = () => {
     fetchData1();
     fetchData();
@@ -549,7 +573,7 @@ onRefresh();
 
   return (
     <>
-    <DisplayAllAddresses visible={isAddressChooseModalDisplay} onClose={handleaddresscloseModal} addrseter={handleaddressetr} navigation={navigation}/>
+      <DisplayAllAddresses visible={isAddressChooseModalDisplay} onClose={handleaddresscloseModal} addrseter={handleaddressetr} navigation={navigation} />
       <ScrollView
         contentContainerStyle={styles.scrollViewContainer}
         refreshControl={
@@ -564,7 +588,8 @@ onRefresh();
         <View style={styles.container}>
           {resData && resData.length > 0 && (
             <View style={styles.itemContainer}>
-              <View style={styles.imageContainer}>
+              <View style={{...styles.imageContainer,}}>
+
                 <ScrollView horizontal={true} pagingEnabled={true}>
                   {resData[0].filename &&
                     resData[0].filename
@@ -575,102 +600,173 @@ onRefresh();
                           style={styles.image}
                           source={{ uri: imgurl + imageUrl }}
                         />
+
                       ))}
                 </ScrollView>
+                
+
+                {/* <View style={{ flex: 1, backgroundColor: '#ffffff', padding: 10 }}>
+      <ImageSlider
+        loopBothSides
+        autoPlayWithInterval={2000}
+        images={images1}
+        customSlide={({ index, item, style, width }) => (
+          <View key={index} style={[style]}>
+            <Image source={{ uri: item }} style={{ width: 500, height: 300 }} />
+          </View>
+        )}
+        customButtons={(position, move) => (
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+            {images1.map((image, index) => {
+              return (
+                <TouchableHighlight
+                  key={index}
+                  underlayColor="#ccc"
+                  onPress={() => move(index)}
+                  style={{ margin: 5, padding: 5, borderRadius: 5, backgroundColor: position === index ? '#3399ff' : '#ccc' }}
+                >
+                  <Text style={{ color: position === index ? '#fff' : '#000' }}>
+                    {index + 1}
+                  </Text>
+                </TouchableHighlight>
+              );
+            })}
+          </View>
+        )}
+      />
+    </View>   */}
               </View>
-              <Text style={styles.itemText}>Product: {resData[0].p_name}</Text>
-              <Text style={styles.itemText}>Price: {resData[0].price}</Text>
-              <Text style={styles.itemText}>Weight: {resData[0].weight}</Text>
-              <Text style={styles.itemText}>cart_id: {resData[0].cart_id}</Text>
+
+              <View>
+                <View style={styles.container2}>
+                  <Text style={styles.heading}>Product Detail : </Text>
+                  <View style={styles.detailContainer}>
+                    <View style={styles.column}>
+                      <Text style={[styles.itemText, styles.leftText]}>PRODUCT:</Text>
+                      <Text style={[styles.itemText, styles.leftText]}>PRICE:</Text>
+                      <Text style={[styles.itemText, styles.leftText]}>WEIGHT:</Text>
+                      <Text style={[styles.itemText, styles.leftText]}>CART ID:</Text>
+                    </View>
+                    <View style={styles.column}>
+                      <Text style={[styles.itemText, styles.rightText]}>{resData[0].p_name}</Text>
+                      <Text style={[styles.itemText, styles.rightText]}>{resData[0].price}</Text>
+                      <Text style={[styles.itemText, styles.rightText]}>{resData[0].weight}</Text>
+                      <Text style={[styles.itemText, styles.rightText]}>{resData[0].cart_id}</Text>
+                    </View>
+                  </View>
+
+                  <Text style={styles.heading1}>
+                    Discription :
+                  </Text>
+
+                  <Text style={styles.heading2}>
+                    Lorem, ipsum dolor sit amet consectetur adipisicing
+                    elit. Voluptatum architecto, expedita vitae velit, minus commodi
+                    distinctio consequatur doloremque suscipit similique enim soluta
+                    reiciendis alias totam. Dolorem quibusdam aut officiis adipisci!
+                  </Text>
+
+                  <Text style={styles.heading3}>
+                    Schedule Date :
+                  </Text>
+
+
+                  <View style=
+                    {{
+                      flexDirection: "column",
+                      marginBottom: 25,
+                      alignItems: 'flex-start'
+                    }}
+                  >
+                    <View style={styles.row}>
+                      <View style={styles.flexItem}>
+                        <Text style={styles.date}>{startDate}</Text>
+                      </View>
+                      <View style={styles.flexItem}>
+                        <FontAwesome
+                          name="calendar"
+                          style={styles.icon}
+                          onPress={() => setShowPicker1(true)}
+                        />
+                      </View>
+                    </View>
+                    {showPicker1 && (
+                      <DateTimePicker
+                        value={selectedDate1}
+                        mode="date"
+                        display="default"
+                        minimumDate={new Date()}
+                        onChange={onDateChange1}
+                      />
+                    )}
+
+
+                    <View style={styles.row}>
+                      <View style={styles.flexItem}>
+                        <Text style={styles.date}>{endDate}</Text>
+                      </View>
+                      <View style={styles.flexItem}>
+                        <FontAwesome
+                          name="calendar"
+                          style={styles.icon}
+                          onPress={() => setShowPicker(true)}
+                        />
+                      </View>
+                    </View>
+                    {showPicker && (
+                      <DateTimePicker
+                        value={selectedDate}
+                        mode="date"
+                        display="default"
+                        minimumDate={today}
+                        onChange={onDateChange}
+                      />
+                    )}
+
+
+
+                    <View style={styles.row}>
+                      <View style={styles.flexItem}>
+                        <Text style={styles.date}>
+                          {address ? (
+                            `${address.city_name}, ${address.state_name}`
+                          ) : (
+                            'Current Location'
+                          )}
+                        </Text>
+                      </View>
+                      <View style={styles.flexItem}>
+                        <EvilIcons
+                          name="location"
+                          color="black"
+                          size={28}
+                          onPress={handleaddresscloseModal}
+                          style={styles.icon}
+                        />
+                      </View>
+                    </View>
+                  </View>
+                </View>
+
+              </View>
+
               {/* <Text>{JSON.stringify(resData[0])}</Text> */}
 
-              <Text style={styles.itemText}>
-                Discription: Lorem, ipsum dolor sit amet consectetur adipisicing
-                elit. Voluptatum architecto, expedita vitae velit, minus commodi
-                distinctio consequatur doloremque suscipit similique enim soluta
-                reiciendis alias totam. Dolorem quibusdam aut officiis adipisci!
-              </Text>
+
+
+
             </View>
           )}
         </View>
       </ScrollView>
 
-      <View style={{ flexDirection: "row", marginBottom: 25 }}>
-        <View
-          style={{ flexDirection: "column", marginTop: 15, marginLeft: 15 }}
-        >
-          <Text>{endDate}</Text>
-          <View>
-            <FontAwesome
-              name="calendar"
-              style={{
-                fontSize: 20,
-                color: "#ff66cc",
-                marginLeft: 10,
-                marginRight: 20,
-                marginTop: 5,
-              }}
-              onPress={() => setShowPicker(true)}
-            />
-          </View>
-          {showPicker && (
-            <DateTimePicker
-              value={selectedDate}
-              mode="date"
-              display="default"
-              minimumDate={today}
-              onChange={onDateChange}
-            />
-          )}
-        </View>
 
-        <View
-          style={{ flexDirection: "column", marginTop: 15, marginLeft: 15 }}
-        >
-          <Text>{startDate}</Text>
-          <View>
-            <FontAwesome
-              name="calendar"
-              style={{
-                fontSize: 20,
-                color: "#ff66cc",
-                marginLeft: 10,
-                marginRight: 20,
-                marginTop: 5,
-              }}
-              onPress={() => setShowPicker1(true)}
-            />
-          </View>
-          {showPicker1 && (
-            <DateTimePicker
-              value={selectedDate1}
-              mode="date"
-              display="default"
-              minimumDate={today}
-              onChange={onDateChange1}
-            />
-          )}
-        </View>
-        <View style={{ marginTop: 15, marginLeft: 55 }}>
-          {address  ? (
-            <Text>
-              {address.city_name},{address.state_name}
-              
-            </Text>
-          ) : (
-            <Text>Current Location</Text>
-          )}
-
-          <EvilIcons
-            name="location"
-            size={24}
-            color="black"
-            onPress={handleaddresscloseModal}
-          />
-        </View>
-      </View>
       {/* <Button title="Set Current Location " onPress={getCurrentPlace} /> */}
-      <Button title="Create Auction" onPress={createAuction} />
+    
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}  onPress={createAuction} >Create Auction</Text>
+     </TouchableOpacity>
+   
     </>
   );
 };
@@ -706,20 +802,130 @@ const styles = StyleSheet.create({
   itemContainer: {
     marginBottom: 20,
   },
-  itemText: {
-    fontSize: 18,
-    marginBottom: 5,
-    alignSelf: "center",
-    fontWeight: "500",
-  },
+  // itemText1: {
+  //   fontSize: 18,
+  //   marginBottom: 5,
+  //   alignSelf: "center",
+  //   fontWeight: "500",
+  // },
   imageContainer: {
     flexDirection: "row",
   },
   image: {
-    width: 355,
-    height: 320,
-    marginRight: 10,
+    width: 500,
+    height: 300,
     borderRadius: 5,
+    padding:20,
+  },
+
+  container2: {
+
+    backgroundColor: '#e6e6e6',
+    margin: 15,
+    padding: 15,
+    borderWidth: 0.8,
+    borderRadius: 1,
+
+  },
+
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    gap: 30,
+
+
+  },
+
+  flexItem: {
+    flex: 1,
+  },
+
+  date: {
+    fontWeight: 'bold',
+    color: 'darkgray',
+    fontSize: 18,
+  },
+
+  icon: {
+    fontSize: 25,
+    color: '#3498db',
+
+  },
+
+
+  heading: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 10,
+    textAlign: 'left',
+  },
+
+  heading1: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'left',
+  },
+
+  heading2: {
+    fontSize: 15,
+    fontWeight: '300',
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'left',
+    lineHeight: 25,
+  },
+
+  heading3: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'left',
+  },
+
+
+  detailContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  column: {
+    flex: 1,
+  },
+
+  itemText: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  leftText: {
+    // color: '#3399ff',
+    fontWeight: 'bold',
+    color: 'darkgray',
+  },
+  rightText: {
+    color: 'black',
+    fontWeight: '500',
+  },
+
+  button: {
+    backgroundColor: '#3498db',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 10,
+    elevation: 3, // Shadow on Android
+    shadowColor: '#000', // Shadow on iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+   
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

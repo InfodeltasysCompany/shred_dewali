@@ -491,7 +491,7 @@ const Dropdowns = ({ navigation }) => {
           resetDropdowns();
           // Alert.alert("Add Scrap Successfully.");
           // navigation.navigate("Scrap Cart", { screen: "T2Screen1" });
-          navigation.navigate("T3Screen4")
+          navigation.navigate("Auction Detail")
         } else {
           // Handle non-2xx response statuses here
           console.error(

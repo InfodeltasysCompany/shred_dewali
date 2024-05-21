@@ -560,19 +560,20 @@ const HandleAddAddress = ({ visible, onClose, item }) => {
                 </View>
               </TouchableOpacity> */}
             <View style={{ marginVertical: 10 }}>
+             
+
+              <TouchableOpacity onPress={handleSaveAddressbtn}>
+                <View style={{ backgroundColor: 'rgb(255, 90, 0)', alignItems: 'center', justifyContent: 'center', height: 50 ,marginBottom: 10}}>
+                  <Text style={{ color: 'white' }}>
+                    Save Address
+                  </Text>
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity style={{ marginBottom: 10 }} onPress={callreset}>
                 <View style={{ backgroundColor: '#2196F3', alignItems: 'center', justifyContent: 'center', height: 50, flexDirection: "row", gap: 10 }}>
                   {/* <MaterialIcons name='my-location' color={"white"} size={30} /> */}
                   <Text style={{ color: 'white', fontSize: 18, }}>
                     Reset
-                  </Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={handleSaveAddressbtn}>
-                <View style={{ backgroundColor: 'rgb(255, 90, 0)', alignItems: 'center', justifyContent: 'center', height: 50 }}>
-                  <Text style={{ color: 'white' }}>
-                    Save Address
                   </Text>
                 </View>
               </TouchableOpacity>

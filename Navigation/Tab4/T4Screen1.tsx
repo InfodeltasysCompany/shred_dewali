@@ -5,6 +5,7 @@ import LoginModal from '../../components/Credential/LoginModal';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Feather, Ionicons, MaterialCommunityIcons,AntDesign } from '@expo/vector-icons';
+import DisplayAllAddresses from '../../components/Modal/addressModal/DisplayAllAdresses';
 
 const T4Screen1 = ({ navigation }) => {
 
@@ -56,9 +57,16 @@ const [visible, setVisible] = useState(true)
     navigation.navigate("My Order");
   };
 
-  const AddAdress = () => {
-    navigation.navigate("T2Screen2");
-  };
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [currentAddress, setCurrentAddress] = useState(null);
+  const handleAddresModalOpen = () => {
+    setIsAddressModalOpen(!isAddressModalOpen)
+    // locationSetup();
+  }
+  const getPickChooseAddressfromAddressModal =(addr)=>{
+    console.log("Choosen address=>",addr);
+    setCurrentAddress(addr)
+  }
 
   const getProfile = async (uid) => {
     console.log("profileid is from getprofile:", uid);
@@ -157,6 +165,8 @@ const [visible, setVisible] = useState(true)
         marginTop: 10,
       }}
     >
+              <DisplayAllAddresses visible={isAddressModalOpen} onClose={handleAddresModalOpen} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
+
       <View
         style={{
           padding: 20,
@@ -218,7 +228,7 @@ const [visible, setVisible] = useState(true)
 
         <TouchableWithoutFeedback
           style={{ marginVertical: 7 }}
-          onPress={AddAdress}
+          onPress={handleAddresModalOpen}
         >
           <View style={styles.button}>
             <View style={styles.icon}>
@@ -253,7 +263,7 @@ const [visible, setVisible] = useState(true)
           </View>
         </TouchableWithoutFeedback>
 
-        <TouchableWithoutFeedback style={{ marginVertical: 7 }}>
+        {/* <TouchableWithoutFeedback style={{ marginVertical: 7 }}>
           <View style={styles.button}>
             <View style={styles.icon}>
               <View>
@@ -287,7 +297,7 @@ const [visible, setVisible] = useState(true)
               />
             </View>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback> */}
 
         <TouchableWithoutFeedback
           onPress={handleLOgOUt}

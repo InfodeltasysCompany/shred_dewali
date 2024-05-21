@@ -24,7 +24,7 @@ const SearchModalContent = () => {
             
             </View>
             
-            <Text>My name is vinit. I like momo very much..</Text>
+            {/* <Text>My name is vinit. I like momo very much..</Text> */}
               </View>
     )
 }

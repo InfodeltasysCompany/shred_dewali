@@ -137,7 +137,12 @@ const Stack3 = () => {
       <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
       <Stack.Screen name='Signup' component={Signup} options={{ headerShown: false }} />
       <Stack.Screen name='T1Screen1' component={T1Screen1} options={{ headerShown: false }} />
-      <Stack.Screen name='T3Screen4' component={OpenCamAndGalT3S1} />
+      <Stack.Screen name='Auction Detail' component={OpenCamAndGalT3S1}
+          options={{
+            headerStyle: { backgroundColor: '#3498db' }, // Set the background color of the header
+            headerTintColor: 'white', // Set the color of the header text (title and back button)
+            headerTitleStyle: { fontWeight: 'bold' }, // Optional: Customize the style of the header title
+          }}   />
       <Stack.Screen name='ShoppingCart' component={ShoppingCart} options={{
         headerTitle: '', // Hide the header title
       }} />
@@ -268,7 +273,7 @@ const MainTabsComponents=()=>{
           component={Stack1}
           options={{
             headerShown: false,
-            tabBarLabel: "Home1",
+            tabBarLabel: "Home",
           }}
          
         />

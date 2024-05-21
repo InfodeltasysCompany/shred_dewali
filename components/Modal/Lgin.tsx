@@ -345,7 +345,8 @@ import {
             // Handle failed login (show error message, etc.)
           }
         } catch (error) {
-          console.error("Error during login:", error);
+          // console.error("Error during login:", error);
+          Alert.alert("Invalid Credentials");
           // Handle other errors (network, server unreachable, etc.)
         }
       } else {

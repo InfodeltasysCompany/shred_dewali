@@ -235,10 +235,25 @@ const T1Screen1 = ({ navigation }) => {
     const url1 = `https://shreddersbay.com/API/auctionOrder_api.php?action=select&country=${country}&city=${city}&userId=${userId}`
     const url =
       "https://shreddersbay.com/API/auctionOrder_api.php?action=select";
-    const data = await getApiResponse(url1);
-    console.log("Auction urlis:=.",url1)
-    console.log("auctiondata", data);
-    settAuctionData(data);
+    
+    if(country && city && !userId){
+      const data = await getApiResponse(url1);
+      console.log("Auction urlis:=.",url1)
+      console.log("auctiondata", data);
+      settAuctionData(data);
+    }else if(country && city && userId){
+      const data = await getApiResponse(url1);
+      console.log("Auction urlis:=.",url1)
+      console.log("auctiondata", data);
+      settAuctionData(data);
+    }else{
+      const data = await getApiResponse(url);
+      console.log("Auction urlis:=.",url)
+      console.log("auctiondata", data);
+      settAuctionData(data);
+    }
+   
+    
    } catch (error) {
     console.log("the auction calling error is =>",error)
    }
@@ -385,6 +400,7 @@ const T1Screen1 = ({ navigation }) => {
   const [toChatUserIdFbse, setToChatUserIdFbse] = useState("");
   const [toChatUserMobileFbse, setToChatUserMobileFbse] = useState("");
   const [isModalVisible2, setIsModalVisible2] = useState(false);
+  const maxLength = 15;
   const togglemodal2 = () => {
     setIsModalVisible2(!isModalVisible2);
   };
@@ -644,11 +660,12 @@ const onSeachModalclose=()=>{
           </TouchableOpacity>
           )} */}
           {/* <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} /> */}
-
+{/* 
           <TouchableOpacity>
             <View style={styles.heading1}>
               <FontAwesome
                 name="shopping-cart"
+                // name="bell-o"
                 onPress={
                   () => {
                     // navigation.navigate("T2Screen1");
@@ -658,7 +675,7 @@ const onSeachModalclose=()=>{
                 color={"#00457E"}
               />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -716,7 +733,7 @@ const onSeachModalclose=()=>{
                             name="location"
                             style={{ fontSize: 22 }}
                           />{" "}
-                          {item.address}
+                          {item.address.length > maxLength ? item.address.substring(0, maxLength) + '...' : item.address}
                         </Text>
                       </View>
                     </Pressable>
@@ -1109,12 +1126,15 @@ const styles = StyleSheet.create({
   },
 
   order: {
-    fontSize: 25,
+    
+    fontSize: 20,
     color: "#00457E",
     // fontFamily: 'sans-sarif',
     marginBottom: 20,
     marginTop: 20,
+    fontWeight: "500",
   },
+
 
   tinyLogo: {
     width: 160,

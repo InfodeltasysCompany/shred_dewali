@@ -1,17 +1,19 @@
-import React, { useEffect, useId, useState, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import React, { useEffect, useId, useState, useLayoutEffect, useContext } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { getApiResponse } from '../Tab3/functions';
+import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 // import { Stack2ParamList } from '../../App';
 // import { setAddress } from '../../redux/actions/sAddressAction';
 
 
 const T2Screen2 = ({ navigation }) => {
   // const navigation = useNavigation<NavigationProp<Stack2ParamList>>();
-
+  const [state, setState] = useContext(AuthContext);
+  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password } = state;
 
   const [userDataLOCAL_STORAGE, setLocalUserData] = useState<{ [key: string]: any } | null>(null);
   const [userId, setUserId] = useState('');
@@ -25,8 +27,8 @@ const T2Screen2 = ({ navigation }) => {
     fetchUserData();
   }, []);
   useEffect(() => {
-    fetchApiData(userId)
-  }, [userId])
+    fetchApiData(userIdApp)
+  }, [userIdApp])
 
   const fetchUserData = async () => {
     try {
@@ -54,7 +56,7 @@ const T2Screen2 = ({ navigation }) => {
   };
 
   const fetchApiData = async (id: string) => {
-    const url = 'https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=' + userId;
+    const url = 'https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=' + userIdApp;
     try {
            
       let response = await getApiResponse(url);
@@ -75,7 +77,7 @@ const T2Screen2 = ({ navigation }) => {
 
   const continueWithChoosenDate = async () => {
     console.log("this is for testing again--->", scrapDetails, chosenDateTime, selectedAddressDetails);
-    console.log("my first log is for submit:-", userId);
+    console.log("my first log is for submit:-", userIdApp);
     console.log(scrapDetails);
     const scrrapdelails = [scrapDetails]
     
@@ -98,7 +100,7 @@ const T2Screen2 = ({ navigation }) => {
       console.log("weight:-" + weight, "pro_id-", +prod_id, "price-" + filename, "add_id-" + add_id, 'booking_date-' + booking_date);
 
       const formData = new FormData();
-      formData.append('user_id', userId);
+      formData.append('user_id', userIdApp);
       formData.append('approx_weight', weight);
       formData.append('prod_id', prod_id);
       formData.append('booking_date', booking_date);
@@ -139,28 +141,49 @@ const T2Screen2 = ({ navigation }) => {
   
   
   
-
-  const deleteAdd = async (address: string) => {
+  const deleteAdd = async (address) => {
+    // need to call a delete api for delete api's
+    const url = "https://shreddersbay.com/API/address_api.php?action=delete";
+    const formData = new FormData();
+    // setADDEDITModalAddress(address);
     try {
-      const id = address;
-      const response = await fetch(
-        `https://shreddersbay.com/API/address_api.php?action=delete&addr_id=${id}`,
-        {
-          method: "DELETE",
+        formData.append("addr_id", address.addr_id);
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data', // Specify the content type as FormData
+                // You can add other headers here if needed
+            },
+            body: formData, // Pass the FormData object as the body
+        });
+        if (response.ok) {
+            Alert.alert("Address Deleted SuccessFully")
         }
-      );
-      console.log(`thsi is address:-${address}`)
-      if (response.ok) {
-        console.log("Item deleted successfully");
-        // console.log("Address delete response:", response);
-      } else {
-        // Handle the error or failed deletion response
-        console.error("Failed to delete item:", response.status);
-      }
     } catch (error) {
-      console.error("Error deleting item:", error);
+
     }
-  };
+}
+  // const deleteAdd = async (address: string) => {
+  //   try {
+  //     const id = address;
+  //     const response = await fetch(
+  //       `https://shreddersbay.com/API/address_api.php?action=delete&addr_id=${id}`,
+  //       {
+  //         method: "DELETE",
+  //       }
+  //     );
+  //     console.log(`thsi is address:-${address}`)
+  //     if (response.ok) {
+  //       console.log("Item deleted successfully");
+  //       // console.log("Address delete response:", response);
+  //     } else {
+  //       // Handle the error or failed deletion response
+  //       console.error("Failed to delete item:", response.status);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting item:", error);
+  //   }
+  // };
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -176,7 +199,7 @@ const T2Screen2 = ({ navigation }) => {
       setCheckedAddressId(addressId);
       setSelectedAddressDetails(addressDetails);
       console.log(addressDetails);
-      console.log(userId);
+      console.log(userIdApp);
       // dispatch(setAddress(addressDetails));
 
 
@@ -200,7 +223,7 @@ const T2Screen2 = ({ navigation }) => {
 
   const onRefresh = () => {
     fetchUserData();
-    fetchApiData(userId);
+    fetchApiData(userIdApp);
   }
 
   return (
@@ -252,11 +275,12 @@ const T2Screen2 = ({ navigation }) => {
                   {{
                     flexDirection: 'row',
                     alignItems: 'center',
+                    justifyContent:"space-evenly"
 
 
                   }}
                 >
-                  <View
+                  {/* <View
                     style={{
                       height: 30,
                       width: 30,
@@ -277,7 +301,7 @@ const T2Screen2 = ({ navigation }) => {
                         }}
                       />
                     )}
-                  </View>
+                  </View> */}
                   <View key={address.addr_id} style={styles.card}>
                     <Text style={styles.addtext}>Address: {address.address}</Text>
                     <Text style={styles.addtext}>City: {address.city_name}</Text>
@@ -286,22 +310,22 @@ const T2Screen2 = ({ navigation }) => {
                     {/* Add other address details as needed */}
                   </View>
 
-                  <View style={styles.Delete}>
+                  <View style={{...styles.Delete,marginLeft:30}}>
                     <MaterialIcons name="delete-outline"
-                    onPress={()=>deleteAdd(address.addr_id)}
+                    onPress={()=>deleteAdd(address)}
                     style=
                     {{
                       fontSize: 30,
                       paddingRight: 10,
                       color: 'red'
                       }}/>
-                    <FontAwesome name="edit"
+                    {/* <FontAwesome name="edit"
                     style=
                     {{
                       fontSize: 30,
                       color: 'green'
                       }}
-                      />
+                      /> */}
                   </View>
 
 
@@ -317,14 +341,14 @@ const T2Screen2 = ({ navigation }) => {
       {/* ... (bottomButton code remains the same) */}
 <View style={styles.bottomView1}>
 
-
+{/* 
         <TouchableOpacity
           onPress={continueWithChoosenDate}
           style={styles.touchableOpacityStyle1}>
           <Text style={styles.textStyle1}
 
           >Deliver Here</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
 </View>
     </View>

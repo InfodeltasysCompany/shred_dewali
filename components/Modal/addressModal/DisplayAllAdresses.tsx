@@ -8,6 +8,7 @@ import OptionsMenu from "react-native-options-menu";
 import HandleAddAddress from './HandleAddAddress';
 import EditAddress from './EditAddress';
 import LoginModal from '../../Credential/LoginModal';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 
@@ -37,6 +38,9 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
 
     }
 
+    useEffect(()=>{
+        onRefresh();
+    },[isAddAddressModal,isEditAddressModal])
     const handlePickCurrentLocationModal = async () => {
         const address = await getCurrentLocation();
         setcurrentLocation(address);
@@ -66,7 +70,9 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
                 body: formData, // Pass the FormData object as the body
             });
             if (response.ok) {
+
                 Alert.alert("Address Deleted SuccessFully")
+                onRefresh();
             }
         } catch (error) {
 
@@ -257,7 +263,7 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
 
                                                     <OptionsMenu
                                                         button={require("../../../assets/threedot.jpg")}  // Use Image component
-                                                        buttonStyle={{ position: 'absolute', top: 0, right: 0, width: 50, height: 50 }}
+                                                        buttonStyle={{ position: 'absolute', top: 0, right: 0, width: 30, height: 30 }}
                                                         destructiveIndex={1}
                                                         options={["Delete"]}
                                                         actions={[() => { handleDelete(address) }]}
