@@ -5,7 +5,7 @@ import { getApiResponse } from '../../Navigation/Tab3/functions';
 
 const { width } = Dimensions.get('window');
 
-const ImageSlider = () => {
+const CaroselImage = () => {
   const [files, setFiles] = useState([]);
   const [fileNames, setFileNames] = useState([]);
   const imgurl = "https://shreddersbay.com/API/uploads/";
@@ -93,6 +93,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImageSlider;
+export default CaroselImage;
 
 

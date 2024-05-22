@@ -841,7 +841,7 @@ const Dropdowns = ({ navigation }) => {
                         }}
                         onPress={() => {
 
-                          setIsLoginModalVisible(true)
+                          setIsLoginModalVisible(!isLoginModalVisible);
                         }}
                       >
                         Add Auction.

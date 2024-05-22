@@ -13,8 +13,8 @@ import { useFocusEffect } from '@react-navigation/native';
 
 
 const Product = ({ item, handlebuypress, getusers }) => {
-  const scrollViewRef = useRef<ScrollView>(null);
-    const [active, setActive] = useState(0);
+  // const scrollViewRef = useRef<ScrollView>(null);
+    // const [active, setActive] = useState(0);
 
   const imgurl = "https://shreddersbay.com/API/uploads/";
 
@@ -30,7 +30,10 @@ const Product = ({ item, handlebuypress, getusers }) => {
       const imageUrls = item.filename.split(",").map(filename => imgurl + filename.trim());
       setImages(imageUrls);
     }
-  }, [item]);
+  }, [item, imgurl]);
+
+  // Your component's JSX code here, utilizing the `images` state
+
 
 // const [sliderImages, setsliderImages] = useState([])
 

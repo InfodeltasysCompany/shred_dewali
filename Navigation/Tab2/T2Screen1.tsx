@@ -11,6 +11,7 @@ import ShoppingCart from '../../components/ShoppingCart';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 import DisplayAllAddresses from '../../components/Modal/addressModal/DisplayAllAdresses';
 import LoginModal from '../../components/Credential/LoginModal';
+import { setAddress } from '../../redux/actions/sAddressAction';
 const imgrul = "https://shreddersbay.com/API/uploads"
 
 
@@ -35,7 +36,7 @@ const T2Screen1 = ({ navigation }) => {
   useEffect(() => {
     // fetchUserData();
     fetchApiData(userIdApp);
-  }, [userIdApp,data,data1]);
+  }, [userIdApp]);
 
 
 
@@ -335,6 +336,8 @@ const T2Screen1 = ({ navigation }) => {
               ToastAndroid.SHORT,
               ToastAndroid.CENTER
             );
+            setChoosenAddress(null);
+            fetchApiData(userIdApp)
             navigation.navigate('Tab1', { screen: 'T2Screen2' });
           } else {
             // Insertion failed
@@ -428,11 +431,38 @@ const T2Screen1 = ({ navigation }) => {
 
 
           <View>
-            <UpcomingDate data={data} navigation={navigation} oncloseAddressPickModal={oncloseAddressPickModal}
+            <UpcomingDate data={data} navigation={navigation} oncloseAddressPickModal={oncloseAddressPickModal} choosenAddress={choosenAddress}
             />
             {choosenAddress ?
              <View style={{ justifyContent: 'center', alignItems: 'center', borderRadius: 12 }}>
-              <TouchableOpacity onPress={continueWithChoosenDate}
+
+<TouchableOpacity
+        onPress={continueWithChoosenDate}
+        style=
+        {{
+          marginBottom: 10,
+          borderWidth: 0.8,
+          padding: 8,
+          borderRadius: 8,
+          borderColor: '#00457E',
+          backgroundColor: '#00457E',
+          width: '100%'
+
+
+        }}
+      >
+        <Text
+          style=
+          {{
+            fontSize: 20,
+            color: '#fff',
+            textAlign: 'center',
+          }}
+        >
+          Publish Your Ad
+        </Text>
+      </TouchableOpacity>
+              {/* <TouchableOpacity onPress={continueWithChoosenDate}
                 style={{
                   paddingVertical: 15,
                   paddingHorizontal: 30,
@@ -451,7 +481,7 @@ const T2Screen1 = ({ navigation }) => {
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>
                   Publish your Ad
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>:null}
             
 
@@ -590,10 +620,11 @@ type UpcomingDateProps = {
   data: any;
   navigation: any; // Adjust the type to match your data type
   oncloseAddressPickModal: any;
+  choosenAddress:any;
 
 };
 
-const UpcomingDate: React.FC<UpcomingDateProps> = ({ data, navigation, oncloseAddressPickModal
+const UpcomingDate: React.FC<UpcomingDateProps> = ({ data, navigation, oncloseAddressPickModal,choosenAddress
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
@@ -695,8 +726,8 @@ const UpcomingDate: React.FC<UpcomingDateProps> = ({ data, navigation, oncloseAd
           borderWidth: 0.8,
           padding: 8,
           borderRadius: 8,
-          borderColor: '#801a00',
-          backgroundColor: '#801a00',
+          borderColor: '#00457E',
+          backgroundColor: '#FFF',
           width: '100%'
 
 
@@ -706,11 +737,13 @@ const UpcomingDate: React.FC<UpcomingDateProps> = ({ data, navigation, oncloseAd
           style=
           {{
             fontSize: 20,
-            color: '#fff',
+            color: '#00457E',
             textAlign: 'center',
           }}
         >
-          Add Address
+          {choosenAddress?"Change Address" :"Add Address"}
+          
+          
         </Text>
       </TouchableOpacity>
 

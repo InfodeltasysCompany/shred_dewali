@@ -5,6 +5,7 @@ import LoginModal from '../../components/Credential/LoginModal';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Feather, Ionicons, MaterialCommunityIcons,AntDesign } from '@expo/vector-icons';
+import DisplayAllAddresses from '../../components/Modal/addressModal/DisplayAllAdresses';
 
 const T4Screen1 = ({ navigation }) => {
 
@@ -56,8 +57,14 @@ const [visible, setVisible] = useState(true)
     navigation.navigate("My Order");
   };
 
+  const [isAddressModalOpen, setisAddressModalOpen] = useState(false);
+  const [chosenAddress, setChosenAddress] = useState(null);
+  const getPickChooseAddressfromAddressModal  =(address)=>{
+    setChosenAddress(address);
+  }
   const AddAdress = () => {
-    navigation.navigate("T2Screen2");
+    // navigation.navigate("T2Screen2");
+    setisAddressModalOpen(!isAddressModalOpen);
   };
 
   const getProfile = async (uid) => {
@@ -147,7 +154,6 @@ const [visible, setVisible] = useState(true)
 
 
 
-  if (userIdApp) {
     return (
       <View
       style={{
@@ -158,13 +164,15 @@ const [visible, setVisible] = useState(true)
         marginTop: 40,
       }}
     >
+              <DisplayAllAddresses visible={isAddressModalOpen} onClose={AddAdress} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
+
       <View
         style={{
           padding: 20,
           backgroundColor: "#00457E",
           borderTopRightRadius: 10,
           borderTopLeftRadius: 10,
-          marginTop: 10,
+          marginTop:2,
         }}
       >
         <View>
@@ -336,26 +344,7 @@ const [visible, setVisible] = useState(true)
     </View>
 
     )
-  } else {
-    return (
-     
-<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  <LoginModal navigation={navigation} visible={visible} setVisible={setVisible} />
-  <View style={{alignContent:'center',justifyContent:"center"}}>
-    <View style={{alignContent:'center',justifyContent:'center'}}>
-
-    <Text style={{ fontSize:26,margin:30 }}>Log in now to get started!</Text>
-    </View>
-    <TouchableOpacity onPress={() => setVisible(true)} style={{alignItems:'center',justifyContent:'center'}}>
-    <AntDesign name='adduser' size={350} color={"black"}/>
-
-      <Text style={{ color: 'blue', fontSize: 36, textDecorationLine: 'underline' }}>Login</Text>
-    </TouchableOpacity>
-  </View>
-</View>
-
-    )
-  }
+ 
 }
 
 export default T4Screen1
@@ -406,7 +395,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     color: "#000",
-    fontFamily: 'sans-sarif',
+    fontFamily: 'sans-serif',
   },
 
   text3: {
@@ -417,7 +406,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 2,
     marginTop: 20,
-    fontFamily: 'sans-sarif',
+    fontFamily: 'sans-serif',
   },
 
 

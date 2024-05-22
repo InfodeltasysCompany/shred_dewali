@@ -709,7 +709,7 @@ useEffect(() => {
                           textAlign: "center",
                         }}
                         onPress={() => {
-                          setIsLoginModalVisible(true)
+                          setIsLoginModalVisible(!isLoginModalVisible)
                         }}
                       >
                         Add Scrap.

@@ -36,7 +36,8 @@ import LogoSlider from "../../components/OrderImage/LogoSlider";
 import Aluminium from "../../components/OrderImage/Aluminium";
 import CopperImage from "../../components/OrderImage/CopperImage";
 import T1Screen1modal1 from "./T1Screen1modal1";
-import ImageSlider from "../../components/OrderImage/ImageSlider";
+// import ImageSlider1 from "../../components/OrderImage/ImageSlider";
+import CaroselImage from "../../components/OrderImage/ImageSlider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import * as Updates from "expo-updates";
@@ -71,14 +72,14 @@ const T1Screen1 = ({ navigation }) => {
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false)
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false)
 
-  const setIsloginModalVisible=()=>{
-    setState(prevState => ({
-      ...prevState,
-      isloginModalVisible:!isloginModalVisible,
+  // const setIsloginModalVisible=()=>{
+  //   setState(prevState => ({
+  //     ...prevState,
+  //     isloginModalVisible:!isloginModalVisible,
 
       
-    }));
-  }
+  //   }));
+  // }
   const dispatch = useDispatch();
 
   // Access data and error from Redux store
@@ -166,7 +167,8 @@ const T1Screen1 = ({ navigation }) => {
         // For example:
         setdetaildata(details);
         console.log("Detail Data:", details);
-      } else {
+      } else 
+      {
         // Handle error
         console.error("Error fetching details:", response.statusText);
       }
@@ -197,7 +199,7 @@ const T1Screen1 = ({ navigation }) => {
   const handleBuyPress = () => {
     if (((gUserCred !== null && typeof gUserCred === 'object') || (userCred !== null && typeof userCred === 'object')) && userIdApp !== null) {
       navigation.navigate("myorder");
-      handleBuyPressOnMOdal(booking_id);
+      handleBuyPressOnMOdal(booking_id,getOrderResponse);
     } else {
       showCustomAlert();
     }
@@ -218,7 +220,10 @@ const T1Screen1 = ({ navigation }) => {
           text: "Yes",
           onPress: () => {
             // Do something when "Yes" is pressed
-            navigation.navigate("LoginModal");
+            // navigation.navigate("LoginModal");
+            setIsLoginModalVisible(!isloginModalVisible)
+            setModalVisible(!modalVisible);
+            
           },
         },
       ],
@@ -227,31 +232,22 @@ const T1Screen1 = ({ navigation }) => {
   };
   const getAuctionResponse = async () => {
    try {
-    const country = encodeURIComponent(currentAddress.country||""||currentAddress.country_name);
-    const city  = encodeURIComponent(currentAddress.city||""||currentAddress.city_name);
-    const userId = encodeURIComponent(userIdApp ||"");
-    console.log("userid"+userId +"city"+city +"country"+country);
+    const country = encodeURIComponent("");
+    const city = encodeURIComponent("");
+    // const country = encodeURIComponent(currentAddress?.country || currentAddress?.country_name || "");
+    // const city = encodeURIComponent(currentAddress?.city || currentAddress?.city_name || "");
+    const userId = encodeURIComponent(userIdApp || "");
 
     const url1 = `https://shreddersbay.com/API/auctionOrder_api.php?action=select&country=${country}&city=${city}&userId=${userId}`
     const url =
       "https://shreddersbay.com/API/auctionOrder_api.php?action=select";
     
-    if(country && city && !userId){
+      // console.log("calling order1")
       const data = await getApiResponse(url1);
       console.log("Auction urlis:=.",url1)
-      console.log("auctiondata", data);
+      // console.log("auctiondata", data);
       settAuctionData(data);
-    }else if(country && city && userId){
-      const data = await getApiResponse(url1);
-      console.log("Auction urlis:=.",url1)
-      console.log("auctiondata", data);
-      settAuctionData(data);
-    }else{
-      const data = await getApiResponse(url);
-      console.log("Auction urlis:=.",url)
-      console.log("auctiondata", data);
-      settAuctionData(data);
-    }
+   
    
     
    } catch (error) {
@@ -260,26 +256,53 @@ const T1Screen1 = ({ navigation }) => {
 
 
   }
+  // const getOrderResponse = async () => {
+  //   try {
+  //     const country = encodeURIComponent(currentAddress.country||""||currentAddress.country_name);
+  //   const city  = encodeURIComponent(currentAddress.city||""||currentAddress.city_name);
+  //   const userId = encodeURIComponent(userIdApp || "");
+  //   console.log("userid"+userId +"city"+city +"country"+country);
+  //   const url1 = `https://shreddersbay.com/API/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`
+  //   // https://shreddersbay.com/API/orders_api.php?action=select&userId=
+  //       const url =
+  //     "https://shreddersbay.com/API/orders_api.php?action=select";
+  //   const data = await getApiResponse(url1);
+  //   console.log("order urlis:=.",url1)
+  //   console.log("orderdata", data);
+  //   settOrderData(data);
+  //   } catch (error) {
+  //     console.log("the order error is =>",error);
+  //   }
+
+
+  // }
   const getOrderResponse = async () => {
     try {
-      const country = encodeURIComponent(currentAddress.country||""||currentAddress.country_name);
-    const city  = encodeURIComponent(currentAddress.city||""||currentAddress.city_name);
-    const userId = encodeURIComponent(userIdApp || "");
-    console.log("userid"+userId +"city"+city +"country"+country);
-    const url1 = `https://shreddersbay.com/API/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`
-    // https://shreddersbay.com/API/orders_api.php?action=select&userId=
-        const url =
-      "https://shreddersbay.com/API/orders_api.php?action=select";
-    const data = await getApiResponse(url1);
-    console.log("order urlis:=.",url1)
-    console.log("orderdata", data);
-    settOrderData(data);
+      // Encode URI components to handle special characters in URLs
+      const country = encodeURIComponent("");
+    const city = encodeURIComponent("");
+      // const country = encodeURIComponent(currentAddress?.country || currentAddress?.country_name || "");
+      // const city = encodeURIComponent(currentAddress?.city || currentAddress?.city_name || "");
+      const userId = encodeURIComponent(userIdApp || "");
+  
+      // Construct the URL with encoded parameters
+      const url = `https://shreddersbay.com/API/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`;
+  
+      // Fetch data from the API using the constructed URL
+      const data = await getApiResponse(url);
+  
+      // Log the URL and received data for debugging
+      console.log("Order URL:", url);
+      // console.log("Order data:", data);
+  
+      // Update the component state with the fetched data
+      settOrderData(data);
     } catch (error) {
-      console.log("the order error is =>",error);
+      // Handle any errors that occur during the API request
+      console.log("Error fetching order data:", error);
     }
-
-
-  }
+  };
+  
   const [currentAddress, setCurrentAddress] = useState(null);
     const [currentAddress1, setCurrentAddress1] = useState(null);
 
@@ -299,6 +322,11 @@ const T1Screen1 = ({ navigation }) => {
 
   }
   
+  useEffect(()=>{
+if(!currentAddress){
+  locationSetup();
+}
+  },[currentAddress])
   useEffect(() => {
     if(currentAddress==null){
       locationSetup();
@@ -320,7 +348,7 @@ const T1Screen1 = ({ navigation }) => {
   },[currentAddress,userIdApp])
 
   const [acceptData, setacceptData] = useState([]);
-  const handleBuyPressOnMOdal = async (bookingId: any) => {
+  const handleBuyPressOnMOdal = async (bookingId: any,getOrderResponse:any) => {
     console.log("we will see later ....");
 
     try {
@@ -344,6 +372,7 @@ const T1Screen1 = ({ navigation }) => {
         setacceptData(aceptData);
         // Process or set the acceptData if needed
         console.log("Accept API request successful");
+        getOrderResponse();
       } else {
         console.error("Accept API request failed:", response.statusText);
       }
@@ -555,7 +584,7 @@ const onSeachModalclose=()=>{
       <View>
         <HandleAddAddressModal visible={isAddressModalOpen} onClose={handleAddresModalOpen} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
         <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} comp={<SearchModalContent/>}/>
-        {/* {isLoginModalVisible && <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} />} */}
+         <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} />
 
         <Modal
           // animationType="fade"
@@ -621,7 +650,7 @@ const onSeachModalclose=()=>{
               <>
                 {/* <Text>{JSON.stringify(currentAddress)}</Text> */}
                 <Text style={{ fontSize: 14, fontWeight: '500' }}>{currentAddress.city || currentAddress.city_name}</Text>
-                <Text style={{ fontSize: 14, fontWeight: '500' }}>{currentAddress.name ||currentAddress.area ||currentAddress.pin_code},  </Text>
+                {/* <Text style={{ fontSize: 14, fontWeight: '500' }}>{currentAddress.name ||currentAddress.area ||currentAddress.pin_code},  </Text> */}
               </>
             )}
           </Pressable>
@@ -693,7 +722,7 @@ const onSeachModalclose=()=>{
           }
         >
           <View>
-            <ImageSlider />
+            <CaroselImage />
           </View>
           <View>
             <LogoSlider navigation={navigation}/>
@@ -730,13 +759,21 @@ const onSeachModalclose=()=>{
                           />{" "}
                           {item.price}
                         </Text>
+
+                        <View>
+                          
+                        </View>
                         <Text style={styles.textContainer6}>
                           <EvilIcons
                             name="location"
                             style={{ fontSize: 15 }}
                           />{" "}
-                          {item.address.length > maxLength ? item.address.substring(0, maxLength) + '...' : item.address}
+                          {/* {item && item.address.length > maxLength ? item.address.substring(0, maxLength) + '...' : item.address} */}
+                          {item?item.country_name:item.city_name}
+
                         </Text>
+                        <Text style={{...styles.textContainer6, marginLeft:16,textTransform: 'lowercase'}}>{item&&item.state_name}</Text>
+
                       </View>
                     </Pressable>
                   </View>
@@ -783,7 +820,10 @@ const onSeachModalclose=()=>{
                               name="location"
                               style={{ fontSize: 15 }}
                             />{" "}
-                            {item.address.length > maxLength ? item.address.substring(0, maxLength) + '...' : item.address}
+                            {/* {item.address.length > maxLength ? item.address.substring(0, maxLength) + '...' : item.address} */}
+                            {item?item.country_name:item.city_name}
+                            <Text style={styles.textContainer8}>{item &&  item.state_name}</Text>
+
                           </Text>
                         </View>
                       </Pressable>
@@ -984,7 +1024,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 10,
     color: "gray",
-    marginBottom: 2,
+    
+    
+  },
+
+  textContainer8: {
+    fontSize: 12,   
+    color: "gray",
+    
   },
 
   imageContainer: {
@@ -1089,14 +1136,14 @@ const styles = StyleSheet.create({
   },
 
   searchbox: {
-    paddingHorizontal: 8,
+ paddingHorizontal: 8,
     paddingVertical: 8,
     marginTop: 10,
     borderWidth: 1,
     borderColor: "gray",
     borderRadius: 8,
     borderBottomWidth: 1,
-    width: 370,
+    width: 340,
     height: 50,
     justifyContent:'center',
   },

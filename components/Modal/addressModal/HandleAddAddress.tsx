@@ -353,15 +353,11 @@ const HandleAddAddress = ({ visible, onClose, item }) => {
       onRequestClose={onClose}
     >
       <View style={styles.modalContainer}>
-        <View style={styles.headerContainer}>
-          {/* <Text>{currentAddress ? JSON.stringify(currentAddress) : ''}</Text> */}
-
-          <TouchableOpacity onPress={onClose}>
-            <View>
-              <AntDesign name='arrowleft' size={25} color={"white"} />
-            </View>
-          </TouchableOpacity>
-          <Text style={styles.headerText}>ADDRESS</Text>
+     <View style={styles.headerContainer}>
+            <TouchableOpacity onPress={onClose} >
+                <AntDesign name='arrowleft' size={25} color={"white"} />
+            </TouchableOpacity>
+            <Text style={styles.headerText}>ADDRESS</Text>
         </View>
         <View style={styles.mainContainer}>
           {/* <Text>{currentAddress ? JSON.stringify(currentAddress) : ''}</Text> */}
@@ -570,7 +566,7 @@ const HandleAddAddress = ({ visible, onClose, item }) => {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={{ marginBottom: 10 }} onPress={callreset}>
-                <View style={{ backgroundColor: '#2196F3', alignItems: 'center', justifyContent: 'center', height: 50, flexDirection: "row", gap: 10 }}>
+                <View style={{ backgroundColor: '#00457E', alignItems: 'center', justifyContent: 'center', height: 50, flexDirection: "row", gap: 10 }}>
                   {/* <MaterialIcons name='my-location' color={"white"} size={30} /> */}
                   <Text style={{ color: 'white', fontSize: 18, }}>
                     Reset
@@ -603,7 +599,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-    backgroundColor: "#2874f0",
+    backgroundColor: "#00457E",
     width: "100%",
     alignItems: 'center',
     height: "9%",

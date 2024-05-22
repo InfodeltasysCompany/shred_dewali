@@ -921,7 +921,7 @@ const BCurrent = ({navigation}) => {
         const data = await response.json();
         setResponseData(JSON.stringify(data));
         console.log(responseData);
-        navigation.navigate('BCompleted')
+        navigation.navigate('Complete')
 
 
         

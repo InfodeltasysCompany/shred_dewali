@@ -188,8 +188,8 @@ const Stack5 = () => {
       <TTab.Screen name='BUYING' component={BuyingChats} />
       {/* <Stack.Screen name='ChatBlank' component={ChatBlank}/> */}
       <TTab.Screen name='SELLING' component={SellingChats} />
-      {/* <TTab.Screen name='BCurrent' component={BCurrent} />
-      <TTab.Screen name='BCompleted' component={BCompleted} /> */}
+      {/* <TTab.Screen name='Current' component={BCurrent} />
+      <TTab.Screen name='Complete' component={BCompleted} /> */}
     </TTab.Navigator>
   )
 }
@@ -197,7 +197,7 @@ const InsideMYOrder_Buy = () => {
   return (
     <TTab.Navigator>
       <TTab.Screen name='Current' component={BCurrent} />
-      <TTab.Screen name='Completed' component={BCompleted} />
+      <TTab.Screen name='Complete' component={BCompleted} />
     </TTab.Navigator>
   )
 }
@@ -205,7 +205,7 @@ const InsideMYOrder_Sell = () => {
   return (
     <TTab.Navigator>
       <TTab.Screen name='Current' component={SCurrent} />
-      <TTab.Screen name='Completed' component={SCompleted} />
+      <TTab.Screen name='Complete' component={SCompleted} />
       {/* <TTab.Screen name='SCancel' component={SCancel} /> */}
 
     </TTab.Navigator>

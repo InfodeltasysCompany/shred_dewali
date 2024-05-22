@@ -132,7 +132,7 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
             <View style={styles.modalcontainer}>
 
 
-                <View style={styles.headerContainer}>
+                {/* <View style={styles.headerContainer}>
                     <TouchableOpacity onPress={onClose}>
 
                         <View>
@@ -141,14 +141,25 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
                     </TouchableOpacity>
                     <Text style={{ color: "white", marginLeft: 105, fontSize: 20, fontWeight: "400" }}> ADDRESS</Text>
 
-                </View>
+                </View> */}
+                 <View style={styles.headerContainer}>
+            <TouchableOpacity onPress={onClose} style={styles.iconContainer}>
+                <AntDesign name='arrowleft' size={25} color={"white"} />
+                <Text style={styles.headerText}>ADDRESS</Text>
+            </TouchableOpacity>
+         
+        </View>
+
+                
 
                 {/* <Text>header file</Text> */}
                 <TouchableOpacity style={{ ...styles.addaddressbtncontainer, paddingBottom: 10 }} onPress={hanleAddAddressModal}>
-                    <MaterialIcons name='add' size={25} color={"#2874f0"} style={{ marginTop: 15, fontWeight: '700', marginLeft: 15, }} />
-                    <Text style={{ color: "#2874f0", marginLeft: 0, fontSize: 18, marginTop: 16, paddingLeft: 5 }}>Add a New Address</Text>
+                    <MaterialIcons name='add' size={25} color={"#00457E"} style={{ marginTop: 15, fontWeight: '700', marginLeft: 15, }} />
+                    <Text style={{ color: "#00457E", marginLeft: 0, fontSize: 18, marginTop: 16, paddingLeft: 5 }}>Add a New Address</Text>
                 </TouchableOpacity>
                 <View>
+
+              
 
                 </View>
                 {/* <TouchableOpacity style={{ ...styles.addaddressbtncontainer, marginTop: 5 }} onPress={handlePickCurrentLocationModal}>
@@ -326,13 +337,65 @@ const styles = StyleSheet.create({
 
     headerContainer: {
         flexDirection: 'row',
-        backgroundColor: "#2874f0",
+        backgroundColor: "#00457E",
 
         width: "100%",
         alignItems: 'center',
         paddingLeft: 10,
-        flex: 1.5,
+        height: '10%',
     },
+    headerContainer1: {
+        flexDirection: 'row',
+        position: 'relative',
+        justifyContent: 'space-between',  // Ensures the elements are spread out
+        paddingHorizontal: 10,
+        height: 60,
+        width: "100%",
+        backgroundColor: '#00457E', // Assuming a black background for example
+},
+
+iconContainer:{
+    backgroundColor: "#00457E",
+    flex: 1,
+    width: "100%",
+    flexDirection: "row",
+    elevation: 10,
+    marginTop: 20,
+ 
+},
+
+headerText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '400',
+    paddingLeft: 20,
+
+},
+
+//     headerContainer: {
+//         flexDirection: 'row',
+//         alignItems: 'center',
+//         justifyContent: 'space-between',  // Ensures the elements are spread out
+//         paddingHorizontal: 10,
+//         height: 60,
+//         width: "100%",
+//         backgroundColor: '#00457E', // Assuming a black background for example
+// },
+
+// iconContainer: {
+   
+//     // Adjust width as necessary
+// },
+// headerText: {
+//   color: 'white',
+//   fontSize: 20,
+//   fontWeight: '400',
+//   position: 'absolute',
+//   left: 0,
+//   right: 0,
+//   textAlign: 'center',
+// },
+
     addaddressbtncontainer: {
         backgroundColor: "white",
         flex: 1,
