@@ -387,10 +387,15 @@ const Dropdowns = ({ navigation }) => {
     updatedImages.splice(index, 1);
     setSelectedImages(updatedImages);
   };
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     // navigation.navigate("T3Screen4");
+    if (isSubmitting) {
+      return; // Prevent multiple submissions
+    }
 
+    setIsSubmitting(true);
     try {
       if (
         userIdApp &&
@@ -442,7 +447,7 @@ const Dropdowns = ({ navigation }) => {
             type: "image/jpeg", // Adjust the type based on your file type
           };
 
-          formData.append("file[]", image);
+          formData.append("file[]", image as any);
         }
 
         // Function to generate a unique filename

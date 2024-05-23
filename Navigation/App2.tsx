@@ -139,7 +139,7 @@ const Stack3 = () => {
       <Stack.Screen name='T1Screen1' component={T1Screen1} options={{ headerShown: false }} />
       <Stack.Screen name='Auction Detail' component={OpenCamAndGalT3S1}
           options={{
-            headerStyle: { backgroundColor: '#3498db' }, // Set the background color of the header
+            headerStyle: { backgroundColor: '#00457E' }, // Set the background color of the header
             headerTintColor: 'white', // Set the color of the header text (title and back button)
             headerTitleStyle: { fontWeight: 'bold' }, // Optional: Customize the style of the header title
           }}   />

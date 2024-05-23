@@ -2,7 +2,7 @@
   "expo": {
     "name": "shreddersbay",
     "slug": "shreddersbay",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "orientation": "portrait",
     "icon": "./assets/icon2.png",
     "userInterfaceStyle": "light",
@@ -48,7 +48,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.shreddersbay",
-      "versionCode": 9,
+      "versionCode": 10,
       "googleServicesFile": "./google-services.json",
       "expo.android.googleServicesFile":"./google-services.json"
     },
@@ -61,7 +61,7 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/899a3d51-4ab2-46d5-a140-644e3ad1b7be"
+      "fallbackToCacheTimeout":10000
     },
     "plugins": [
       "@react-native-firebase/app",
@@ -85,7 +85,20 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
-      ]
+      ],[
+          "expo-image-picker",
+          {
+            "photosPermission": "The app accesses your photos to let you share them with your friends."
+          }
+        ],
+        [
+          "expo-camera",
+          {
+            "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+            "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+            "recordAudioAndroid": true
+          }
+        ]
     ]
   }
 }

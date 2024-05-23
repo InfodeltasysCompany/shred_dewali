@@ -308,9 +308,16 @@ useEffect(() => {
       }
     }
   }
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const handleSubmit = async () => {
 
+    if (isSubmitting) {
+      return; // Prevent multiple submissions
+    }
+
+    setIsSubmitting(true);
     try {
       // Add a check to prevent multiple submissions
       // If already submitting, return early to avoid duplicate submissions

@@ -434,7 +434,14 @@ const T3Screen4 = ({ navigation }) => {
 
   const today = new Date(); // Get today's date
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const createAuction = async () => {
+    if (isSubmitting) {
+      return; // Prevent multiple submissions
+    }
+
+    setIsSubmitting(true);
     console.log(addrId);
     if (
       startDate !== null &&
@@ -497,7 +504,7 @@ const T3Screen4 = ({ navigation }) => {
               type: "image/jpeg", // Adjust the type based on your file type
             };
 
-            formData.append("file[]", image);
+            formData.append("file[]", image as any);
           } catch (error) {
             console.error("Error fetching image:", error);
             // Handle errors fetching individual images here if needed
@@ -744,7 +751,7 @@ const T3Screen4 = ({ navigation }) => {
                           {address ? (
                             `${address.city_name}, ${address.state_name}`
                           ) : (
-                            'Current Location'
+                            'Pick Address'
                           )}
                         </Text>
                       </View>
@@ -862,7 +869,8 @@ const styles = StyleSheet.create({
 
   icon: {
     fontSize: 25,
-    color: '#3498db',
+    // color: '#3498db',
+    color:'#00457E'
 
   },
 
@@ -923,7 +931,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#00457E',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 10,

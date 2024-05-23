@@ -386,7 +386,7 @@ if(!currentAddress){
   const [isandroidUpdateModalVisible, setIsandroidUpdateModalVisible] =
     useState(false);
   const setUpdateModal = async () => {
-    // setIsandroidUpdateModalVisible(false);
+    setIsandroidUpdateModalVisible(!isandroidUpdateModalVisible);
     await Updates.fetchUpdateAsync();
     await Updates.reloadAsync();
   };
