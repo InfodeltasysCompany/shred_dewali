@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "shreddersbay",
+    "name": "second_project",
     "slug": "shreddersbay",
     "version": "1.0.10",
     "orientation": "portrait",
@@ -40,9 +40,7 @@
       "infoPlist": {
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": [
-              "myapp"
-            ]
+            "CFBundleURLSchemes": ["second_project"]
           }
         ]
       },
@@ -72,7 +70,7 @@
       "favicon": "./assets/favicon.png"
     },
     "owner": "vinitrathore",
-    "scheme": "second_project",
+    "scheme": "shreddersbay", 
     "runtimeVersion": {
       "policy": "appVersion"
     },
@@ -115,7 +113,14 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
           "recordAudioAndroid": true
         }
+      ],
+      [
+        "expo-updates",
+        {
+          "username":"vinitrathore"
+        }
       ]
     ]
   }
 }
+
