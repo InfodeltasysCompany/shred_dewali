@@ -287,7 +287,6 @@ const MainTabsComponents=()=>{
           })}
           listeners={({navigation})=>({
             tabPress:event=>{
-                // event.preventDefault();
                 if(!userIdApp){
                     event.preventDefault();
                     navigation.navigate('LoginModal')

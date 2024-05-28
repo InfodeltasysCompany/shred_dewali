@@ -689,7 +689,7 @@ const onSeachModalclose=()=>{
           <View style={styles.searchbox}>
             
 
-        <Text style={{marginLeft:10,color:'gray'}}>search your  required scrap here with us ...</Text>
+        <Text style={{marginLeft:10,color:'gray'}}>search Scrap ...</Text>
           </View>
         </Pressable>
 
