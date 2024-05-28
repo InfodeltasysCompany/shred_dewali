@@ -397,20 +397,37 @@ if(!currentAddress){
       // const osName = Platform.OS;
       // console.log(`The os name is ${osName}`);
 
+      // try {
+      //   const update = await Updates.checkForUpdateAsync();
+
+      //   // if (update.isAvailable && Platform.OS === 'android') {
+      //   if (update.isAvailable) {
+      //     //  await Updates.fetchUpdateAsync();
+      //     //  await Updates.reloadAsync();
+      //     setIsandroidUpdateModalVisible(!isandroidUpdateModalVisible);
+      //   } else {
+      //     setIsandroidUpdateModalVisible(false);
+      //   }
+      // } catch (error) {
+      //   // You can also add an alert() to see the error message in case of an error when fetching updates.
+      //   console.log(`Error fetching latest Expo update: ${error}`);
+      // }
+
+
       try {
         const update = await Updates.checkForUpdateAsync();
-
-        // if (update.isAvailable && Platform.OS === 'android') {
         if (update.isAvailable) {
-          //  await Updates.fetchUpdateAsync();
-          //  await Updates.reloadAsync();
-          setIsandroidUpdateModalVisible(!isandroidUpdateModalVisible);
-        } else {
-          setIsandroidUpdateModalVisible(false);
+          await Updates.fetchUpdateAsync();
+          // Notify user to reload the app
+          Alert.alert('Update available', 'An update has been downloaded. Restart the app to apply the updates.', [
+            {
+              text: 'Restart',
+              onPress: () => Updates.reloadAsync(),
+            },
+          ]);
         }
-      } catch (error) {
-        // You can also add an alert() to see the error message in case of an error when fetching updates.
-        console.log(`Error fetching latest Expo update: ${error}`);
+      } catch (e) {
+        console.error(e);
       }
     }
     //////////////////////////////////////////////////

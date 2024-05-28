@@ -12,6 +12,7 @@ import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 import DisplayAllAddresses from '../../components/Modal/addressModal/DisplayAllAdresses';
 import LoginModal from '../../components/Credential/LoginModal';
 import { setAddress } from '../../redux/actions/sAddressAction';
+import { fetchApiData } from '../../MyMethods/APIMethodsConstants';
 const imgrul = "https://shreddersbay.com/API/uploads"
 
 
@@ -74,7 +75,7 @@ const T2Screen1 = ({ navigation }) => {
   //     console.log('ID not found in the parsed data');
   //   }
   // };
-
+const [result, setresult] = useState([]);
   const fetchApiData = async (userId: string) => {
     console.log("userId==>", userIdApp)
     try {
@@ -84,10 +85,18 @@ const T2Screen1 = ({ navigation }) => {
       if (response.ok) {
 
         const result = await response.json();
+        setresult(result);
         setData1(result)
         setData(distinctData(result));
-        console.log('Fetched Data:', result);
-        console.log("filtered data:-", distinctData(result));
+        console.log("result=>",result);
+        // console.log('Fetched Data:', result);
+        // console.log("filtered data:-", distinctData(result));
+        if(!scrapDetails){
+          if (result.length === 1) { dispatch(myScrapDetailsAction(result[0])); }
+        }else{
+          dispatch(myScrapDetailsAction(null))
+        }
+        
 
       } else {
         console.error('Failed to fetch data from API');
@@ -96,6 +105,9 @@ const T2Screen1 = ({ navigation }) => {
       console.error('Error fetching data:', error);
     }
   };
+  // useEffect(()=>{
+  //   fetchApiData(userIdApp);
+  // },[result])
   const deleteItem = async (userId: string, itemId: string) => {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Alert.alert(
@@ -338,6 +350,7 @@ const T2Screen1 = ({ navigation }) => {
             );
             setChoosenAddress(null);
             fetchApiData(userIdApp)
+            dispatch(myScrapDetailsAction(null));
             navigation.navigate('Tab1', { screen: 'T2Screen2' });
           } else {
             // Insertion failed
@@ -644,7 +657,9 @@ const UpcomingDate: React.FC<UpcomingDateProps> = ({ data, navigation, oncloseAd
   };
   const dispatch = useDispatch()
   const scrapDetails = useSelector((state: any) => state.myscrap.scrapDetails);
+  console.log("scrapdetails=>",scrapDetails)
   const handleContinue = () => {
+  
     const formattedDate = formatDate(selectedDate); ///formattedDate is current date 
     const currentDateTime = new Date().getTime(); // Current date and time in milliseconds
     const selectedDateTime = new Date(selectedDate).getTime(); // Selected date and time in milliseconds
