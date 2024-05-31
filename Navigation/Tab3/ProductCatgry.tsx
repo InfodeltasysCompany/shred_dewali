@@ -50,7 +50,7 @@ const ProductCatgry = ({ navigation, visible }) => {
         if (jsonResult[index]) {
           return {
             ...item,
-            label: jsonResult[index].p_type_name,
+            label: jsonResult[index].p_name,
             p_id: jsonResult[index].p_id,
           };
         }
@@ -84,7 +84,7 @@ const ProductCatgry = ({ navigation, visible }) => {
 
   return (
     <Modal animationType="none" visible={visible}>
-      <ProductSubCatgry closeModal={checkModalAndProductId} visible={issubcatmodalVisible} p_id={subCatID} />
+      <ProductSubCatgry closeModal={checkModalAndProductId} visible={issubcatmodalVisible} p_id={subCatID} navigation={navigation} />
       <View style={{ flex: 1, margin: 10 }}>
         {/* <CloseIcon onPress={onCloseMethod} /> */}
         <AntDesign name="close" size={35} color={"gray"} onPress={onCloseMethod}/>

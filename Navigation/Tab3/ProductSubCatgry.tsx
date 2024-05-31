@@ -4,6 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal } from "react-native";
 import { TextInput } from "react-native-paper";
+import ProductImageAdd from "./ProductImageAdd";
 
 export const CloseIcon = ({ onPress }) => (
     <TouchableOpacity onPress={onPress} style={styles.closeButton}>
@@ -15,7 +16,7 @@ export const CloseIcon = ({ onPress }) => (
 );
 
 
-const ProductSubCatgry = ({ closeModal, visible, p_id }) => {
+const ProductSubCatgry = ({ closeModal, visible, p_id ,navigation}) => {
     const [data, setData] = useState([]);
     const [submetalType, setSubmetaltype] = useState<string>('Sub Metal Type');
     const [selectedSubMetal, setSelectedSubMetal] = useState('');
@@ -30,6 +31,7 @@ const ProductSubCatgry = ({ closeModal, visible, p_id }) => {
     const [descriptionError, setDescriptionError] = useState(false);
     const [priceError, setPriceError] = useState(false);
     const [weightError, setweightError] = useState(false);
+    const [isImageAddmodalVisible, setIsImageAddmodalVisible] = useState(false);
 
     const displayForm = useCallback(async () => {
         const url = "https://shreddersbay.com/API/product_api.php?action=select_id";
@@ -68,6 +70,7 @@ const ProductSubCatgry = ({ closeModal, visible, p_id }) => {
             displayForm();
         }, [displayForm])
     );
+    
 
     const onChangeTextTitle = (text) => {
         settextTitle(text);
@@ -131,6 +134,7 @@ const ProductSubCatgry = ({ closeModal, visible, p_id }) => {
 
     }
     const handleNext = () => {
+        setIsImageAddmodalVisible(!isImageAddmodalVisible);
         handleErrors();
     }
     const setSelectedsubmetal1 = (itemValue) => {
@@ -140,11 +144,16 @@ const ProductSubCatgry = ({ closeModal, visible, p_id }) => {
         setselectedSubMetalPrice(selectedItem.price);
 
     }
+    ////////////////////////////
+    const handleImageAddModal=()=>{
+        setIsImageAddmodalVisible(!isImageAddmodalVisible);
+    }
 
     return (
         <Modal animationType="none" visible={visible}>
             <View style={{ flex: 1 }}>
                 {/* Use AntDesign close icon */}
+                <ProductImageAdd closeModal={handleImageAddModal} visible={isImageAddmodalVisible} navigation={navigation}/>
                 <AntDesign name="close" size={35} color={"gray"} onPress={closeModal} style={styles.closeIcon} />
 
                 <View style={{ flex: 1, }}>
@@ -208,7 +217,7 @@ const ProductSubCatgry = ({ closeModal, visible, p_id }) => {
                                 {data.map((item, index) => (
                                     <Picker.Item
                                         label={item?.p_type_name ?? 'Unknown'} // Add null check here
-                                        value={item?.p_type_name ?? 'Unknown'}
+                                        value={item?.p_type_name ?? ''}
                                         key={index}
                                     />
 
@@ -218,7 +227,7 @@ const ProductSubCatgry = ({ closeModal, visible, p_id }) => {
                             }
 
                         </View>
-                        {selectedSubMetalPrice && <View style={{
+                        {!(selectedSubMetalPrice ==  '') && <View style={{
                             borderBottomWidth: 2,
                             borderBottomColor: "#21005d", marginTop: 30, margin: 20,
                         }}>
