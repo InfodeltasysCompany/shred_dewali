@@ -13,16 +13,10 @@ import { useFocusEffect } from '@react-navigation/native';
 
 
 const Product = ({ item, handlebuypress, getusers }) => {
-  // const scrollViewRef = useRef<ScrollView>(null);
-    // const [active, setActive] = useState(0);
-
+  
   const imgurl = "https://shreddersbay.com/API/uploads/";
 
-  // const handleScroll = (event) => {
-  //   const slide = Math.ceil(event.nativeEvent.contentOffset.x / event.nativeEvent.layoutMeasurement.width);
-  //   setActive(slide);
-  // };
-
+  
   const [images, setImages] = useState([]);
 
   useEffect(() => {
@@ -32,23 +26,7 @@ const Product = ({ item, handlebuypress, getusers }) => {
     }
   }, [item, imgurl]);
 
-  // Your component's JSX code here, utilizing the `images` state
-
-
-// const [sliderImages, setsliderImages] = useState([])
-
-
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     const nextSlide = (active + 1) % (item.filename ? item.filename.split(",").length : 1);
-  //     scrollViewRef.current.scrollTo({ x: nextSlide * width, animated: true });
-  //   }, 3000); // Change image every 3 seconds
-
-  //   return () => {
-  //     clearInterval(timer); // Clean up the interval when the component unmounts
-  //   };
-  // }, [active, item.filename]);
-
+ 
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -67,23 +45,7 @@ const Product = ({ item, handlebuypress, getusers }) => {
   
   return (
     <View style={styles.container}>
-      {/* <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        style={styles.scrollView}
-        // scrollEventThrottle={16}
-      > */}
-
-        {/* {
-        item.filename && item.filename.split(",").map((imageUrl, index) => (
-          <Image key={index} style={{ height: 200, width: 250 }} source={{ uri: imgurl + imageUrl }} />
-        ))
-        } */}
-  
-      {/* </ScrollView> */}
+      
 
       <View style={{ flex: 1, backgroundColor: '#ffffff', padding: 10 }}>
       <ImageSlider
@@ -138,11 +100,7 @@ const Product = ({ item, handlebuypress, getusers }) => {
 
    
       
-      {/* <View style={styles.pagination}>
-        {item.filename && item.filename.split(",").map((_, index) => (
-          <Text key={index} style={[styles.paginationDot, index === active && styles.paginationDotActive]}>&bull;</Text>
-        ))}
-      </View> */}
+     
 
       
       <View style={styles.buttonContainer}>

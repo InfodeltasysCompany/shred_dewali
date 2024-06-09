@@ -191,7 +191,9 @@ import {
               // f_name:null,
               // f_password:null 
             }));
-            navigation.navigate("Tab1", { screen: "T1Screen1" }),
+            if(!(navigation == undefined)){
+              navigation.navigate("Tab1", { screen: "T1Screen1" });
+            }
               authenticateWithFirebase(email);
   
             ToastAndroid.showWithGravity(
@@ -322,11 +324,10 @@ import {
               ///////////////////////////////////////////////////////////
   
               console.log("data set successfully");
-              navigation.navigate("Tab1", {
-                screen: "T1Screen1",
-              });
-  
-              navigation.navigate("Tab1", { screen: "T1Screen1" });
+              if(!(navigation == undefined)){
+                navigation.navigate("Tab1", { screen: "T1Screen1" });
+              }
+              
   
              
               ToastAndroid.showWithGravity(

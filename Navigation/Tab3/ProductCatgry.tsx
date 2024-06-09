@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, ScrollView, Alert } from "react-native";
 import ProductSubCatgry from "./ProductSubCatgry";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -10,22 +10,25 @@ interface Item {
   p_id?: string; // Optional product_id
 }
 
+
 const defaultItems: Item[] = [
   { source: require('../../assets/steel.jpeg'), label: 'STEEL' },
-  { source: require('../../assets/car.jpg'), label: 'CAR' },
-  { source: require('../../assets/newpaper.jpeg'), label: 'PAPER' },
-  { source: require('../../assets/aluminum.jpeg'), label: 'ALUMINIUM' },
-  { source: require('../../assets/iron.jpeg'), label: 'IRON' },
-  { source: require('../../assets/ship.jpg'), label: 'SHIP' },
-  { source: require('../../assets/bike.jpg'), label: 'BIKE' },
-  { source: require('../../assets/cycle.jpg'), label: 'CYCLE' },
+  { source: require('../../assets/pump.jpg'), label: 'Pump' },
+  { source: require('../../assets/lead1.jpg'), label: 'Lead' },
+  { source: require('../../assets/brass2.jpg'), label: 'Brass' },
+  { source: require('../../assets/Computer.jpg'), label: 'Computer Part' },
+  { source: require('../../assets/plastic.jpeg'), label: 'plastic' },
   { source: require('../../assets/railway.jpeg'), label: 'RAILWAY' },
-  { source: require('../../assets/more.png'), label: 'mobile' },
-  { source: require('../../assets/more.png'), label: 'bottle' },
-  { source: require('../../assets/more.png'), label: 'plastic' },
-  { source: require('../../assets/more.png'), label: 'wire' },
-];
+  { source: require('../../assets/cycle.jpg'), label: 'CYCLE' },
+  { source: require('../../assets/bike.jpg'), label: 'BIKE' },
+  { source: require('../../assets/ship.jpg'), label: 'SHIP' },
+  { source: require('../../assets/iron.jpeg'), label: 'IRON' },
+  { source: require('../../assets/aluminum.jpeg'), label: 'ALUMINIUM' },
+  { source: require('../../assets/newpaper.jpeg'), label: 'PAPER' },
+  { source: require('../../assets/car.jpg'), label: 'CAR' },
+  { source: require('../../assets/cable.jpeg'), label: 'wire' },
 
+];
 const CloseIcon = ({ onPress }) => (
   <TouchableOpacity onPress={onPress} style={styles.closeButton}>
     <Image
@@ -36,9 +39,19 @@ const CloseIcon = ({ onPress }) => (
 );
 
 const ProductCatgry = ({ navigation, visible }) => {
-  
-  const [items, setItems] = useState<Item[]>(defaultItems);
 
+  const [items, setItems] = useState<Item[]>(defaultItems);
+  // const [reset1, setReset1] = useState(() => {
+  //   return () => {
+  //     console.log("Default function for reset1");
+  //   };
+  // });
+
+  // const [reset2, setReset2] = useState(() => {
+  //   return () => {
+  //     console.log("Default function for reset2");
+  //   };
+  // });
   const getCatagory = async () => {
     const url = "https://shreddersbay.com/API/product_api.php?action=select";
 
@@ -62,18 +75,43 @@ const ProductCatgry = ({ navigation, visible }) => {
       console.log("error=>", error);
     }
   };
+
   const onCloseMethod = () => {
     console.log("Closing modal...");
-    navigation.navigate("Main");
+
+    navigation.navigate("Tab1", { screen: "T1Screen1" });
+
+    // Alert.alert(
+    //     'Confirmation',
+    //     'Are you sure you want to discard this Ad ?',
+    //     [
+    //       {
+    //         text: 'Cancel',
+    //         style: 'cancel',
+    //       },
+    //       {
+    //         text: 'OK',
+    //         onPress: () => {
+    //           // If user confirms, navigate to the Main screen
+    //           navigation.navigate("Tab1",{screen:"T1Screen1"});
+
+    //         },
+    //       },
+    //     ]
+    //   );
+
+
+
   };
+
 
   const [issubcatmodalVisible, setIssubcatmodalVisible] = useState(false);
   const [subCatID, setsubCatID] = useState('');
   const checkModalAndProductId = (id: string) => {
-    if(subCatID == ''){
-        setsubCatID(id);
-    }else{
-        setsubCatID('');
+    if (subCatID == '') {
+      setsubCatID(id);
+    } else {
+      setsubCatID('');
     }
     setIssubcatmodalVisible(!issubcatmodalVisible);
   }
@@ -87,9 +125,9 @@ const ProductCatgry = ({ navigation, visible }) => {
       <ProductSubCatgry closeModal={checkModalAndProductId} visible={issubcatmodalVisible} p_id={subCatID} navigation={navigation} />
       <View style={{ flex: 1, margin: 10 }}>
         {/* <CloseIcon onPress={onCloseMethod} /> */}
-        <AntDesign name="close" size={35} color={"gray"} onPress={onCloseMethod}/>
-        <View style={{alignItems:'center',justifyContent:'center',marginTop:-28}}>
-        <Text style={{fontSize:20,fontWeight:"500"}}>What you are offering</Text>
+        <AntDesign name="close" size={35} color={"gray"} onPress={onCloseMethod} />
+        <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: -28 }}>
+          <Text style={{ fontSize: 20, fontWeight: "500" }}>What you are offering</Text>
 
         </View>
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -109,7 +147,7 @@ const ProductCatgry = ({ navigation, visible }) => {
   );
 };
 
- 
+
 const styles = StyleSheet.create({
   closeButton: {
     position: "absolute",
@@ -142,6 +180,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
- 
+
 export default ProductCatgry;
- 

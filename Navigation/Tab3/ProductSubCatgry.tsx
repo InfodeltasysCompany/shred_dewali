@@ -16,7 +16,7 @@ export const CloseIcon = ({ onPress }) => (
 );
 
 
-const ProductSubCatgry = ({ closeModal, visible, p_id ,navigation}) => {
+const ProductSubCatgry = ({ closeModal, visible, p_id, navigation }) => {
     const [data, setData] = useState([]);
     const [submetalType, setSubmetaltype] = useState<string>('Sub Metal Type');
     const [selectedSubMetal, setSelectedSubMetal] = useState('');
@@ -32,8 +32,10 @@ const ProductSubCatgry = ({ closeModal, visible, p_id ,navigation}) => {
     const [priceError, setPriceError] = useState(false);
     const [weightError, setweightError] = useState(false);
     const [isImageAddmodalVisible, setIsImageAddmodalVisible] = useState(false);
+    const [filledformPost, setFilledformPost] = useState(null);
 
     const displayForm = useCallback(async () => {
+        // setReset1(resetBtn);
         const url = "https://shreddersbay.com/API/product_api.php?action=select_id";
         const formData = new FormData();
         formData.append('p_id', p_id);
@@ -70,7 +72,7 @@ const ProductSubCatgry = ({ closeModal, visible, p_id ,navigation}) => {
             displayForm();
         }, [displayForm])
     );
-    
+
 
     const onChangeTextTitle = (text) => {
         settextTitle(text);
@@ -134,8 +136,20 @@ const ProductSubCatgry = ({ closeModal, visible, p_id ,navigation}) => {
 
     }
     const handleNext = () => {
-        setIsImageAddmodalVisible(!isImageAddmodalVisible);
-        handleErrors();
+        // console.log("type",navigation)
+        if (selectedSubMetal && selectedSubMetalPrice && textTitle && textDescription && textWeight && textPrice) {
+            setFilledformPost({
+                selectedSubMetal,
+                textTitle,
+                textDescription,
+                textWeight,
+                textPrice,
+                p_id,
+            })
+            setIsImageAddmodalVisible(!isImageAddmodalVisible);
+        } else {
+            handleErrors();
+        }
     }
     const setSelectedsubmetal1 = (itemValue) => {
         setSelectedSubMetal(itemValue)
@@ -145,40 +159,25 @@ const ProductSubCatgry = ({ closeModal, visible, p_id ,navigation}) => {
 
     }
     ////////////////////////////
-    const handleImageAddModal=()=>{
+    const handleImageAddModal = () => {
         setIsImageAddmodalVisible(!isImageAddmodalVisible);
+    }
+    ///////////////////////////
+    const resetBtn = () => {
+
+        settextTitle("");
+        setTextDescription("");
+        setTextPrice("");
+        setTextWeight("");
     }
 
     return (
         <Modal animationType="none" visible={visible}>
             <View style={{ flex: 1 }}>
-                {/* Use AntDesign close icon */}
-                <ProductImageAdd closeModal={handleImageAddModal} visible={isImageAddmodalVisible} navigation={navigation}/>
+                <ProductImageAdd closeModal={handleImageAddModal} visible={isImageAddmodalVisible} navigation={navigation} formfilledpost={filledformPost} setformfilledPost={setFilledformPost} />
                 <AntDesign name="close" size={35} color={"gray"} onPress={closeModal} style={styles.closeIcon} />
-
                 <View style={{ flex: 1, }}>
                     <View>
-                        {/* <Text>This is Vinit....{p_id}</Text> */}
-                        {/* <Text>This is Vinit....{JSON.stringify(data)}</Text> */}
-                        {/* <View style={{ marginTop: 100 }}>
-              <Picker
-                selectedValue={selectedSubMetal}
-                style={{ height: 50, width: 270, alignSelf: "center" }}
-                itemStyle={{ fontSize: 18, color: "blue", backgroundColor: "white", paddingHorizontal: 10 }}
-                onValueChange={(itemValue) => setSubmetaltype(itemValue)}
-                mode="dropdown"
-              >
-                <Picker.Item label={`${submetalType}`} value="" />
-                {data.map((item, index) => (
-                 <Picker.Item
-                 label={item?.p_type_name ?? 'Unknown'} // Add null check here
-                 value={item?.p_type_name ?? 'Unknown'}
-                 key={index}
-               />
-               
-                ))}
-              </Picker>
-            </View> */}
                         <View style={{ marginTop: 15, alignItems: 'center', justifyContent: 'center' }}>
                             <Text style={{ fontSize: 20, fontWeight: '500' }}>Include some details</Text>
                         </View>
@@ -203,15 +202,12 @@ const ProductSubCatgry = ({ closeModal, visible, p_id ,navigation}) => {
                                     fontSize: 22,
                                     color: "blue",
                                     backgroundColor: "white",
-
-
                                 }}
                                 onValueChange={(itemValue) =>
                                     setSelectedsubmetal1(itemValue)
                                 }
                                 mode="dropdown" // Set mode to "dropdown" explicitly
                                 enabled={isDropdownenabled}
-
                             >
                                 <Picker.Item label={`${submetalType}`} value="" />
                                 {data.map((item, index) => (
@@ -220,14 +216,12 @@ const ProductSubCatgry = ({ closeModal, visible, p_id ,navigation}) => {
                                         value={item?.p_type_name ?? ''}
                                         key={index}
                                     />
-
                                 ))}
                             </Picker>
                             {submetalError && <Text style={{ color: 'red', marginBottom: -30, }}>* Required</Text>
                             }
-
                         </View>
-                        {!(selectedSubMetalPrice ==  '') && <View style={{
+                        {!(selectedSubMetalPrice == '') && <View style={{
                             borderBottomWidth: 2,
                             borderBottomColor: "#21005d", marginTop: 30, margin: 20,
                         }}>
@@ -279,7 +273,10 @@ const ProductSubCatgry = ({ closeModal, visible, p_id ,navigation}) => {
                         />
                         {weightError && <Text style={{ color: 'red', marginBottom: -15, margin: 20, marginTop: 8, }}>* Required</Text>}
 
-                        <TouchableOpacity style={{ backgroundColor: '#00457E', height: 70, width: '90%', alignSelf: 'center', borderRadius: 8, marginTop: 50, alignItems: 'center', justifyContent: 'center' }} onPress={handleNext}>
+                        {/* <TouchableOpacity style={{ backgroundColor: '#00457E', height: 60, width: '90%', alignSelf: 'center', borderRadius: 8, marginTop: 25, alignItems: 'center', justifyContent: 'center' }} onPress={resetBtn}>
+                            <Text style={{ color: 'white', fontSize: 27, fontWeight: '600' }}>Reset</Text>
+                        </TouchableOpacity> */}
+                        <TouchableOpacity style={{ backgroundColor: '#00457E', height: 60, width: '90%', alignSelf: 'center', borderRadius: 8, marginTop: 25, alignItems: 'center', justifyContent: 'center' }} onPress={handleNext}>
                             <Text style={{ color: 'white', fontSize: 27, fontWeight: '600' }}>Next</Text>
                         </TouchableOpacity>
                     </View>

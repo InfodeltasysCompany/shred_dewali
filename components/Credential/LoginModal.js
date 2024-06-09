@@ -28,9 +28,11 @@ const LoginModal = ({ navigation, visible,setVisible}) => {
   const closeModal=()=>{
     if(!(setVisible === undefined)){
       setVisible(!visible)
+    }else{
+      navigation.navigate("Main")
+
     }
     console.log(typeof(setVisible))
-    navigation.navigate("Main")
 
   }
  

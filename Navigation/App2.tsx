@@ -69,7 +69,9 @@ const Stack2 = () => {
 
   return (
     <Stack.Navigator>
-
+      <Stack.Screen name='My Order' component={T4Screen2} />
+      <Stack.Screen name='BuyOrder-Detail' component={InsideMYOrder_Buy} />
+      <Stack.Screen name='SellOrder-Detail' component={InsideMYOrder_Sell} />
       <Stack.Screen name='T2Screen1' component={T2Screen1} options={{
         headerTitle: 'Scrap Cart',
         headerTitleAlign: 'center',
@@ -116,7 +118,7 @@ const Stack2 = () => {
 
 
       />
-     
+
 
     </Stack.Navigator>
   )
@@ -304,8 +306,8 @@ const MainTabsComponents = () => {
           tabBarLabel: "Sell",
           headerShown: false,
         })}
-        listeners={({navigation})=>({
-          tabPress:event=>{
+        listeners={({ navigation }) => ({
+          tabPress: event => {
             event.preventDefault();
             navigation.navigate('ProductCatgry');
           }
