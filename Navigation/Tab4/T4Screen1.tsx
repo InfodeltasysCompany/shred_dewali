@@ -1,11 +1,12 @@
-import { Alert, Animated, Easing, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Animated, Easing, Linking, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 import LoginModal from '../../components/Credential/LoginModal';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Feather, Ionicons, MaterialCommunityIcons,AntDesign } from '@expo/vector-icons';
+import { Feather, Ionicons, MaterialCommunityIcons,AntDesign, MaterialIcons } from '@expo/vector-icons';
 import DisplayAllAddresses from '../../components/Modal/addressModal/DisplayAllAdresses';
+import FeedBackModal from '../../components/Modal/FeedBackModal';
 
 const T4Screen1 = ({ navigation }) => {
 
@@ -132,8 +133,26 @@ const [visible, setVisible] = useState(true)
       console.log(error);
     }
   };
-
- 
+  const handleHelpline = () => {
+    const phoneNumber = '+91 8090387120'; // Replace with your helpline number
+  
+    Linking.openURL(`tel:${phoneNumber}`)
+      .then(supported => {
+        if (!supported) {
+          console.log(`Phone number ${phoneNumber} is not supported`);
+        } else {
+          console.log(`Opening phone number ${phoneNumber}`);
+        }
+      })
+      .catch(err => console.error('An error occurred', err));
+  };
+const [isFeedbackModalVisible, setisFeedbackModalVisible] = useState(false);
+ const handleFeedback =()=>{
+setisFeedbackModalVisible(!isFeedbackModalVisible);
+ }
+ const closeFeedbackmodal =()=>{
+  setisFeedbackModalVisible(!isFeedbackModalVisible);
+ }
   ///////////////////////////////////////////////////////////////////////////
   const fadeIn = new Animated.Value(0);
 
@@ -165,7 +184,7 @@ const [visible, setVisible] = useState(true)
       }}
     >
               <DisplayAllAddresses visible={isAddressModalOpen} onClose={AddAdress} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
-
+            <FeedBackModal closeModal={closeFeedbackmodal} visible={isFeedbackModalVisible} />
       <View
         style={{
           padding: 20,
@@ -331,6 +350,75 @@ const [visible, setVisible] = useState(true)
 
             <View style={styles.icon1}>
               <Feather
+                name="chevron-right"
+                style={{
+                  fontSize: 25,
+                  color: "gray",
+                }}
+              />
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+          onPress={handleHelpline}
+          style={{ marginVertical: 7 }}
+        >
+          <View style={styles.button}>
+            <View style={styles.icon}>
+              <View>
+                <Ionicons
+                  name="call"
+                  style={{
+                    fontSize: 20,
+                    padding: 6,
+                    marginRight: 10,
+                    // backgroundColor: "",
+                    borderRadius: 50,
+                    // color: "white",
+                  }}
+                />
+              </View>
+
+              <View>
+                <Text style={styles.text1}>24X7 Helpline</Text>
+              </View>
+            </View>
+
+            <View style={styles.icon1}>
+              <Feather
+                name="chevron-right"
+                style={{
+                  fontSize: 25,
+                  color: "gray",
+                }}
+              />
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+          onPress={handleFeedback}
+          style={{ marginVertical: 7 }}
+        >
+          <View style={{...styles.button,}}>
+            <View style={{...styles.icon,}}>
+              <View>
+              <MaterialIcons
+                name="feedback"
+                style={{
+                  fontSize: 25,
+                  color: "black",
+                 
+                }}
+              />
+              </View>
+
+              <View>
+                <Text style={{...styles.text1, marginLeft:15,}}>FeedBack</Text>
+              </View>
+            </View>
+
+            <View style={styles.icon1}>
+            <Feather
                 name="chevron-right"
                 style={{
                   fontSize: 25,

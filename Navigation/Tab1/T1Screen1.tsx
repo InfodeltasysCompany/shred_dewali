@@ -62,6 +62,7 @@ import LoginModal from "../../components/Credential/LoginModal";
 import HandleAddAddressModal from "../../components/Modal/addressModal/DisplayAllAdresses";
 import SearchModal from "../../components/Modal/Search/SearchModal";
 import SearchModalContent from "../../components/Modal/Search/SearchModalContent";
+import RatingSlider from "../../components/OrderImage/RatingSlider";
 
 const T1Screen1 = ({ navigation }) => {
   const imgurl = "https://shreddersbay.com/API/uploads/";
@@ -736,6 +737,9 @@ const onSeachModalclose=()=>{
           <View>
             <CaroselImage />
           </View>
+          {/* <View>
+            <RatingSlider />
+          </View> */}
           <View>
             <LogoSlider1 navigation={navigation}/>
           </View>

@@ -1,63 +1,65 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Image, Dimensions, ToastAndroid } from 'react-native';
+import { StyleSheet, View, Image, Dimensions, ToastAndroid, Text } from 'react-native';
 import Swiper from 'react-native-swiper';
 
 const { width } = Dimensions.get('window');
 
 const RatingSlider = () => {
-  const [fileNames, setFileNames] = useState([]);
+  const [feedbackData, setFeedbackData] = useState([]);
+
   const imgurl = "https://shreddersbay.com/API/uploads/";
 
-  const localImages = [
-    require('../../assets/screw.jpeg'),
-    require('../../assets/auction.png'),
-    require('../../assets/copper.jpeg'),
-    require('../../assets/recycle.jpg'),
-    require('../../assets/lead.jpeg'),
-    require('../../assets/plastic.jpeg'),
-    require('../../assets/cardboard.jpeg'),
+  // Sample feedback data
+  const sampleFeedbackData = [
+    {
+      "feedback_id": "1",
+      "user_id": "2474",
+      "name": "priya",
+      "mobile": "9745478797",
+      "comments": "hello",
+      "address": "alambhag luckonw",
+      "status": "1",
+      "date": "0000-00-00 00:00:00"
+    },
+    {
+      "feedback_id": "2",
+      "user_id": "2479",
+      "name": "",
+      "mobile": "9648201278",
+      "comments": "excellent application",
+      "address": "Lucknow",
+      "status": "1",
+      "date": "0000-00-00 00:00:00"
+    },
+    {
+      "feedback_id": "3",
+      "user_id": "2474",
+      "name": "priya",
+      "mobile": "9745478797",
+      "comments": "hello",
+      "address": "alambhag luckonw",
+      "status": "1",
+      "date": "2024-06-12 23:47:50"
+    }
   ];
 
-  const getSliderApiResponse = async () => {
-    const url = "https://shreddersbay.com/API/product_api.php?action=select";
-    const response = await fetch(url);
-    
-    const resdata1 = await response.json();
-    if(resdata1.length == 0){
-      ToastAndroid.showWithGravity(
-        "Internet connection is weak.",
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER
-      );
-    }
-    const fileNamesArray = resdata1
-      .filter(item => item.file && item.file_name)
-      .map(item => item.file_name);
-
-    setFileNames(fileNamesArray);
-  }
-
   useEffect(() => {
-    getSliderApiResponse();
+    // Simulate fetching feedback data from an API
+    setTimeout(() => {
+      setFeedbackData(sampleFeedbackData);
+    }, 1000); // Simulate delay in fetching data
   }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.sliderContainer}>
         <Swiper autoplay={true} autoplayTimeout={4} showsPagination={false}>
-          {fileNames.length > 0 ? (
-            fileNames.map((image, index) => (
-              <View style={styles.slide} key={index}>
-                <Image style={styles.image} source={{ uri: imgurl + image }} />
-              </View>
-            ))
-          ) : (
-            localImages.map((image, index) => (
-              <View style={styles.slide} key={index}>
-                <Image style={styles.image} source={image} />
-              </View>
-            ))
-          )}
+          {feedbackData.map((feedback, index) => (
+            <View style={styles.slide} key={index}>
+              <Text>{feedback.comments}</Text>
+              {/* You can add other feedback details here */}
+            </View>
+          ))}
         </Swiper>
       </View>
     </View>
@@ -78,6 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
   image: {
     width: width,
