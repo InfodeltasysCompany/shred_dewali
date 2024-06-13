@@ -4,7 +4,7 @@ import Swiper from 'react-native-swiper';
 
 const { width } = Dimensions.get('window');
 
-const CaroselImage = () => {
+const RatingSlider = () => {
   const [fileNames, setFileNames] = useState([]);
   const imgurl = "https://shreddersbay.com/API/uploads/";
 
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CaroselImage;
+export default RatingSlider;

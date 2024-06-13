@@ -277,7 +277,9 @@ const ProductSubCatgry = ({ closeModal, visible, p_id, navigation }) => {
                             <Text style={{ color: 'white', fontSize: 27, fontWeight: '600' }}>Reset</Text>
                         </TouchableOpacity> */}
                         <TouchableOpacity style={{ backgroundColor: '#00457E', height: 60, width: '90%', alignSelf: 'center', borderRadius: 8, marginTop: 25, alignItems: 'center', justifyContent: 'center' }} onPress={handleNext}>
-                            <Text style={{ color: 'white', fontSize: 27, fontWeight: '600' }}>Next</Text>
+                            <Text 
+                            
+                            style={{ color: 'white', fontSize: 27, fontWeight: '600' }}>Next</Text>
                         </TouchableOpacity>
                     </View>
 

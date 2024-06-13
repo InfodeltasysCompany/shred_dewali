@@ -126,8 +126,52 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
   };
 
   const closeModal = () => {
-    setisVisible(!visible);
+    let url = "";
+    if (isAuctionEnabled) {
+      url = "https://shreddersbay.com/API/auctioncart_api.php?action=delete&cart_id=";
+    } else {
+      url = "https://shreddersbay.com/API/cart_api.php?action=delete&cart_id=";
+    }
+  console.log("previewData:=>",)
+    Alert.alert(
+      'Confirmation', // Title
+      'Are you sure you want to Discard the Changes?', // Message
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: async () => {
+            try {
+              for (let i = 0; i < dataforPreview.length; i++) {
+                const element = dataforPreview[i];
+                const apiUrl = `${url}${element.cart_id}`;
+  
+                const response = await fetch(apiUrl, {
+                  method: "DELETE",
+                  // You can add headers or other options here if required
+                });
+  
+                if (!response.ok) {
+                  throw new Error("Failed to delete data");
+                }
+  
+                console.log("Data deleted successfully", apiUrl);
+              }
+              setisVisible(!visible);
+            } catch (error) {
+              console.error("Error:", error.message);
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
+  
 
   ///////////////////////////
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -244,7 +288,12 @@ const handlePublishYourAdBtn = async () => {
       setIsSubmitting(false);
     }
   } else {
-    Alert.alert("Please fill all the necessary fields.");
+    // Alert.alert("Please fill all the necessary fields.");
+    ToastAndroid.showWithGravity(
+      "Please fill all the necessary fields.",
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER
+    );
     setIsSubmitting(false);
   }
 };
@@ -415,7 +464,7 @@ const handlePublishYourAdBtn = async () => {
 
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.button} onPress={handlePublishYourAdBtn}>
+      <TouchableOpacity style={{...styles.button,marginBottom:2,}} onPress={handlePublishYourAdBtn}>
         <Text style={styles.buttonText}>Publish Your Ad</Text>
       </TouchableOpacity>
     </Modal>
@@ -487,21 +536,19 @@ const styles = StyleSheet.create({
 
   button: {
     backgroundColor: '#00457E',
-    height: 50,
+    height: 70,
     width: '100%',
     borderRadius: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    // position: 'absolute',
-    bottom: 0, // Adjust as needed for padding from the bottom
-
+    
   },
 
 
 
   buttonText: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: '600',
   },
 });

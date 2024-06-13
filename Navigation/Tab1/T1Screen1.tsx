@@ -16,6 +16,8 @@ import {
   Platform,
   
 } from "react-native";
+import Constants from 'expo-constants';
+
 import React, {
   useEffect,
   useState,
@@ -32,7 +34,7 @@ import { StyleSheet } from "react-native";
 import { EvilIcons, FontAwesome, Ionicons } from "@expo/vector-icons";
 import EntypoIcon from "react-native-vector-icons/Entypo"; // Import the Entypo icon
 import Login from "../../components/Credential/Login";
-import LogoSlider from "../../components/OrderImage/LogoSlider";
+import LogoSlider1 from "../../components/OrderImage/LogoSlider";
 import Aluminium from "../../components/OrderImage/Aluminium";
 import CopperImage from "../../components/OrderImage/CopperImage";
 import T1Screen1modal1 from "./T1Screen1modal1";
@@ -256,26 +258,7 @@ const T1Screen1 = ({ navigation }) => {
 
 
   }
-  // const getOrderResponse = async () => {
-  //   try {
-  //     const country = encodeURIComponent(currentAddress.country||""||currentAddress.country_name);
-  //   const city  = encodeURIComponent(currentAddress.city||""||currentAddress.city_name);
-  //   const userId = encodeURIComponent(userIdApp || "");
-  //   console.log("userid"+userId +"city"+city +"country"+country);
-  //   const url1 = `https://shreddersbay.com/API/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`
-  //   // https://shreddersbay.com/API/orders_api.php?action=select&userId=
-  //       const url =
-  //     "https://shreddersbay.com/API/orders_api.php?action=select";
-  //   const data = await getApiResponse(url1);
-  //   console.log("order urlis:=.",url1)
-  //   console.log("orderdata", data);
-  //   settOrderData(data);
-  //   } catch (error) {
-  //     console.log("the order error is =>",error);
-  //   }
 
-
-  // }
   const getOrderResponse = async () => {
     try {
       // Encode URI components to handle special characters in URLs
@@ -386,11 +369,12 @@ if(!currentAddress){
   const [isandroidUpdateModalVisible, setIsandroidUpdateModalVisible] =
     useState(false);
   const setUpdateModal = async () => {
-    setIsandroidUpdateModalVisible(!isandroidUpdateModalVisible);
-    await Updates.fetchUpdateAsync();
     await Updates.reloadAsync();
+
+    setIsandroidUpdateModalVisible(!isandroidUpdateModalVisible);
   };
 
+  const [updatesVersion, setupdatesVersion] = useState("");
   useEffect(() => {
    
     async function onFetchUpdateAsync() {
@@ -416,15 +400,25 @@ if(!currentAddress){
 
       try {
         const update = await Updates.checkForUpdateAsync();
+        const appVersion = Constants.expoConfig.version;
+        console.log("appVersion=>",appVersion);
+
         if (update.isAvailable) {
           await Updates.fetchUpdateAsync();
+          const newver = Updates.runtimeVersion;
+          setupdatesVersion(newver);
+            console.log("newVer=>",newver);
+
           // Notify user to reload the app
-          Alert.alert('Update available', 'An update has been downloaded. Restart the app to apply the updates.', [
-            {
-              text: 'Restart',
-              onPress: () => Updates.reloadAsync(),
-            },
-          ]);
+          // Alert.alert('Update available', 'An update has been downloaded. Restart the app to apply the updates.', [
+          //   {
+          //     text: 'Restart',
+          //     onPress: () => Updates.reloadAsync(),
+          //   },
+          // ]
+          
+          // );
+          setIsandroidUpdateModalVisible(!isandroidUpdateModalVisible);
         }
       } catch (e) {
         console.error(e);
@@ -641,6 +635,7 @@ const onSeachModalclose=()=>{
         <AskForAppUpdate
           isAndroidUpdateModal={isandroidUpdateModalVisible}
           setUpdateModal={setUpdateModal}
+          updatesVersion={updatesVersion}
         />
       </View>
 
@@ -742,7 +737,7 @@ const onSeachModalclose=()=>{
             <CaroselImage />
           </View>
           <View>
-            <LogoSlider navigation={navigation}/>
+            <LogoSlider1 navigation={navigation}/>
           </View>
           <View>
             <View style={styles.container3}>
@@ -761,7 +756,7 @@ const onSeachModalclose=()=>{
                     >
                       <View style={styles.imageContainer}>
                         <Image
-                          source={{ uri: imgurl + item.filename }}
+                          source={{ uri: imgurl + item.filename.split(",")[0] }}
                           style={styles.image}
                         />
                       </View>
@@ -1405,8 +1400,12 @@ export const MainChats: React.FC<{
 export const AskForAppUpdate: React.FC<{
   isAndroidUpdateModal: boolean;
   setUpdateModal: () => void;
-}> = ({ isAndroidUpdateModal, setUpdateModal }) => {
+  updatesVersion:string;
+ 
+}> = ({ isAndroidUpdateModal, setUpdateModal,updatesVersion }) => {
   const handleUpdateModal =async()=>{
+    const appVersion = Constants.expoConfig.version;
+    console.log("appVersion=>",appVersion);
     const url ="https://play.google.com/store/apps/details?id=com.shreddersbay";
     try {
       const supported = await Linking.canOpenURL(url);
@@ -1421,6 +1420,16 @@ export const AskForAppUpdate: React.FC<{
 
     }
   }
+  const [isthereNewVersion, setisthereNewVersion] = useState(false);
+  useEffect(()=>{
+    const appVersion = Constants.expoConfig.version;
+
+    if(updatesVersion == appVersion){
+      setisthereNewVersion(true);
+    }else{
+      setisthereNewVersion(false);
+    }
+  },[])
   // const handleUpdateModal = async () => {
   //   let url = "";
 
@@ -1504,10 +1513,11 @@ export const AskForAppUpdate: React.FC<{
                 height: 50,
                 marginRight: 18,
               }}
-              onPress={() => handleUpdateModal()}
-            >
+              // onPress={() => handleUpdateModal()}
+              onPress={() => (isthereNewVersion ? setUpdateModal() : handleUpdateModal())}
+              >
               <Text style={{ color: "white", fontSize: 20, fontWeight: "500" }}>
-                Update
+                {isthereNewVersion?"Restart":"Update"}
               </Text>
             </TouchableOpacity>
           </View>

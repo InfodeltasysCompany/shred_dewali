@@ -1,6 +1,6 @@
 import { AntDesign, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { View, Text, Image, StyleSheet, Modal, FlatList, Button, Alert, Dimensions, ScrollView, Pressable, TouchableOpacity, Switch } from "react-native";
+import { View, Text, Image, StyleSheet, Modal, FlatList, Button, Alert, Dimensions, ScrollView, Pressable, TouchableOpacity, Switch, ToastAndroid } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import ProductPreviewAndPost from "./ProductPreviewAndPost";
 import DisplayAllAddresses from "../../components/Modal/addressModal/DisplayAllAdresses";
@@ -94,7 +94,7 @@ const closePreviewModal=()=>{
 
 } 
   const handleNext = async() => {
-    if (userIdApp && address && images.length) {
+    if (userIdApp && (address !== null) && images.length) {
       if (isAuctionEnabled) {
         //call Insert Auction Cart api. 
         // Alert.alert("Auction is created happily.")
@@ -193,8 +193,14 @@ const closePreviewModal=()=>{
             console.log(formData)
     
             if (uploadResponse.ok) {
-              imageAddressResetbtn();
-              Alert.alert("Add Scrap Successfully.");
+              // imageAddressResetbtn();
+              // Alert.alert("Add Scrap Successfully.");
+              ToastAndroid.showWithGravity(
+                "Add Scrap Successfully.",
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER
+              );
+             
 
               setIspreviewModalVisible(!ispreviewModalVisible)
 
@@ -315,7 +321,13 @@ const closePreviewModal=()=>{
           if (uploadResponse.ok) {
             // console.log("uploadResponse:=>",uploadResponse)
             // imageAddressResetbtn();
-            Alert.alert("Add Scrap Successfully.");
+            // Alert.alert("Add Scrap Successfully.");
+            ToastAndroid.showWithGravity(
+              "Add Scrap Successfully.",
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER
+            );
+            
 
             setIspreviewModalVisible(!ispreviewModalVisible)
 
@@ -341,7 +353,13 @@ const closePreviewModal=()=>{
       }
 
     } else {
-      Alert.alert("Please fill all fill..")
+      // Alert.alert("Please fill all fill..");
+      ToastAndroid.showWithGravity(
+        "Please fill all fill..",
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER
+      );
+      
     }
 
   }
@@ -524,7 +542,7 @@ const closePreviewModal=()=>{
             value={isAuctionEnabled}
           />
         </Pressable>
-        <TouchableOpacity style={{ backgroundColor: '#00457E', height: 70, width: '90%', alignSelf: 'center', borderRadius: 8, alignItems: 'center', justifyContent: 'center', bottom: 0, }} onPress={handleNext}>
+        <TouchableOpacity style={{ backgroundColor: '#00457E', height: 60, width: '90%', alignSelf: 'center', borderRadius: 8, marginTop: 25, alignItems: 'center', justifyContent: 'center',marginBottom:20, }} onPress={handleNext}>
           <Text style={{ color: 'white', fontSize: 27, fontWeight: '600' }}>{isAuctionEnabled ? "Auction" : "Order"} preview</Text>
         </TouchableOpacity>
       </View>

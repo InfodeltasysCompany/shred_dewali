@@ -35,6 +35,7 @@ import { Addbtnchanged, Addbtndef } from '../components/Addbtn';
 import { AuthContext } from '../redux/ContextApi/UserAuthProvider';
 import LoginModal from '../components/Credential/LoginModal';
 import ProductCatgry from './Tab3/ProductCatgry';
+import OrderAuction from './Tab2/OrderAuction';
 
 
 const Stack = createStackNavigator();
@@ -69,7 +70,9 @@ const Stack2 = () => {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen name='My Order' component={T4Screen2} />
+            <Stack.Screen name='My Order' component={OrderAuction} />
+
+      {/* <Stack.Screen name='My Order' component={T4Screen2} /> */}
       <Stack.Screen name='BuyOrder-Detail' component={InsideMYOrder_Buy} />
       <Stack.Screen name='SellOrder-Detail' component={InsideMYOrder_Sell} />
       <Stack.Screen name='T2Screen1' component={T2Screen1} options={{
@@ -287,7 +290,7 @@ const MainTabsComponents = () => {
         component={Stack2}
         options={({ navigation }) => ({
           headerShown: false,
-          tabBarLabel: "Scrap Cart",
+          tabBarLabel: "My Order",
         })}
         listeners={({ navigation }) => ({
           tabPress: event => {

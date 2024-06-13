@@ -12,10 +12,10 @@ const data1 = [
   { imageSource: require('../../assets/cardboard.jpeg'), name: 'Cardboard' },
 ];
 
-const LogoSlider = ({navigation}) => {
+const LogoSlider1 = ({navigation}) => {
   const handleOnclick=()=>{
 
-    navigation.navigate("Scrap Item",{screen:"T3Screen"})
+    navigation.navigate("ProductCatgry");
   }
  // Accessing the current screen name
  
@@ -73,4 +73,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LogoSlider;
+export default LogoSlider1;

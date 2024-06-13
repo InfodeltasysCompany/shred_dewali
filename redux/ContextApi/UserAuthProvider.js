@@ -8,6 +8,11 @@ let handleloginModalvisible =(userIdApp)=>{
 }
 
 const UserAuthProvider = (props) => {
+  const [isReviewVisible, setisReviewVisible] = useState(false);
+  useEffect(()=>{
+
+    
+  },[])
   // Global State
   const [state, setState] = useState({
     // user: null,
@@ -22,7 +27,8 @@ const UserAuthProvider = (props) => {
     // token: null, // If needed
     isloginModalVisible:false
 
-  });
+  
+  },[]);
 
   useEffect(() => {
     const getLocalUserData = async () => {
@@ -64,7 +70,7 @@ const UserAuthProvider = (props) => {
   }, []);
   
   return (
-    <AuthContext.Provider value={[state, setState]}>
+    <AuthContext.Provider value={[state, setState,isReviewVisible]}>
       {props.children}
     </AuthContext.Provider>
   );
