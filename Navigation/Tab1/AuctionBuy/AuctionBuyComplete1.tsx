@@ -1,57 +1,29 @@
 import { View, Text, TouchableOpacity,StyleSheet ,ScrollView, RefreshControl} from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
 // import { ScrollView } from 'react-native-gesture-handler';
 
-const SCurrent = () => {
-     const [userId,setUserId]=useState(null)
+const OrderBuyComplete1 = ({index,setIndex}) => {
      const [currentdata,setcurrentdata]=useState([]);
-     const [refreshing, setRefreshing] = useState(false)
+     const [refreshing, setRefreshing] = useState(false);
+     const [state, setState] = useContext(AuthContext);
+     const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
+   
 
      useEffect(() => {
-      mImp();
-     }, [userId]);
+      getcurrent();
+     }, [userIdApp,index]);
 
-     const mImp =()=>{
-          fetchData();
-       if(userId !== null){
-          getcurrent();
-       }
-     }
-     const fetchData = async () => {
-          try {
-            const storedData = await AsyncStorage.getItem('UserCred');
-    
-            if (storedData !== null) {
-              const userDataObject = JSON.parse(storedData);
-              // setUserDataLocalStorage(userDataObject);
-    
-              // Check if the '0' key exists and 'id' field is present in the object
-              if (userDataObject && userDataObject['0'] && userDataObject['0'].id) {
-                const userId = userDataObject['0'].id;
-                setUserId(userId)
-                // Now, userId contains the value of the 'id' field from userDataLOCAL_STORAGE
-                // console.log('in mathod User ID:', userId);
-              } else {
-                console.log('No user data or ID found.');
-              }
-            } else {
-              console.log('No data found');
-            }
-          } catch (error) {
-            console.error('Error retrieving data:', error);
-          }
-    
-        };
-
+   
      const getcurrent = async () => {
           try {
-            // const formData = new FormData();
-            // formData.append('user_id', userId);
+            const formData = new FormData();
+            formData.append('user_id', userIdApp);
         
-            const response = await fetch(`https://shreddersbay.com/API/orders_api.php?action=selectCustomerCurrent&user_id=${userId}`, {
-              method: 'GET',
-              // body: formData,
+            const response = await fetch('https://shreddersbay.com/API/auctionOrder_api.php?action=select_complete', {
+              method: 'POST',
+              body: formData,
               // Add headers if required, such as content-type or authorization
             });
         
@@ -75,7 +47,7 @@ const SCurrent = () => {
           console.log('Clicked item:', item);
         };
         const onRefresh = () => {
-          mImp();
+          getcurrent();
         }
         
   return (
@@ -159,4 +131,4 @@ const styles = StyleSheet.create({
    });
    
 
-export default SCurrent
+export default OrderBuyComplete1

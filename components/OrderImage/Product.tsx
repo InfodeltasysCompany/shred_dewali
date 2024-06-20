@@ -20,6 +20,7 @@ const Product = ({ item, handlebuypress, getusers }) => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
+    // console.log("itemmmm:=>",item);
     if (item && item.filename) {
       const imageUrls = item.filename.split(",").map(filename => imgurl + filename.trim());
       setImages(imageUrls);

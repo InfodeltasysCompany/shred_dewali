@@ -1,302 +1,224 @@
-import { Dimensions, StyleSheet, Text, View, Image, Modal, Button, useWindowDimensions } from 'react-native';
+
+
+
 import React, { useState } from 'react';
+import { Dimensions, StyleSheet, Text, View, Image, Modal, TouchableOpacity } from 'react-native';
 import Swiper from 'react-native-swiper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 import { AntDesign } from '@expo/vector-icons';
+import OrderBuyModal from './Tab2Modals/OrderBuy/OrderBuyModal';
+import OrderSellModal from './Tab2Modals/OrderSell/OrderSellModal';
+import AuctionBuyModal from './Tab2Modals/AuctionBuy/AuctionBuyModal';
+import AuctionSellModal from './Tab2Modals/AuctionSell/AuctionSellModal';
+
 const { width } = Dimensions.get('window');
 
+// Component for the Order tab
+const OrderScreen = ({ openOrderBuyModal, openOrderSellModal }) => (
+  <View style={[styles.scene, { backgroundColor: '#fff' }]}>
+    <View style={styles.buySellContainer}>
+      <TouchableOpacity style={[styles.buySellButton, styles.buyButton]} onPress={openOrderBuyModal}>
+        <Text style={styles.buySellButtonText}>Buy</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.buySellButton, styles.sellButton]} onPress={openOrderSellModal}>
+        <Text style={styles.buySellButtonText}>Sell</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+);
+
+// Component for the Auction tab
+const AuctionScreen = ({ openAuctionBuyModal, openAuctionSellModal }) => (
+  <View style={[styles.scene, { backgroundColor: '#fff' }]}>
+    <View style={styles.buySellContainer}>
+      {/* <TouchableOpacity style={[styles.buySellButton, styles.buyButton]} onPress={openAuctionBuyModal}>
+        <Text style={styles.buySellButtonText}>Auction</Text>
+      </TouchableOpacity> */}
+      <TouchableOpacity style={[styles.buySellButton, styles.sellButton]} onPress={openAuctionSellModal}>
+        <Text style={styles.buySellButtonText}>Auction</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+);
+
+const initialLayout = { width: Dimensions.get('window').width };
+
 const OrderAuction = () => {
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'order', title: 'Order' },
+    { key: 'auction', title: 'Auction' },
+  ]);
 
-     const [isModalVisible, setIsModalVisible] = useState(false);
+  const renderScene = SceneMap({
+    order: () => <OrderScreen openOrderBuyModal={openOrderBuyModal} openOrderSellModal={openOrderSellModal} />,
+    auction: () => <AuctionScreen openAuctionBuyModal={openAuctionBuyModal} openAuctionSellModal={openAuctionSellModal} />,
+  });
 
-
-
-     const openModal = () => {
-          setIsModalVisible(true);
-     };
-
-     const closeModal = () => {
-          setIsModalVisible(false);
-     };
-
-     const images = [
-          require('../../assets/auction1.jpeg'),
-          require('../../assets/Order2.jpeg'),
-
-     ];
-
-
-     return (
-          <View style={styles.container}>
-
-               <View style={styles.sliderContainer}>
-                    <Swiper
-                         style={styles.wrapper}
-                         autoplay={true}
-                         showsPagination={true}
-                         dotStyle={styles.dotStyle}
-                         activeDotStyle={styles.activeDotStyle}
-                    >
-
-                         {
-                              images.map((image, index) => (
-                                   <View style={styles.slide} key={index}>
-                                        <Image style={styles.image} source={image} />
-                                   </View>
-                              ))
-                         }
-                    </Swiper>
-               </View>
-
-
-               <View style={styles.container1}>
-                    <TouchableOpacity style={styles.button} onPress={openModal}>
-                         <Text style={styles.buttonText}>Order</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.button1}>
-                         <Text style={styles.buttonText}>Auction</Text>
-                    </TouchableOpacity>
-
-                    <FullPageModal visible={isModalVisible} onClose={closeModal} />
-               </View>
-
-
-          </View>
-     );
-}
-
-
-const FirstRoute = () => (
-     <View style={[styles.scene, { backgroundColor: '#fff' }]}>
-         
-      <View style={styles.btn}>
-        <TouchableOpacity >
-          <View >
-          <Text style={styles.txt}>
-             Buy-Current
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.btn}>
-        <TouchableOpacity >
-          <View>
-            <Text style={styles.txt}>
-             Buy-Complete
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-     </View>
-);
-
-const SecondRoute = () => (
-     <View style={[styles.scene, { backgroundColor: '#fff' }]}>
-          <View style={styles.btn}>
-        <TouchableOpacity >
-          <View >
-          <Text style={styles.txt}>
-             Sell-Current
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.btn}>
-        <TouchableOpacity >
-          <View>
-            <Text style={styles.txt}>
-             Sell-Complete
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-     </View>
-);
-
-
-const FullPageModal = ({ visible, onClose }) => {
-
-     const [index, setIndex] = React.useState(0);
-     const layout = useWindowDimensions();
   
-     const [routes] = React.useState([
-          { key: 'first', title: 'Buyorder-Deatil' },
-          { key: 'second', title: 'Sellorder-Detail' },
-     ]);
+  // Modal visibility states and functions
+  const [isOrderBuyModalVisible, setIsOrderBuyModalVisible] = useState(false);
+  const [isOrderSellModalVisible, setIsOrderSellModalVisible] = useState(false);
+  const [isAuctionBuyModalVisible, setIsAuctionBuyModalVisible] = useState(false);
+  const [isAuctionSellModalVisible, setIsAuctionSellModalVisible] = useState(false);
 
-     const renderScene = SceneMap({
-          first: FirstRoute,
-          second: SecondRoute,
-     });
+  const openOrderBuyModal = () => setIsOrderBuyModalVisible(true);
+  const closeOrderBuyModal = () => setIsOrderBuyModalVisible(false);
 
-     const renderTabBar = props => (
-          <TabBar
-            {...props}
-            indicatorStyle={{ backgroundColor: '#ff4081' }}
-            style={{ backgroundColor: '#00457E' }}
-            labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
-          />
-        );
+  const openOrderSellModal = () => setIsOrderSellModalVisible(true);
+  const closeOrderSellModal = () => setIsOrderSellModalVisible(false);
 
-     const CloseIcon = ({ onPress }) => (
-          <AntDesign name='close' size={30} onPress={onPress}/>
-          
-     );
+  const openAuctionBuyModal = () => setIsAuctionBuyModalVisible(true);
+  const closeAuctionBuyModal = () => setIsAuctionBuyModalVisible(false);
 
+  const openAuctionSellModal = () => setIsAuctionSellModalVisible(true);
+  const closeAuctionSellModal = () => setIsAuctionSellModalVisible(false);
 
-     return (
-          <Modal
-               animationType="slide"
-               transparent={false}
-               visible={visible}
-               onRequestClose={onClose}>
-               <View style={styles.modalContainer}>
-                    <CloseIcon onPress={onClose}  />
-                    <View style={styles.modalContent}>
-                         <TabView
-                              navigationState={{ index, routes }}
-                              renderScene={renderScene}
-                              onIndexChange={setIndex}
-                              renderTabBar={renderTabBar}
-                              initialLayout={{ width: layout.width, height: layout.height }}
-                         />
-                    </View>
-               </View>
-          </Modal>
-     );
+  return (
+    <View style={styles.container}>
+      <View style={styles.sliderContainer}>
+        <Swiper
+          style={styles.wrapper}
+          autoplay={true}
+          showsPagination={true}
+          dotStyle={styles.dotStyle}
+          activeDotStyle={styles.activeDotStyle}
+        >
+          {/* Replace with your actual images */}
+          <View style={styles.slide}>
+            <Image style={styles.image} source={require('../../assets/auction1.jpeg')} />
+          </View>
+          <View style={styles.slide}>
+            <Image style={styles.image} source={require('../../assets/Order2.jpeg')} />
+          </View>
+        </Swiper>
+      </View>
+
+      <View style={styles.tabView}>
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={initialLayout}
+          renderTabBar={props => (
+            <TabBar
+              {...props}
+              indicatorStyle={styles.indicator}
+              style={styles.tabBar}
+              labelStyle={styles.tabText}
+            />
+          )}
+        />
+      </View>
+
+      {/* Pass modal visibility and close functions as props */}
+      <OrderBuyModal visible={isOrderBuyModalVisible} closeModal={closeOrderBuyModal} />
+      <OrderSellModal visible={isOrderSellModalVisible} closeModal={closeOrderSellModal} />
+      <AuctionBuyModal visible={isAuctionBuyModalVisible} closeModal={closeAuctionBuyModal} />
+      <AuctionSellModal visible={isAuctionSellModalVisible} closeModal={closeAuctionSellModal} />
+
+    </View>
+  );
 };
 
+// Your FullPageModal component
 
-
-
-export default OrderAuction;
 
 const styles = StyleSheet.create({
-
-     btn: {
-          height: 60,
-          width: "70%",
-          justifyContent: "center",
-          marginTop: 30,
-          backgroundColor: "#00457E",
-          borderRadius: 45, 
-          borderWidth: 2,
-          borderColor: "#999",
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.8,
-          shadowRadius: 4,
-          elevation: 5, 
-        },
-        txt: {
-          fontSize: 25,
-          alignSelf: "center",
-          fontWeight: "400",
-          color: 'white',
-        },
-
-     scene: {
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          
-     },
-     modalContainer: {
-          flex: 1,
-          backgroundColor: 'white',
-        },
-        modalContent: {
-          flex: 1,
-        },
-
-     container: {
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-     },
-
-     container1: {
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          padding: 20,
-     },
-
-     sliderContainer: {
-          width: width, // Set the width of the container view
-          height: 500, // Set the height of the container view
-     },
-     wrapper: {},
-     slide: {
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-     },
-     image: {
-          width: width, // Set the image width to fill the container
-          height: '80%', // Set the image height to fill the container
-          resizeMode: 'cover',
-          borderRadius: 20,
-     },
-
-     button: {
-          backgroundColor: '#00457E', // Blue color
-          paddingVertical: 15,
-          paddingHorizontal: 40,
-          borderRadius: 15,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.8,
-          shadowRadius: 2,
-          elevation: 5,
-          marginRight: 20,
-     },
-
-
-     button1: {
-          backgroundColor: '#00457E', // Blue color
-          paddingVertical: 15,
-          paddingHorizontal: 30,
-          borderRadius: 15,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.8,
-          shadowRadius: 2,
-          elevation: 5,
-
-     },
-     buttonText: {
-          color: '#FFF',
-          fontSize: 20,
-          fontWeight: 'bold',
-          textAlign: 'center',
-     },
-
-     dotStyle: {
-          backgroundColor: 'rgba(255, 255, 255, 0.5)', // Customize the dot color
-          width: 10,
-          height: 10,
-          borderRadius: 5,
-          marginHorizontal: 3,
-     },
-     activeDotStyle: {
-          backgroundColor: '#1E90FF', // Customize the active dot color
-          width: 10,
-          height: 10,
-          borderRadius: 5,
-          marginHorizontal: 3,
-     },
-
-
-     closeButton: {
-          position: 'absolute',
-          top: 40,
-          right: 20,
-     },
-
-     modalText: {
-          fontSize: 18,
-          marginBottom: 20,
-     },
+  container: {
+    flex: 1,
+  },
+  sliderContainer: {
+    height: 400,
+  },
+  wrapper: {},
+  slide: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: width,
+    height: '80%',
+    resizeMode: 'cover',
+    borderRadius: 20,
+  },
+  tabView: {
+    flex: 1,
+    backgroundColor: '#f2f2f2',
+  },
+  scene: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tabText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  buySellContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  buySellButton: {
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 15,
+    marginHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  buyButton: {
+    backgroundColor: '#00457E', // Green color
+  },
+  sellButton: {
+    backgroundColor: '#00457E', // Red color
+  },
+  buySellButtonText: {
+    color: '#FFF',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  modalContent: {
+    flex: 1,
+    marginTop: 30,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    color: '#333',
+  },
+  dotStyle: {
+    backgroundColor: 'rgba(130, 130, 130, 0.5)',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginHorizontal: 3,
+  },
+  activeDotStyle: {
+    backgroundColor: '#1E90FF',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginHorizontal: 3,
+  },
+  indicator: {
+    backgroundColor: '#1E90FF', // Tab indicator color
+  },
+  tabBar: {
+    backgroundColor: '#f2f2f2', // Tab bar background color
+  },
 });
+
+export default OrderAuction;

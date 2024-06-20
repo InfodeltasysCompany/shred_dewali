@@ -1,56 +1,29 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl, Button, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import { AuthContext } from '../../../../redux/ContextApi/UserAuthProvider';
 // import { ScrollView } from 'react-native-gesture-handler';
 
-const BCurrent = ({navigation}) => {
+const AuctionBuyCurrent = ({index,setIndex}) => {
   const [userId, setUserId] = useState(null)
   const [currentdata, setcurrentdata] = useState([]);
   const [refreshing, setRefreshing] = useState(false)
+  const [state, setState] = useContext(AuthContext);
+  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
+
 
   useEffect(() => {
-    mImp();
-  }, [userId]);
+    getcurrent();
+  }, []);
 
-  const mImp = () => {
-    fetchData();
-    if (userId !== null) {
-      getcurrent();
-    }
-  }
-  const fetchData = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem('UserCred');
-
-      if (storedData !== null) {
-        const userDataObject = JSON.parse(storedData);
-        // setUserDataLocalStorage(userDataObject);
-
-        // Check if the '0' key exists and 'id' field is present in the object
-        if (userDataObject && userDataObject['0'] && userDataObject['0'].id) {
-          const userId = userDataObject['0'].id;
-          setUserId(userId)
-          // Now, userId contains the value of the 'id' field from userDataLOCAL_STORAGE
-          // console.log('in mathod User ID:', userId);
-        } else {
-          console.log('No user data or ID found.');
-        }
-      } else {
-        console.log('No data found');
-      }
-    } catch (error) {
-      console.error('Error retrieving data:', error);
-    }
-
-  };
-
+  
   const getcurrent = async () => {
     try {
       const formData = new FormData();
-      formData.append('user_id', userId);
+      formData.append('user_id', userIdApp);
 
-      const response = await fetch('https://shreddersbay.com/API/orders_api.php?action=select_current', {
+      const response = await fetch('https://shreddersbay.com/API/auctionOrder_api.php?action=select_current', {
         method: 'POST',
         body: formData,
         // Add headers if required, such as content-type or authorization
@@ -71,16 +44,7 @@ const BCurrent = ({navigation}) => {
     }
   };
   const [isChoose, setIsChoose] = useState(false);
-  // const [currentdata, setCurrentData] = useState([]); // Your data state
 
-  
-  // const handleCardClick = (item: any) => {
-    // setIsChoose(!isChoose)
-    // // Handle click on card, for example, navigate to a new screen or perform an action
-    // console.log('Clicked item:', item);
-    // showCustomAlert(item)
-
-  // }
   const showCustomAlert = (item) => {
     Alert.alert(
       'Confirmation',
@@ -110,22 +74,18 @@ const BCurrent = ({navigation}) => {
     );
   };
   const onRefresh = () => {
-    mImp();
+    getcurrent();
   }
   const [responseData, setResponseData] = useState<string>('');
 
   const handleChoose= async (item)=>{
     try {
-      const apiUrl = 'https://shreddersbay.com/API/orders_api.php?action=complete'; // Replace with your actual API endpoint
+      const apiUrl = 'https://shreddersbay.com/API/auctionOrder_api.php?action=complete'; // Replace with your actual API endpoint
 
-      // const requestBody = {
-      //   booking_id: item.booking_id,
-      //   user_id: item.id,
-      //   // Add other data as needed
-      // };
+     
       const formData = new FormData()
       formData.append('booking_id',item.booking_id);
-      formData.append('user_id',userId)
+      formData.append('user_id',userIdApp)
       
 
 
@@ -142,8 +102,8 @@ const BCurrent = ({navigation}) => {
         const data = await response.json();
         setResponseData(JSON.stringify(data));
         console.log(responseData);
-        navigation.navigate('Complete')
-
+        // navigation.navigate('Complete')
+        setIndex(1);
 
         
         
@@ -284,4 +244,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default BCurrent
+export default AuctionBuyCurrent

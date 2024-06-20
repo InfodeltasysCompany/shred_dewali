@@ -55,7 +55,8 @@ const T4Screen1 = ({ navigation }) => {
   }, []);
 const [visible, setVisible] = useState(true)
   const orderDetail = () => {
-    navigation.navigate("My Order");
+    // navigation.navigate("My Order");
+    navigation.navigate("Scrap Cart",{screen:"My Order"});
   };
 
   const [isAddressModalOpen, setisAddressModalOpen] = useState(false);

@@ -14,7 +14,7 @@ import {
   Dimensions,
   Linking,
   Platform,
-  
+
 } from "react-native";
 import Constants from 'expo-constants';
 
@@ -63,15 +63,18 @@ import HandleAddAddressModal from "../../components/Modal/addressModal/DisplayAl
 import SearchModal from "../../components/Modal/Search/SearchModal";
 import SearchModalContent from "../../components/Modal/Search/SearchModalContent";
 import RatingSlider from "../../components/OrderImage/RatingSlider";
+import AuctionBuyModal1 from "./AuctionBuy/AuctionBuyModal1";
+import OrderBuyModal1 from "./OrderBuy/OrderBuyModal1";
 
 const T1Screen1 = ({ navigation }) => {
   const imgurl = "https://shreddersbay.com/API/uploads/";
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [detaildata, setdetaildata] = useState<any | number>(null);
-
+  const [isAllBuyCurrentOrderModalVisible, setIsAllBuyCurrentOrderModalVisible] = useState(false);
+  const [isAllBuyAuctionOrderModalVisible, setIsAllBuyAuctionOrderModalVisible] = useState(false);
   const [state, setState] = useContext(AuthContext);
-  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password,isloginModalVisible } = state;
+  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false)
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false)
 
@@ -80,7 +83,7 @@ const T1Screen1 = ({ navigation }) => {
   //     ...prevState,
   //     isloginModalVisible:!isloginModalVisible,
 
-      
+
   //   }));
   // }
   const dispatch = useDispatch();
@@ -92,9 +95,9 @@ const T1Screen1 = ({ navigation }) => {
   const error = useSelector((state: any) => state.dashboard.error);
   const [userfilterdata, setuserfilterdata] = useState([]);
   const [auctionFiteredData, setAuctionFiteredData] = useState([]);
-  
-  const getPickChooseAddressfromAddressModal =(addr)=>{
-    console.log("Choosen address=>",addr);
+
+  const getPickChooseAddressfromAddressModal = (addr) => {
+    console.log("Choosen address=>", addr);
     setCurrentAddress(addr)
   }
 
@@ -168,10 +171,10 @@ const T1Screen1 = ({ navigation }) => {
         const details = await response.json();
         // Handle the received data, navigate to another screen, etc.
         // For example:
+        // console.log("getting order detail Data:=>",details);
         setdetaildata(details);
         console.log("Detail Data:", details);
-      } else 
-      {
+      } else {
         // Handle error
         console.error("Error fetching details:", response.statusText);
       }
@@ -201,8 +204,21 @@ const T1Screen1 = ({ navigation }) => {
 
   const handleBuyPress = () => {
     if (((gUserCred !== null && typeof gUserCred === 'object') || (userCred !== null && typeof userCred === 'object')) && userIdApp !== null) {
-      navigation.navigate("myorder");
-      handleBuyPressOnMOdal(booking_id,getOrderResponse);
+      // navigation.navigate("myorder");
+      // Assuming detaildata is already fetched and logged
+
+      // Check if booking_id exists in the first item of detaildata
+      if (detaildata.length > 0) {
+        if (detaildata[0].hasOwnProperty('booking_id') && detaildata[0].booking_id !== null) {
+          setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
+        } else  {
+          setIsAllBuyAuctionOrderModalVisible(!isAllBuyAuctionOrderModalVisible);
+        } 
+      } else {
+        console.error('detaildata array is empty');
+      }
+
+      handleBuyPressOnMOdal(booking_id, getOrderResponse);
     } else {
       showCustomAlert();
     }
@@ -226,7 +242,7 @@ const T1Screen1 = ({ navigation }) => {
             // navigation.navigate("LoginModal");
             setIsLoginModalVisible(!isloginModalVisible)
             setModalVisible(!modalVisible);
-            
+
           },
         },
       ],
@@ -234,28 +250,28 @@ const T1Screen1 = ({ navigation }) => {
     );
   };
   const getAuctionResponse = async () => {
-   try {
-    const country = encodeURIComponent("");
-    const city = encodeURIComponent("");
-    // const country = encodeURIComponent(currentAddress?.country || currentAddress?.country_name || "");
-    // const city = encodeURIComponent(currentAddress?.city || currentAddress?.city_name || "");
-    const userId = encodeURIComponent(userIdApp || "");
+    try {
+      const country = encodeURIComponent("");
+      const city = encodeURIComponent("");
+      // const country = encodeURIComponent(currentAddress?.country || currentAddress?.country_name || "");
+      // const city = encodeURIComponent(currentAddress?.city || currentAddress?.city_name || "");
+      const userId = encodeURIComponent(userIdApp || "");
 
-    const url1 = `https://shreddersbay.com/API/auctionOrder_api.php?action=select&country=${country}&city=${city}&userId=${userId}`
-    const url =
-      "https://shreddersbay.com/API/auctionOrder_api.php?action=select";
-    
+      const url1 = `https://shreddersbay.com/API/auctionOrder_api.php?action=select&country=${country}&city=${city}&userId=${userId}`
+      const url =
+        "https://shreddersbay.com/API/auctionOrder_api.php?action=select";
+
       // console.log("calling order1")
       const data = await getApiResponse(url1);
-      console.log("Auction urlis:=.",url1)
+      console.log("Auction urlis:=.", url1)
       // console.log("auctiondata", data);
       settAuctionData(data);
-   
-   
-    
-   } catch (error) {
-    console.log("the auction calling error is =>",error)
-   }
+
+
+
+    } catch (error) {
+      console.log("the auction calling error is =>", error)
+    }
 
 
   }
@@ -264,21 +280,21 @@ const T1Screen1 = ({ navigation }) => {
     try {
       // Encode URI components to handle special characters in URLs
       const country = encodeURIComponent("");
-    const city = encodeURIComponent("");
+      const city = encodeURIComponent("");
       // const country = encodeURIComponent(currentAddress?.country || currentAddress?.country_name || "");
       // const city = encodeURIComponent(currentAddress?.city || currentAddress?.city_name || "");
       const userId = encodeURIComponent(userIdApp || "");
-  
+
       // Construct the URL with encoded parameters
       const url = `https://shreddersbay.com/API/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`;
-  
+
       // Fetch data from the API using the constructed URL
       const data = await getApiResponse(url);
-  
+
       // Log the URL and received data for debugging
       console.log("Order URL:", url);
       // console.log("Order data:", data);
-  
+
       // Update the component state with the fetched data
       settOrderData(data);
     } catch (error) {
@@ -286,9 +302,9 @@ const T1Screen1 = ({ navigation }) => {
       console.log("Error fetching order data:", error);
     }
   };
-  
+
   const [currentAddress, setCurrentAddress] = useState(null);
-    const [currentAddress1, setCurrentAddress1] = useState(null);
+  const [currentAddress1, setCurrentAddress1] = useState(null);
 
   const locationSetup = async () => {
     const address = await getCurrentLocation();
@@ -296,23 +312,23 @@ const T1Screen1 = ({ navigation }) => {
     console.log("address=>", address)
 
   }
-   const locationSetupModal = async () => {
+  const locationSetupModal = async () => {
     setIsAddressModalOpen(prevState => !prevState)
     const address = await getCurrentLocation();
     setCurrentAddress1(address);
 
-    
+
     console.log("address=>", address)
 
   }
-  
-  useEffect(()=>{
-if(!currentAddress){
-  locationSetup();
-}
-  },[currentAddress])
+
   useEffect(() => {
-    if(currentAddress==null){
+    if (!currentAddress) {
+      locationSetup();
+    }
+  }, [currentAddress])
+  useEffect(() => {
+    if (currentAddress == null) {
       locationSetup();
     }
     locationSetup();
@@ -320,20 +336,20 @@ if(!currentAddress){
     getOrderResponse();
   }, []);
   useEffect(() => {
-    if(currentAddress==null){
+    if (currentAddress == null) {
       locationSetup();
     }
     getAuctionResponse();
     getOrderResponse();
   }, [currentAddress]);
-  useEffect(()=>{
+  useEffect(() => {
     getAuctionResponse();
     getOrderResponse();
-  },[currentAddress,userIdApp])
+  }, [currentAddress, userIdApp])
 
   const [acceptData, setacceptData] = useState([]);
-  const handleBuyPressOnMOdal = async (bookingId: any,getOrderResponse:any) => {
-    console.log("we will see later ....");
+  const handleBuyPressOnMOdal = async (bookingId: any, getOrderResponse: any) => {
+    // console.log("we will see later ....");
 
     try {
       const formdata = new FormData();
@@ -356,7 +372,7 @@ if(!currentAddress){
         setacceptData(aceptData);
         // Process or set the acceptData if needed
         console.log("Accept API request successful");
-        getOrderResponse();
+        // getOrderResponse();
       } else {
         console.error("Accept API request failed:", response.statusText);
       }
@@ -377,7 +393,7 @@ if(!currentAddress){
 
   const [updatesVersion, setupdatesVersion] = useState("");
   useEffect(() => {
-   
+
     async function onFetchUpdateAsync() {
       // const osName = Platform.OS;
       // console.log(`The os name is ${osName}`);
@@ -402,13 +418,13 @@ if(!currentAddress){
       try {
         const update = await Updates.checkForUpdateAsync();
         const appVersion = Constants.expoConfig.version;
-        console.log("appVersion=>",appVersion);
+        console.log("appVersion=>", appVersion);
 
         if (update.isAvailable) {
           await Updates.fetchUpdateAsync();
           const newver = Updates.runtimeVersion;
           setupdatesVersion(newver);
-            console.log("newVer=>",newver);
+          console.log("newVer=>", newver);
 
           // Notify user to reload the app
           // Alert.alert('Update available', 'An update has been downloaded. Restart the app to apply the updates.', [
@@ -417,7 +433,7 @@ if(!currentAddress){
           //     onPress: () => Updates.reloadAsync(),
           //   },
           // ]
-          
+
           // );
           setIsandroidUpdateModalVisible(!isandroidUpdateModalVisible);
         }
@@ -576,17 +592,40 @@ if(!currentAddress){
   };
   ///////////////////////////////////////slider//////////////////////////////////////
 
-////////////////////search//////////////////////
-const [searchtext, setSetsearchtext] = useState("");
-const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
-const onchangeSearch=(text)=>{
-  setIsSearchModalVisible(true);
-  setSetsearchtext(text)
-} 
-const onSeachModalclose=()=>{
-  setIsSearchModalVisible(!isSearchModalVisible)
-}
- ///////////////////////////////////////////////////////////////////////////////
+  ////////////////////search//////////////////////
+  const [searchtext, setSetsearchtext] = useState("");
+  const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
+  const onchangeSearch = (text) => {
+    setIsSearchModalVisible(true);
+    setSetsearchtext(text)
+  }
+  const onSeachModalclose = () => {
+    setIsSearchModalVisible(!isSearchModalVisible)
+  }
+  // useEffect(()=>{
+  //   if(isAllBuyAuctionOrderModalVisible){
+  //     navigation.navigate("Tab1",{screen:"T1Screen1"});
+  //     setModalVisible(!modalVisible); 
+  //   }
+  //   if(isAllBuyCurrentOrderModalVisible){
+  //     navigation.navigate("Tab1",{screen:"T1Screen1"});
+  //     setModalVisible(!modalVisible); 
+  //   }
+  // },[isAllBuyAuctionOrderModalVisible,isAllBuyCurrentOrderModalVisible])
+  const oncloseAllorderbuy = () => {  
+    navigation.navigate("Tab1",{screen:"T1Screen1"});
+    setModalVisible(!modalVisible);
+    setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
+    onRefresh();
+  }
+  const oncloseAllAuctionbuy = () => {
+    navigation.navigate("Tab1",{screen:"T1Screen1"});
+    setModalVisible(!modalVisible);
+    setModalVisible(!modalVisible);
+    setIsAllBuyAuctionOrderModalVisible(!isAllBuyAuctionOrderModalVisible);
+    onRefresh();
+  }
+  ///////////////////////////////////////////////////////////////////////////////
 
   return (
     <View style={styles.container}>
@@ -595,9 +634,10 @@ const onSeachModalclose=()=>{
 
       <View>
         <HandleAddAddressModal visible={isAddressModalOpen} onClose={handleAddresModalOpen} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
-        <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} comp={<SearchModalContent/>}/>
-         <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} />
-
+        <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} comp={<SearchModalContent />} />
+        <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} />
+        <OrderBuyModal1 closeModal={oncloseAllorderbuy} visible={isAllBuyCurrentOrderModalVisible} />
+        <AuctionBuyModal1 closeModal={oncloseAllAuctionbuy} visible={isAllBuyAuctionOrderModalVisible} />
         <Modal
           // animationType="fade"
           transparent={true}
@@ -608,7 +648,7 @@ const onSeachModalclose=()=>{
         >
           <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
             <View style={styles.centeredView}>
-              
+
 
               <View >
                 {/* <Text>
@@ -616,7 +656,7 @@ const onSeachModalclose=()=>{
                 {detaildata &&
                   detaildata.map((item, index) => (
                     <View key={index}>
-                      <GoodModal closeModal={() => setModalVisible(false)} visible={modalVisible} comp={<Product item={item} handlebuypress={handleBuyPress} getusers={getUsers} />} />
+                      <GoodModal closeModal={() => setModalVisible(!modalVisible)} visible={modalVisible} comp={<Product item={item} handlebuypress={handleBuyPress} getusers={getUsers} />} />
                     </View>
                   ))}
               </View>
@@ -681,11 +721,11 @@ const onSeachModalclose=()=>{
             setIsSearchModalVisible(true);
           }}
         /> */}
-        <Pressable onPress={()=>{setIsSearchModalVisible(true)}}>
+        <Pressable onPress={() => { setIsSearchModalVisible(true) }}>
           <View style={styles.searchbox}>
-            
 
-        <Text style={{marginLeft:10,color:'gray'}}>search Scrap ...</Text>
+
+            <Text style={{ marginLeft: 10, color: 'gray' }}>search Scrap ...</Text>
           </View>
         </Pressable>
 
@@ -704,7 +744,7 @@ const onSeachModalclose=()=>{
           </TouchableOpacity>
           )} */}
           {/* <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} /> */}
-{/* 
+          {/* 
           <TouchableOpacity>
             <View style={styles.heading1}>
               <FontAwesome
@@ -737,11 +777,11 @@ const onSeachModalclose=()=>{
           <View>
             <CaroselImage />
           </View>
-          {/* <View>
-            <RatingSlider />
-          </View> */}
           <View>
-            <LogoSlider1 navigation={navigation}/>
+            <RatingSlider />
+          </View>
+          <View>
+            <LogoSlider1 navigation={navigation} />
           </View>
           <View>
             <View style={styles.container3}>
@@ -750,9 +790,9 @@ const onSeachModalclose=()=>{
 
             <View style={styles.container5}>
               <View style={styles.card1}>
-               
-                  {orderData&&orderData.map((item,index)=>(
-                    <View key={index} style={styles.card}>
+
+                {orderData && orderData.map((item, index) => (
+                  <View key={index} style={styles.card}>
                     <Pressable
                       onPress={() =>
                         handleDetailPress(item.booking_id, item.filename)
@@ -777,7 +817,7 @@ const onSeachModalclose=()=>{
                         </Text>
 
                         <View>
-                          
+
                         </View>
                         <Text style={styles.textContainer6}>
                           <EvilIcons
@@ -785,15 +825,15 @@ const onSeachModalclose=()=>{
                             style={{ fontSize: 15 }}
                           />{" "}
                           {/* {item && item.address.length > maxLength ? item.address.substring(0, maxLength) + '...' : item.address} */}
-                          {item?item.country_name:item.city_name}
+                          {item ? item.country_name : item.city_name}
 
                         </Text>
-                        <Text style={{...styles.textContainer6, marginLeft:16,textTransform: 'lowercase'}}>{item&&item.state_name}</Text>
+                        <Text style={{ ...styles.textContainer6, marginLeft: 16, textTransform: 'lowercase' }}>{item && item.state_name}</Text>
 
                       </View>
                     </Pressable>
                   </View>
-                  ))}
+                ))}
               </View>
             </View>
             {/* /////////////////////////////////////// auction data bind ////////////////////////////////////////////////////////////////// */}
@@ -803,56 +843,56 @@ const onSeachModalclose=()=>{
             </View>
             <View style={styles.container5}>
               <View style={styles.card1}>
-               
-                  {auctionData&&auctionData.map((item,index)=>(
-                      <View key={index} style={styles.card}>
-                      <Pressable
-                        onPress={() =>
-                          handleAuctionDetailPres(item.auction_id)
-                        }
-                      >
-                        <View style={styles.imageContainer}>
-                          <Image
-                            source={{
-                              uri: imgurl + item.filename.split(",")[0],
-                            }}
-                            style={styles.image}
-                          />
-                        </View>
 
-                        <View style={styles.textContainer}>
-                          <Text style={styles.textContainer2}>
-                            {item.p_name}
-                          </Text>
-                          <Text style={styles.textContainer5}>
-                            <FontAwesome
-                              name="rupee"
-                              style={{ fontSize: 15 }}
-                            />{" "}
-                            {item.price}
-                          </Text>
-                          <Text style={styles.textContainer6}>
-                            <EvilIcons
-                              name="location"
-                              style={{ fontSize: 15 }}
-                            />{" "}
-                            {/* {item.address.length > maxLength ? item.address.substring(0, maxLength) + '...' : item.address} */}
-                            {item?item.country_name:item.city_name}
-                            <Text style={styles.textContainer8}>{item &&  item.state_name}</Text>
+                {auctionData && auctionData.map((item, index) => (
+                  <View key={index} style={styles.card}>
+                    <Pressable
+                      onPress={() =>
+                        handleAuctionDetailPres(item.auction_id)
+                      }
+                    >
+                      <View style={styles.imageContainer}>
+                        <Image
+                          source={{
+                            uri: imgurl + item.filename.split(",")[0],
+                          }}
+                          style={styles.image}
+                        />
+                      </View>
 
-                          </Text>
-                        </View>
-                      </Pressable>
-                    </View>
-                  ))}
+                      <View style={styles.textContainer}>
+                        <Text style={styles.textContainer2}>
+                          {item.p_name}
+                        </Text>
+                        <Text style={styles.textContainer5}>
+                          <FontAwesome
+                            name="rupee"
+                            style={{ fontSize: 15 }}
+                          />{" "}
+                          {item.price}
+                        </Text>
+                        <Text style={styles.textContainer6}>
+                          <EvilIcons
+                            name="location"
+                            style={{ fontSize: 15 }}
+                          />{" "}
+                          {/* {item.address.length > maxLength ? item.address.substring(0, maxLength) + '...' : item.address} */}
+                          {item ? item.country_name : item.city_name}
+                          <Text style={styles.textContainer8}>{item && item.state_name}</Text>
+
+                        </Text>
+                      </View>
+                    </Pressable>
+                  </View>
+                ))}
               </View>
             </View>
 
             {/* <Text>{JSON.stringify(data)}</Text> */}
           </View>
 
-          
-{/* 
+
+          {/* 
           <View>
             <Aluminium />
           </View>
@@ -948,7 +988,7 @@ const styles = StyleSheet.create({
   heading1: {
     marginTop: 20,
     marginLeft: 15,
-    margin:10,
+    margin: 10,
   },
 
   accept: {
@@ -1002,7 +1042,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 2,
     borderColor: "lightgray",
-    
+
   },
 
   textContainer: {
@@ -1015,7 +1055,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
- 
+
   textContainer2: {
     fontSize: 18,
     fontWeight: "500",
@@ -1030,7 +1070,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginRight: 5,
   },
-  
+
   textContainer5: {
     fontSize: 15,
     color: "darkgray",
@@ -1040,14 +1080,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 10,
     color: "gray",
-    
-    
+
+
   },
 
   textContainer8: {
-    fontSize: 12,   
+    fontSize: 12,
     color: "gray",
-    
+
   },
 
   imageContainer: {
@@ -1117,7 +1157,7 @@ const styles = StyleSheet.create({
   },
 
   order: {
-    
+
     fontSize: 20,
     color: "#00457E",
     // fontFamily: 'sans-sarif',
@@ -1152,7 +1192,7 @@ const styles = StyleSheet.create({
   },
 
   searchbox: {
- paddingHorizontal: 8,
+    paddingHorizontal: 8,
     paddingVertical: 8,
     marginTop: 10,
     borderWidth: 1,
@@ -1161,7 +1201,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: 340,
     height: 50,
-    justifyContent:'center',
+    justifyContent: 'center',
   },
   image: {
     height: 100,
@@ -1221,7 +1261,7 @@ const styles = StyleSheet.create({
   blackBottom: {
     height: "35%",
     backgroundColor: "white",
-   
+
   },
 
 
@@ -1404,18 +1444,18 @@ export const MainChats: React.FC<{
 export const AskForAppUpdate: React.FC<{
   isAndroidUpdateModal: boolean;
   setUpdateModal: () => void;
-  updatesVersion:string;
- 
-}> = ({ isAndroidUpdateModal, setUpdateModal,updatesVersion }) => {
-  const handleUpdateModal =async()=>{
+  updatesVersion: string;
+
+}> = ({ isAndroidUpdateModal, setUpdateModal, updatesVersion }) => {
+  const handleUpdateModal = async () => {
     const appVersion = Constants.expoConfig.version;
-    console.log("appVersion=>",appVersion);
-    const url ="https://play.google.com/store/apps/details?id=com.shreddersbay";
+    console.log("appVersion=>", appVersion);
+    const url = "https://play.google.com/store/apps/details?id=com.shreddersbay";
     try {
       const supported = await Linking.canOpenURL(url);
-      if(supported){
+      if (supported) {
         await Linking.openURL(url);
-      }else{
+      } else {
         console.log(`Don't know how to Open Url: ${url}`);
 
       }
@@ -1425,15 +1465,15 @@ export const AskForAppUpdate: React.FC<{
     }
   }
   const [isthereNewVersion, setisthereNewVersion] = useState(false);
-  useEffect(()=>{
+  useEffect(() => {
     const appVersion = Constants.expoConfig.version;
 
-    if(updatesVersion == appVersion){
+    if (updatesVersion == appVersion) {
       setisthereNewVersion(true);
-    }else{
+    } else {
       setisthereNewVersion(false);
     }
-  },[])
+  }, [])
   // const handleUpdateModal = async () => {
   //   let url = "";
 
@@ -1519,9 +1559,9 @@ export const AskForAppUpdate: React.FC<{
               }}
               // onPress={() => handleUpdateModal()}
               onPress={() => (isthereNewVersion ? setUpdateModal() : handleUpdateModal())}
-              >
+            >
               <Text style={{ color: "white", fontSize: 20, fontWeight: "500" }}>
-                {isthereNewVersion?"Restart":"Update"}
+                {isthereNewVersion ? "Restart" : "Update"}
               </Text>
             </TouchableOpacity>
           </View>
