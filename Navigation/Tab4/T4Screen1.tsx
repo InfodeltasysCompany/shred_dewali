@@ -325,42 +325,6 @@ setisFeedbackModalVisible(!isFeedbackModalVisible);
         </TouchableWithoutFeedback> */}
 
         <TouchableWithoutFeedback
-          onPress={handleLOgOUt}
-          style={{ marginVertical: 7 }}
-        >
-          <View style={styles.button}>
-            <View style={styles.icon}>
-              <View>
-                <MaterialCommunityIcons
-                  name="logout"
-                  style={{
-                    fontSize: 20,
-                    padding: 6,
-                    marginRight: 10,
-                    backgroundColor: "#993333",
-                    borderRadius: 50,
-                    color: "white",
-                  }}
-                />
-              </View>
-
-              <View>
-                <Text style={styles.text1}>Logout</Text>
-              </View>
-            </View>
-
-            <View style={styles.icon1}>
-              <Feather
-                name="chevron-right"
-                style={{
-                  fontSize: 25,
-                  color: "gray",
-                }}
-              />
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback
           onPress={handleHelpline}
           style={{ marginVertical: 7 }}
         >
@@ -420,6 +384,43 @@ setisFeedbackModalVisible(!isFeedbackModalVisible);
 
             <View style={styles.icon1}>
             <Feather
+                name="chevron-right"
+                style={{
+                  fontSize: 25,
+                  color: "gray",
+                }}
+              />
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+
+        <TouchableWithoutFeedback
+          onPress={handleLOgOUt}
+          style={{ marginVertical: 7 }}
+        >
+          <View style={styles.button}>
+            <View style={styles.icon}>
+              <View>
+                <MaterialCommunityIcons
+                  name="logout"
+                  style={{
+                    fontSize: 20,
+                    padding: 6,
+                    marginRight: 10,
+                    backgroundColor: "#993333",
+                    borderRadius: 50,
+                    color: "white",
+                  }}
+                />
+              </View>
+
+              <View>
+                <Text style={styles.text1}>Logout</Text>
+              </View>
+            </View>
+
+            <View style={styles.icon1}>
+              <Feather
                 name="chevron-right"
                 style={{
                   fontSize: 25,

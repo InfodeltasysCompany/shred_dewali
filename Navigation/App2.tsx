@@ -30,7 +30,7 @@ import BCurrent from './Tab5_buy/BCurrent';
 import BCompleted from './Tab5_buy/BCompleted';
 import SCurrent from './Tab6_sell/SCurrent';
 import SCompleted from './Tab6_sell/SCompleted';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { Addbtnchanged, Addbtndef } from '../components/Addbtn';
 import { AuthContext } from '../redux/ContextApi/UserAuthProvider';
 import LoginModal from '../components/Credential/LoginModal';
@@ -237,8 +237,8 @@ const MainTabsComponents = () => {
               <Ionicons name="home-outline" size={size} color={color} />;
           } else if (route.name === 'Scrap Cart') {
             iconComponent = focused ?
-              <Ionicons name="cart" size={size} color={color} /> :
-              <Feather name="shopping-cart" size={size} color={color} />;
+              <FontAwesome name="inbox" size={size} color={color} /> :
+              <Feather name="inbox" size={size} color={color} />;
           } else if (route.name === 'Scrap Item') {
             iconComponent = focused ?
               // <AntDesign name="pluscircle" size={50} color={color} />
