@@ -778,7 +778,7 @@ const T1Screen1 = ({ navigation }) => {
             <CaroselImage />
           </View>
           <View>
-            <RatingSlider />
+            <RatingSlider navigation={navigation}/>
           </View>
           <View>
             <LogoSlider1 navigation={navigation} />

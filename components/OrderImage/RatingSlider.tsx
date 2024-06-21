@@ -1,8 +1,10 @@
 import { AntDesign } from '@expo/vector-icons';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, Dimensions, Text, TouchableOpacity, ScrollView, Modal, Button, TextInput, Alert, ToastAndroid } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Modal, Button, TextInput, ToastAndroid, Alert } from 'react-native';
 import { AirbnbRating } from 'react-native-ratings';
+import Swiper from 'react-native-swiper';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
+import LoginModal from '../Credential/LoginModal';
 
 const { width } = Dimensions.get('window');
 
@@ -28,129 +30,118 @@ const getRelativeTime = (dateString: string): string => {
   return `${diffInSeconds} second${diffInSeconds > 1 ? 's' : ''} ago`;
 };
 
-const RatingSlider = () => {
+const RatingSlider = ({navigation}) => {
   const [state, setState] = useContext(AuthContext);
-  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
+  const { userIdApp } = state;
 
   const [feedbackData, setFeedbackData] = useState([]);
   const [profileData, setProfileData] = useState([]);
-  // Sample feedback data
-  const sampleFeedbackData = [
-    {
-      "feedback_id": "1",
-      "user_id": "2474",
-      "name": "priya",
-      "rating": 4,
-      "comments": "hello",
-      "time": "2024-06-12T23:47:50" // Adjusted to ISO format for proper parsing
-    },
-    {
-      "feedback_id": "2",
-      "user_id": "2479",
-      "name": "Soorya",
-      "rating": 5,
-      "comments": "excellent application",
-      "time": "2024-06-12T10:00:00"
-    },
-    {
-      "feedback_id": "3",
-      "user_id": "2474",
-      "name": "priya",
-      "rating": 3,
-      "comments": "hello",
-      "time": "2024-06-12T08:30:45"
-    }
-  ];
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const getdata = async () => {
     try {
       const url = "https://shreddersbay.com/API/rating_api.php?action=select";
       const response = await fetch(url);
 
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const resdata = await response.json();
-      console.log("resdata>===",resdata);
       setFeedbackData(resdata);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+  
   useEffect(() => {
-    // Simulate fetching feedback data from an API
-    setTimeout(() => {
-     
-      const profile_url = `https://shreddersbay.com/API/user_api.php?action=select_id&user_id=${userIdApp}`;
-      const getUserProfile = async () => {
-        const data = await fetch(profile_url);
-        const jdata = await data.json();
-        // console.log("jdata:=",jdata);
-        setProfileData(jdata);
-      }
+    const profile_url = `https://shreddersbay.com/API/user_api.php?action=select_id&user_id=${userIdApp}`;
+    const getUserProfile = async () => {
+      const data = await fetch(profile_url);
+      const jdata = await data.json();
+      setProfileData(jdata);
+    };
 
-      getdata();
-      getUserProfile();
-
-    }, 1000); // Simulate delay in fetching data
+    getdata();
+    getUserProfile();
   }, []);
+  useEffect(()=>{
+    const profile_url = `https://shreddersbay.com/API/user_api.php?action=select_id&user_id=${userIdApp}`;
+  const getUserProfile = async () => {
+    const data = await fetch(profile_url);
+    const jdata = await data.json();
+    setProfileData(jdata);
+  };
+  getUserProfile();
+  },[isModalVisible]);
 
-  const [isModalVisible, setModalVisible] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
 
-
   const handleFeedbackClick = (feedback) => {
-    // Handle the click event, e.g., navigate to a detailed feedback page
-    console.log('Feedback clicked:', feedback);
     setSelectedFeedback(feedback);
     setModalVisible(true);
   };
 
-
   const [rating, setRating] = useState(0);
   const [comments, setComments] = useState('');
+  const [isLoginModalVisible, setisLoginModalVisible] = useState(false);
 
   const handleRating = (rating) => {
     setRating(rating);
   };
 
   const handleSubmit = async () => {
-    if (rating === 0) {
-      ToastAndroid.showWithGravity(
-        "Please provide a rating",
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER
-      );
-      return;
-    }
-    // if (comments.trim() === '') {
-    //   Alert.alert('Please provide comments');
-    //   return;
-    // }
-
-    // Here you can handle the form submission, e.g., send data to a server
-    console.log("useridApp:", userIdApp);
-    console.log("userName:", profileData[0].name);
-    console.log('Rating:', rating);
-    console.log('Comments:', comments);
-    const url = "https://shreddersbay.com/API/rating_api.php?action=insert";
     try {
-      setModalVisible(!isModalVisible);
-      const formdata = new FormData();
-      formdata.append("user_id", userIdApp);
-      formdata.append("name", profileData[0].name);
-      formdata.append("rating", rating.toString());
-      formdata.append("message", comments);
-      console.log("formdata=>", formdata);
-      await fetch(url, {
-        method: "POST",
-        body: formdata
-
-      }).then(async (response) => {
-        const data = await response.json()
+      if (!userIdApp) {
+        Alert.alert(
+          "Confirmation",
+          "You have to Login Or Signup",
+          [
+            {
+              text: "No",
+              onPress: () => {
+                // Handle "No" press if needed
+              },
+              style: "cancel",
+            },
+            {
+              text: "Yes",
+              onPress: () => {
+                setisLoginModalVisible(!isLoginModalVisible);
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      } else {
+        if (rating === 0) {
+          ToastAndroid.showWithGravity(
+            "Please provide a rating",
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER
+          );
+          return;
+        }
+  
+        const url = "https://shreddersbay.com/API/rating_api.php?action=insert";
+        const formdata = new FormData();
+        formdata.append("user_id", userIdApp);
+        formdata.append("name", profileData[0]?.name || ""); // Handle undefined case
+        formdata.append("rating", rating.toString());
+        formdata.append("message", comments);
+  
+        const response = await fetch(url, {
+          method: "POST",
+          body: formdata,
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const data = await response.json();
         console.log("data=>>>", data);
+  
         setRating(0);
         setComments('');
         ToastAndroid.showWithGravity(
@@ -158,44 +149,27 @@ const RatingSlider = () => {
           ToastAndroid.SHORT,
           ToastAndroid.CENTER
         );
-         const getdata = async () => {
-        try {
-          const url = "https://shreddersbay.com/API/rating_api.php?action=select";
-          const response = await fetch(url);
-
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const resdata = await response.json();
-          console.log("resdata>===",resdata);
-          setFeedbackData(resdata);
-          getdata();
-
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-      })
+        getdata();
+        setModalVisible(!isModalVisible);
+      }
     } catch (error) {
       console.log("error", error);
+      // Handle specific error cases or log them for debugging
     }
-    // Clear form after submission
+  };
+  
 
-  }
-
-  // Calculate average rating
   const averageRating = feedbackData.length
     ? (feedbackData.reduce((acc, feedback) => acc + feedback.rating, 0) / feedbackData.length).toFixed(1)
     : 'No ratings';
 
-
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: 'row', justifyContent: "center", gap: 10, alignItems: 'center', }}>
+      <View style={{ flexDirection: 'row', justifyContent: "center", gap: 10, alignItems: 'center' }}>
         {feedbackData.length > 0 &&
           <>
+                  <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setisLoginModalVisible} />
+
             <Text style={styles.header}>Ratings:</Text>
             <AirbnbRating
               isDisabled
@@ -206,19 +180,15 @@ const RatingSlider = () => {
             />
           </>
         }
-
-
       </View>
 
-      <ScrollView
-
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContent}
-
+      <Swiper
+        autoplay={true}
+        autoplayTimeout={15} 
+        showsPagination={false}
+        style={styles.swiper}
       >
-
-        {feedbackData.map((feedback, index) => (
+        {feedbackData.reverse().map((feedback, index) => (
           <TouchableOpacity key={index} style={styles.feedbackContainer} onPress={() => handleFeedbackClick(feedback)}>
             <Text style={styles.name}>{feedback.name || "Anonymous"}</Text>
             <AirbnbRating
@@ -227,15 +197,11 @@ const RatingSlider = () => {
               count={5}
               defaultRating={feedback.rating}
               size={16}
-            // starStyle={{ marginHorizontal: 2 }}
             />
-            {/* <Text style={styles.time}>{getRelativeTime(feedback.time)}</Text> */}
             <Text style={styles.time}>{feedback.message}</Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
-
-
+      </Swiper>
 
       {selectedFeedback && (
         <Modal
@@ -259,7 +225,6 @@ const RatingSlider = () => {
                 size={16}
               />
               <Text style={styles.modalComments}>{selectedFeedback.comments}</Text>
-              {/* <Text style={styles.modalTime}>{getRelativeTime(selectedFeedback.time)}</Text> */}
               <Text style={styles.modalTime}>{selectedFeedback.message}</Text>
 
               <View style={styles.container1}>
@@ -277,25 +242,17 @@ const RatingSlider = () => {
                   multiline
                   numberOfLines={4}
                   value={comments}
-                  onChangeText={(text)=>setComments(text)}
+                  onChangeText={(text) => setComments(text)}
                 />
                 <Button title="Submit" onPress={handleSubmit} />
               </View>
-
             </View>
-
-
           </View>
         </Modal>
       )}
     </View>
   );
-
-
 };
-
-
-
 
 const styles = StyleSheet.create({
 
@@ -360,10 +317,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingTop: 10,
-    backgroundColor: '#f0f0f0', // Light background color
-    paddingLeft: 10,
-    paddingRight: 35,
+    // paddingTop: 10,
+    // backgroundColor: '#f0f0f0', // Light background color
+    // paddingLeft: 10,
+    // paddingRight: 35,
   },
   header: {
     fontSize: 16,
@@ -406,6 +363,10 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginTop: 5,
   },
+   swiper: {
+    height: 60,
+  },
 });
 
 export default RatingSlider;
+

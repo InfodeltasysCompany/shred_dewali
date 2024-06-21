@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
+// import { AuthContext } from '../../../../redux/ContextApi/UserAuthProvider';
 // import { ScrollView } from 'react-native-gesture-handler';
 
 const AuctionBuyCurrent1 = ({index,setIndex}) => {
@@ -32,10 +33,9 @@ const AuctionBuyCurrent1 = ({index,setIndex}) => {
       if (response.ok) {
         const responseData = await response.json();
         // Assuming responseData is an array, set it to your state or variable
-        // const jsonArray: any[] = responseData;
-
-        setcurrentdata(responseData)
-        console.log('JSON Array:', responseData);
+        const jsonArray: any[] = responseData;
+        setcurrentdata(jsonArray)
+        console.log('JSON Array:', jsonArray);
         // Set the JSON array to your state or process it accordingly
       } else {
         console.error('Failed to fetch data:', response.status);
