@@ -137,8 +137,11 @@ const T1Screen1 = ({ navigation }) => {
   const onRefresh = () => {
     setRefreshing(true);
     dispatch(fetchData());
+    getOrderResponse();
+    getAuctionResponse();
     setTimeout(() => {
       setRefreshing(false);
+      
     }, 2000);
   };
 
@@ -813,7 +816,7 @@ const T1Screen1 = ({ navigation }) => {
                             name="rupee"
                             style={{ fontSize: 15 }}
                           />{" "}
-                          {item.price}
+                          {item.approx_price}
                         </Text>
 
                         <View>
@@ -869,7 +872,7 @@ const T1Screen1 = ({ navigation }) => {
                             name="rupee"
                             style={{ fontSize: 15 }}
                           />{" "}
-                          {item.price}
+                          {item.total_price}
                         </Text>
                         <Text style={styles.textContainer6}>
                           <EvilIcons

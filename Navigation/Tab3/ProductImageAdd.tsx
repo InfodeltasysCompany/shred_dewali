@@ -108,7 +108,8 @@ const closePreviewModal=()=>{
     
             const textInputValue = parseInt(formfilledpost.textWeight);
             const minimum_price = parseInt(formfilledpost.textPrice);
-    
+            // const approx_price = parseInt(formfilledpost.textPrice);
+
             const currentDate = new Date();
     
             const year = currentDate.getFullYear();
@@ -389,7 +390,7 @@ const closePreviewModal=()=>{
 
   return (
     <Modal animationType="none" visible={visible}>
-      <ProductPreviewAndPost setisVisible={setIspreviewModalVisible} visible={ispreviewModalVisible} address={address} setaddress={setaddress}  isAuctionEnabled={isAuctionEnabled} navigation={navigation} />
+      <ProductPreviewAndPost setisVisible={setIspreviewModalVisible} visible={ispreviewModalVisible} address={address} setaddress={setaddress}  isAuctionEnabled={isAuctionEnabled} navigation={navigation} newformdata={formfilledpost}/>
       <DisplayAllAddresses navigation={undefined} visible={isAddressModalvisible} onClose={handleOnCloseAddress} addrseter={getAddress} />
       <LoginModal navigation={navigation} visible={isloginModalVisible} setVisible={setisloginModalVisible} />
       <View style={{ flex: 1 }}>

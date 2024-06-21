@@ -7,7 +7,7 @@ import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { CommonActions } from "@react-navigation/native";
 
-const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isAuctionEnabled, navigation }) => {
+const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isAuctionEnabled, navigation,newformdata }) => {
   const imgurl = "https://shreddersbay.com/API/uploads/";
   const [state] = useContext(AuthContext);
   const { userIdApp } = state;
@@ -193,6 +193,8 @@ const handlePublishYourAdBtn = async () => {
     try {
       const formData = new FormData();
       formData.append("user_id", userIdApp);
+      formData.append("approx_price", newformdata.textPrice.toString());
+
 
       const filenames = dataforPreview[dataforPreview.length - 1].filename
         .split(",")
@@ -252,6 +254,7 @@ const handlePublishYourAdBtn = async () => {
       formData.append("addr_id", address.addr_id);
       formData.append("approx_weight", dataforPreview[dataforPreview.length - 1].total_weight);
       formData.append("prod_id", dataforPreview[dataforPreview.length - 1].prod_id);
+      formData.append("approx_price", newformdata.textPrice.toString());
 
       let apiUrl = isAuctionEnabled
         ? "https://shreddersbay.com/API/auctionOrder_api.php?action=insert"

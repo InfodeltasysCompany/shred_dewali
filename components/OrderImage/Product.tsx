@@ -131,19 +131,19 @@ const FirstRoute = ({item}) =>{
     <View style={styles.row}>
       <Text style={styles.text}>Booking_ID </Text>
      
-      <Text style={styles.text1}>{item.booking_id}</Text>
+      <Text style={styles.text1}>{item.booking_id||item.auction_id}</Text>
     </View>
 
     <View style={styles.row}>
       <Text style={styles.text}>Product_Name</Text>
       
-      <Text style={styles.text1}>{item.prod_id}</Text>
+      <Text style={styles.text1}>{item.p_name}</Text>
     </View>
 
     <View style={styles.row}>
       <Text style={styles.text}>Approx Price</Text>
      
-      <Text style={styles.text1}>{item.price}</Text>
+      <Text style={styles.text1}>{item.approx_price||item.total_price}</Text>
     </View>
 
     <View style={styles.row}>
