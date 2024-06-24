@@ -1,5 +1,3 @@
-
-
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert, useWindowDimensions, ScrollView, Dimensions, Platform, ToastAndroid } from "react-native";
@@ -7,7 +5,7 @@ import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { CommonActions } from "@react-navigation/native";
 
-const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isAuctionEnabled, navigation,newformdata }) => {
+const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isAuctionEnabled, navigation, newformdata }) => {
   const imgurl = "https://shreddersbay.com/API/uploads/";
   const [state] = useContext(AuthContext);
   const { userIdApp } = state;
@@ -29,6 +27,7 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDate1, setSelectedDate1] = useState(new Date());
   const [selectedDate2, setSelectedDate2] = useState(new Date());
+  const today = new Date();
 
 
   const fetchData = async () => {
@@ -132,7 +131,7 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
     } else {
       url = "https://shreddersbay.com/API/cart_api.php?action=delete&cart_id=";
     }
-  console.log("previewData:=>",)
+    console.log("previewData:=>",)
     Alert.alert(
       'Confirmation', // Title
       'Are you sure you want to Discard the Changes?', // Message
@@ -149,16 +148,16 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
               for (let i = 0; i < dataforPreview.length; i++) {
                 const element = dataforPreview[i];
                 const apiUrl = `${url}${element.cart_id}`;
-  
+
                 const response = await fetch(apiUrl, {
                   method: "DELETE",
                   // You can add headers or other options here if required
                 });
-  
+
                 if (!response.ok) {
                   throw new Error("Failed to delete data");
                 }
-  
+
                 console.log("Data deleted successfully", apiUrl);
               }
               setisVisible(!visible);
@@ -171,135 +170,136 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
       { cancelable: false }
     );
   };
-  
+
 
   ///////////////////////////
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-const handlePublishYourAdBtn = async () => {
-  if (isSubmitting) {
-    return; // Prevent multiple submissions
-  }
+  const
+    handlePublishYourAdBtn = async () => {
+      if (isSubmitting) {
+        return; // Prevent multiple submissions
+      }
 
-  setIsSubmitting(true);
-  if (
-    (
-      (startDate !== "Start Date" && endDate !== "End Date" && endDate >= startDate) || chooseDate !== "Choose Date"
-    ) &&
-    address !== null &&
-    dataforPreview[dataforPreview.length - 1] !== null &&
-    userIdApp !== ""
-  ) {
-    try {
-      const formData = new FormData();
-      formData.append("user_id", userIdApp);
-      formData.append("approx_price", newformdata.textPrice.toString());
-
-
-      const filenames = dataforPreview[dataforPreview.length - 1].filename
-        .split(",")
-        .map((filename) => filename.trim());
-
-      const currentDate = new Date();
-      const year = currentDate.getFullYear();
-      const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
-      const day = currentDate.getDate().toString().padStart(2, "0");
-      const hours = currentDate.getHours().toString().padStart(2, "0");
-      const minutes = currentDate.getMinutes().toString().padStart(2, "0");
-      const seconds = currentDate.getSeconds().toString().padStart(2, "0");
-      const currentDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-      const imageURIs = filenames.map(filename => `https://shreddersbay.com/API/uploads/${filename}`);
-
-      for (const uri of imageURIs) {
+      setIsSubmitting(true);
+      if (
+        (
+          (startDate !== "Start Date" && endDate !== "End Date" && endDate >= startDate) || chooseDate !== "Choose Date"
+        ) &&
+        address !== null &&
+        dataforPreview[dataforPreview.length - 1] !== null &&
+        userIdApp !== ""
+      ) {
         try {
-          const response = await fetch(uri);
-          if (!response.ok) {
-            throw new Error(`Failed to fetch image: ${uri}`);
+          const formData = new FormData();
+          formData.append("user_id", userIdApp);
+          formData.append("approx_price", newformdata.textPrice.toString());
+
+
+          const filenames = dataforPreview[dataforPreview.length - 1].filename
+            .split(",")
+            .map((filename) => filename.trim());
+
+          const currentDate = new Date();
+          const year = currentDate.getFullYear();
+          const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+          const day = currentDate.getDate().toString().padStart(2, "0");
+          const hours = currentDate.getHours().toString().padStart(2, "0");
+          const minutes = currentDate.getMinutes().toString().padStart(2, "0");
+          const seconds = currentDate.getSeconds().toString().padStart(2, "0");
+          const currentDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+          const imageURIs = filenames.map(filename => `https://shreddersbay.com/API/uploads/${filename}`);
+
+          for (const uri of imageURIs) {
+            try {
+              const response = await fetch(uri);
+              if (!response.ok) {
+                throw new Error(`Failed to fetch image: ${uri}`);
+              }
+              const blob = await response.blob();
+
+              const uniqueFilename = generateUniqueFilename(uri);
+              const filename = `${currentDateTime}-${uniqueFilename}.jpg`;
+
+              const image = {
+                uri: uri,
+                name: filename,
+                type: "image/jpeg",
+              };
+
+              formData.append("file[]", image as any);
+            } catch (error) {
+              console.error("Error fetching image:", error);
+            }
           }
-          const blob = await response.blob();
 
-          const uniqueFilename = generateUniqueFilename(uri);
-          const filename = `${currentDateTime}-${uniqueFilename}.jpg`;
+          function generateUniqueFilename(imageUri) {
+            const extension = imageUri.split(".").pop();
+            const uuid = generateUUID();
+            return `${uuid}.${extension}`;
+          }
 
-          const image = {
-            uri: uri,
-            name: filename,
-            type: "image/jpeg",
-          };
+          function generateUUID() {
+            return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+              /[xy]/g,
+              function (c) {
+                var r = (Math.random() * 16) | 0,
+                  v = c == "x" ? r : (r & 0x3) | 0x8;
+                return v.toString(16);
+              }
+            );
+          }
 
-          formData.append("file[]", image as any);
+          formData.append("addr_id", address.addr_id);
+          formData.append("approx_weight", dataforPreview[dataforPreview.length - 1].total_weight);
+          formData.append("prod_id", dataforPreview[dataforPreview.length - 1].prod_id);
+          formData.append("approx_price", newformdata.textPrice.toString());
+
+          let apiUrl = isAuctionEnabled
+            ? "https://shreddersbay.com/API/auctionOrder_api.php?action=insert"
+            : "https://shreddersbay.com/API/orders_api.php?action=insert";
+
+          const response = await fetch(apiUrl, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (response.ok) {
+            console.log("Auction created successfully!");
+            let toast = ""
+            if (isAuctionEnabled) {
+              toast = "Auction Created successfully"
+            } else {
+              toast = "Order Placed succesfully"
+            }
+            ToastAndroid.showWithGravity(
+              toast,
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER
+            );
+            navigation.navigate("Main");
+          } else {
+            console.error("Failed to create auction.");
+          }
+
+          const data = await response.json();
+          console.log("response:", data);
         } catch (error) {
-          console.error("Error fetching image:", error);
+          console.error("Error:", error);
+        } finally {
+          setIsSubmitting(false);
         }
-      }
-
-      function generateUniqueFilename(imageUri) {
-        const extension = imageUri.split(".").pop();
-        const uuid = generateUUID();
-        return `${uuid}.${extension}`;
-      }
-
-      function generateUUID() {
-        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-          /[xy]/g,
-          function (c) {
-            var r = (Math.random() * 16) | 0,
-              v = c == "x" ? r : (r & 0x3) | 0x8;
-            return v.toString(16);
-          }
-        );
-      }
-
-      formData.append("addr_id", address.addr_id);
-      formData.append("approx_weight", dataforPreview[dataforPreview.length - 1].total_weight);
-      formData.append("prod_id", dataforPreview[dataforPreview.length - 1].prod_id);
-      formData.append("approx_price", newformdata.textPrice.toString());
-
-      let apiUrl = isAuctionEnabled
-        ? "https://shreddersbay.com/API/auctionOrder_api.php?action=insert"
-        : "https://shreddersbay.com/API/orders_api.php?action=insert";
-
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        console.log("Auction created successfully!");
-        let toast = ""
-        if(isAuctionEnabled){
-          toast ="Auction Created successfully"
-        }else{
-          toast ="Order Placed succesfully"
-        }
+      } else {
+        // Alert.alert("Please fill all the necessary fields.");
         ToastAndroid.showWithGravity(
-          toast,
+          "Please fill all the necessary fields.",
           ToastAndroid.SHORT,
           ToastAndroid.CENTER
         );
-        navigation.navigate("Main");
-      } else {
-        console.error("Failed to create auction.");
+        setIsSubmitting(false);
       }
-
-      const data = await response.json();
-      console.log("response:", data);
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  } else {
-    // Alert.alert("Please fill all the necessary fields.");
-    ToastAndroid.showWithGravity(
-      "Please fill all the necessary fields.",
-      ToastAndroid.SHORT,
-      ToastAndroid.CENTER
-    );
-    setIsSubmitting(false);
-  }
-};
+    };
 
   //////////////////////////
 
@@ -312,7 +312,7 @@ const handlePublishYourAdBtn = async () => {
       </View>
       {/* </View> */}
 
-      <View style={{}}>
+      <View >
         {images.length > 0 && (
           <ScrollView
             ref={scrollViewRef}
@@ -337,6 +337,66 @@ const handlePublishYourAdBtn = async () => {
           ))}
         </View>
       </View>
+
+
+
+      <ScrollView>
+
+
+
+        <View>
+          <View style={styles.container2}>
+            <Text style={styles.heading}>Product Detail : </Text>
+            <View style={styles.detailContainer}>
+              <View style={styles.column}>
+                <Text style={[styles.itemText, styles.leftText]}>CART ID:</Text>
+                <Text style={[styles.itemText, styles.leftText]}>PRODUCT:</Text>
+                <Text style={[styles.itemText, styles.leftText]}>PRICE:</Text>
+                <Text style={[styles.itemText, styles.leftText]}>DATE:</Text>
+                <Text style={[styles.itemText, styles.leftText]}>WEIGHT:</Text>
+
+              </View>
+              <View style={styles.column}>
+                <Text style={[styles.itemText, styles.rightText]}>{dataforPreview[dataforPreview.length - 1] && dataforPreview[dataforPreview.length - 1].cart_id}</Text>
+                <Text style={[styles.itemText, styles.rightText]}>{dataforPreview[dataforPreview.length - 1] && dataforPreview[dataforPreview.length - 1].p_name}</Text>
+                <Text style={[styles.itemText, styles.rightText]}>{dataforPreview[dataforPreview.length - 1] && dataforPreview[dataforPreview.length - 1].price}</Text>
+                <Text style={[styles.itemText, styles.rightText]}>{dataforPreview[dataforPreview.length - 1] && dataforPreview[dataforPreview.length - 1].date}</Text>
+                <Text style={[styles.itemText, styles.rightText]}>{dataforPreview[dataforPreview.length - 1] && dataforPreview[dataforPreview.length - 1].weight}</Text>
+
+              </View>
+            </View>
+
+          </View>
+
+          <View style={styles.container2}>
+            <Text style={styles.heading}>Customer Detail : </Text>
+            <View style={styles.detailContainer}>
+              <View style={styles.column}>
+                <Text style={[styles.itemText, styles.leftText]}>NAME:</Text>
+                <Text style={[styles.itemText, styles.leftText]}>MOBILE:</Text>
+                <Text style={[styles.itemText, styles.leftText]}>ADDRESS:</Text>
+                <Text style={[styles.itemText, styles.leftText]}>LANNDMARK:</Text>
+                <Text style={[styles.itemText, styles.leftText]}>PINCODE:</Text>
+
+              </View>
+              <View style={styles.column}>
+                <Text style={[styles.itemText, styles.rightText]}>{profileData[0] && profileData[0].name}</Text>
+                <Text style={[styles.itemText, styles.rightText]}>{profileData[0] && profileData[0].mobile}</Text>
+                <Text style={[styles.itemText, styles.rightText]}>{address && address.address}</Text>
+                <Text style={[styles.itemText, styles.rightText]}>{address && address.landmark}</Text>
+                <Text style={[styles.itemText, styles.rightText]}>{address && address.pin_code}</Text>
+
+              </View>
+            </View>
+
+          </View>
+        </View>
+
+
+
+
+
+      </ScrollView>
 
       <View>
         {showPicker1 && (
@@ -363,9 +423,10 @@ const handlePublishYourAdBtn = async () => {
             onChange={onDateChange2}
           />
         )}
-        <View style={{ ...styles.datePickerContainer, marginBottom: 20 }}>
 
-          {isAuctionEnabled ?
+      </View>
+
+      {/* {isAuctionEnabled ?
             <>
               <View style={styles.row}>
                 <View style={styles.flexItem}>
@@ -394,100 +455,195 @@ const handlePublishYourAdBtn = async () => {
                 </View>
               </View>
 
-            </>}
-
-
-        </View>
+            </>} */}
+      {/* {chooseDate == "Choose Date" || (startDate === "Start Date" && endDate === "End Date") ? (
+        <> */}
+       
+        {/* </>
+      ) : ( */}
+     {isAuctionEnabled ? (
+  <>
+    <TouchableOpacity style={styles.row}  onPress={() => setShowPicker1(true)}>
+      <View style={styles.flexItem}>
+        <Text style={styles.date}>{startDate}</Text>
       </View>
+      <View style={styles.flexItem}>
+        <FontAwesome name="calendar" style={styles.icon}  />
+      </View>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.row}  onPress={() => setShowPicker(true)}>
+      <View style={styles.flexItem}>
+        <Text style={styles.date}>{endDate}</Text>
+      </View>
+      <View style={styles.flexItem}>
+        <FontAwesome name="calendar" style={styles.icon} />
+      </View>
+    </TouchableOpacity>
+  </>
+) : (
+  <>
+    <TouchableOpacity style={styles.row}  onPress={() => setShowPicker2(true)} >
+      <View style={styles.flexItem}>
+        <Text style={styles.date}>{chooseDate}</Text>
+      </View>
+      <View style={styles.flexItem}>
+        <FontAwesome name="calendar" style={styles.icon}  />
+      </View>
+    </TouchableOpacity>
+  </>
+)}
 
-      <ScrollView style={{ backgroundColor: 'lightgray' }}>
-        <View style={{ padding: 20 }}>
+{/* Conditionally render the Publish Your Ad button */}
+{startDate !== "Start Date" && endDate !== "End Date" || chooseDate !== "Choose Date" ? (
+  <>
+    <TouchableOpacity style={{ ...styles.button, marginBottom: 2 }} onPress={handlePublishYourAdBtn}>
+      <Text style={styles.buttonText}>Publish Your Ad</Text>
+    </TouchableOpacity>
+  </>
+) : null}
 
-          <Text style={styles.detail}>PRODUCT DETAIL</Text>
+      
+      {/* )} */}
 
-          <View style={styles.row}>
-            <Text style={styles.text}>Cart_Id</Text>
-            <Text style={styles.text}> : </Text>
-            <Text style={styles.text1}>{dataforPreview[dataforPreview.length - 1] && dataforPreview[dataforPreview.length - 1].cart_id}</Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.text}>Product_Name</Text>
-            <Text style={styles.text}> : </Text>
-            <Text style={styles.text1}>{dataforPreview[dataforPreview.length - 1] && dataforPreview[dataforPreview.length - 1].p_name}</Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.text}>Approx Price</Text>
-            <Text style={styles.text}> : </Text>
-            <Text style={styles.text1}>{dataforPreview[dataforPreview.length - 1] && dataforPreview[dataforPreview.length - 1].price}</Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.text}>Date</Text>
-            <Text style={styles.text}> : </Text>
-            <Text style={styles.text1}>{dataforPreview[dataforPreview.length - 1] && dataforPreview[dataforPreview.length - 1].date}</Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.text}>Weight</Text>
-            <Text style={styles.text}> : </Text>
-            <Text style={styles.text1}>{dataforPreview[dataforPreview.length - 1] && dataforPreview[dataforPreview.length - 1].weight}</Text>
-          </View>
-        </View>
-
-        <View style={{ backgroundColor: '#ffffff', padding: 10 }}>
-          <Text style={styles.detail}>CUSTOMER DETAIL</Text>
-          <View style={styles.row}>
-            <Text style={styles.text}>Name:</Text>
-            <Text style={styles.text}> : </Text>
-            <Text style={styles.text1}>{profileData[0] && profileData[0].name}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.text}>Mobile:</Text>
-            <Text style={styles.text}> : </Text>
-            <Text style={styles.text1}>{profileData[0] && profileData[0].mobile}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.text}>Address:</Text>
-            <Text style={styles.text}> : </Text>
-            <Text style={styles.text1}>{address && address.address}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.text}>Landmark:</Text>
-            <Text style={styles.text}> : </Text>
-            <Text style={styles.text1}>{address && address.landmark}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.text}>Pincode:</Text>
-            <Text style={styles.text}> : </Text>
-            <Text style={styles.text1}>{address && address.pin_code}</Text>
-          </View>
-
-
-        </View>
-      </ScrollView>
-      <TouchableOpacity style={{...styles.button,marginBottom:2,}} onPress={handlePublishYourAdBtn}>
+      {/* <TouchableOpacity style={{...styles.button,marginBottom:2,}} onPress={handlePublishYourAdBtn}>
         <Text style={styles.buttonText}>Publish Your Ad</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+
+
+  container2: {
+
+    backgroundColor: 'white',
+    margin: 15,
+    padding: 15,
+    borderWidth: 0.8,
+    borderRadius: 5,
+
+  },
+
+  row1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    gap: 30,
+
+
+  },
+
+  flexItem: {
+    flex: 1,
+    justifyContent:'center',
+    alignItems: 'center',
+    height: 50,
+    borderWidth: 2,
+    borderColor: '#00457E',
+  },
+
+  date1: {
+    fontWeight: 'bold',
+    color: 'darkgray',
+    fontSize: 18,
+  },
+
+  icon: {
+    fontSize: 25,
+    // color: '#3498db',
+    color: '#00457E'
+
+  },
+
+
+  heading: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 10,
+    textAlign: 'left',
+  },
+
+  heading1: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'left',
+  },
+
+  heading2: {
+    fontSize: 15,
+    fontWeight: '300',
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'left',
+    lineHeight: 25,
+  },
+
+  heading3: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'left',
+  },
+
+
+  detailContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  column: {
+    flex: 1,
+  },
+
+  itemText: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  leftText: {
+    // color: '#3399ff',
+    fontWeight: 'bold',
+    color: 'darkgray',
+  },
+  rightText: {
+    color: 'black',
+    fontWeight: '500',
+  },
+
+  button: {
+    backgroundColor: '#00457E',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 10,
+    elevation: 3, // Shadow on Android
+    shadowColor: '#000', // Shadow on iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+
+  //////////////////////////////////////////////////////
   closeIcon: {
     // alignSelf: 'flex-end',
     marginLeft: 10,
     marginTop: 10,
   },
   scrollView: {
-    height: 200,
+    height: 180,
     // backgroundColor: 'lightgray',
   },
   pagination: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginVertical: 10,
     marginTop: -35
   },
   paginationDot: {
@@ -525,35 +681,42 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
   },
-  icon: {
-    fontSize: 25,
-    color: 'black',
-  },
-  flexItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
+
+
   datePickerContainer: {
     // paddingTop: 20,
   },
 
-  button: {
-    backgroundColor: '#00457E',
-    height: 70,
-    width: '100%',
-    borderRadius: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    
-  },
+
+  // icon: {
+  //   fontSize: 25,
+  //   color: 'black',
+  // },
+  // flexItem: {
+  //   flex: 1,
+  //   alignItems: 'center',
+  // },
+  // datePickerContainer: {
+  //   // paddingTop: 20,
+  // },
+
+  // button: {
+  //   backgroundColor: '#00457E',
+  //   height: 70,
+  //   width: '100%',
+  //   borderRadius: 1,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+
+  // },
 
 
 
-  buttonText: {
-    color: 'white',
-    fontSize: 26,
-    fontWeight: '600',
-  },
+  // buttonText: {
+  //   color: 'white',
+  //   fontSize: 26,
+  //   fontWeight: '600',
+  // },
 });
 
 export default ProductPreviewAndPost;
