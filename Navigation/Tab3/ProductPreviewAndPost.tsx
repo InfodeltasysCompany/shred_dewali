@@ -4,11 +4,22 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, Alert, useWindo
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { CommonActions } from "@react-navigation/native";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  getFirestore,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 
 const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isAuctionEnabled, navigation, newformdata }) => {
   const imgurl = "https://shreddersbay.com/API/uploads/";
-  const [state] = useContext(AuthContext);
-  const { userIdApp } = state;
+  const [state, setState] = useContext(AuthContext);
+  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
+
   const [dataforPreview, setDataforPreview] = useState([]);
   const width = Dimensions.get('window').width;
   const height = width * 0.5;
@@ -250,12 +261,15 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
               }
             );
           }
+          const currentDateTime1 = new Date();
 
           formData.append("addr_id", address.addr_id);
           formData.append("approx_weight", dataforPreview[dataforPreview.length - 1].total_weight);
           formData.append("prod_id", dataforPreview[dataforPreview.length - 1].prod_id);
           formData.append("approx_price", newformdata.textPrice.toString());
+          formData.append("bid_id",currentDateTime1.toString());
 
+console.log("formdata for ")
           let apiUrl = isAuctionEnabled
             ? "https://shreddersbay.com/API/auctionOrder_api.php?action=insert"
             : "https://shreddersbay.com/API/orders_api.php?action=insert";
@@ -278,6 +292,9 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
               ToastAndroid.SHORT,
               ToastAndroid.CENTER
             );
+            //////////////////
+            createBiddingGroup(f_id,newformdata.textTitle,newformdata.textPrice,currentDateTime1.toString());
+            /////////////////
             navigation.navigate("Main");
           } else {
             console.error("Failed to create auction.");
@@ -301,7 +318,60 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
       }
     };
 
-  //////////////////////////
+    // const createBiddingGroup = async (userId, groupName, startingPrice,bid_id) => {
+    //   const firestore = getFirestore();
+    
+    //   try {
+    //     // Add a new document with a generated ID to the "biddingGroups" collection
+    //     const docRef = await addDoc(collection(firestore, 'biddingGroups'), {
+    //       groupName: groupName,
+    //       bid_id,
+    //       startingPrice: parseFloat(startingPrice),
+    //       createdBy: userId,
+    //       participants: {
+    //         [userId]: true,
+    //       },
+    //       bids: [],
+    //     });
+    
+    //     console.log(`Bidding group '${groupName}' created with ID: ${docRef.id}`);
+    //   } catch (error) {
+    //     console.error('Error creating bidding group: ', error);
+    //   }
+    
+    // };
+
+    const createBiddingGroup = async (userId, groupName, startingPrice, bid_id) => {
+      const firestore = getFirestore();
+    
+      try {
+        const docRef = await addDoc(collection(firestore, 'biddingGroups'), {
+          groupName: groupName,
+          bid_id: bid_id,
+          startingPrice: parseFloat(startingPrice),
+          createdBy: userId,
+          participants: {
+            [userId]: {
+              isAdmin: true,
+              isAccepted: true,
+            },
+          },
+          pendingParticipants: {},
+          messages: [],
+        });
+    
+        console.log(`Bidding group '${groupName}' created with ID: ${docRef.id}`);
+      } catch (error) {
+        console.error('Error creating bidding group: ', error);
+      }
+    };
+    
+
+
+  ////////////////////////
+
+
+
 
   return (
     <Modal animationType="none" visible={visible}>

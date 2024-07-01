@@ -14,6 +14,7 @@ import {
   Dimensions,
   Linking,
   Platform,
+  ToastAndroid,
 
 } from "react-native";
 import Constants from 'expo-constants';
@@ -65,6 +66,8 @@ import SearchModalContent from "../../components/Modal/Search/SearchModalContent
 import RatingSlider from "../../components/OrderImage/RatingSlider";
 import AuctionBuyModal1 from "./AuctionBuy/AuctionBuyModal1";
 import OrderBuyModal1 from "./OrderBuy/OrderBuyModal1";
+import GroupChatModal from "../Tab5_buy/GroupChatModal";
+import { firebaseDB } from "../../Config/Firebaseconfig";
 
 const T1Screen1 = ({ navigation }) => {
   const imgurl = "https://shreddersbay.com/API/uploads/";
@@ -77,7 +80,9 @@ const T1Screen1 = ({ navigation }) => {
   const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false)
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false)
-
+  const [groups, setGroups] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [isGroupModalVisible, setIsGroupModalVisible] = useState(false);
   // const setIsloginModalVisible=()=>{
   //   setState(prevState => ({
   //     ...prevState,
@@ -141,7 +146,7 @@ const T1Screen1 = ({ navigation }) => {
     getAuctionResponse();
     setTimeout(() => {
       setRefreshing(false);
-      
+
     }, 2000);
   };
 
@@ -187,9 +192,13 @@ const T1Screen1 = ({ navigation }) => {
     }
   };
   const handleAuctionDetailPres = async (
-    auctionId
+    object
 
   ) => {
+    console.log("object:=>",object);
+    getGroups(object.bid_id,setSelectedGroup);
+    // console.log("d=>",d);
+    const auctionId = object.auction_id;
     console.log("auctionId:-" + auctionId);
 
     const apiUrl =
@@ -213,10 +222,30 @@ const T1Screen1 = ({ navigation }) => {
       // Check if booking_id exists in the first item of detaildata
       if (detaildata.length > 0) {
         if (detaildata[0].hasOwnProperty('booking_id') && detaildata[0].booking_id !== null) {
-          setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
-        } else  {
-          setIsAllBuyAuctionOrderModalVisible(!isAllBuyAuctionOrderModalVisible);
-        } 
+          console.log("selectedGroup|=>",selectedGroup);
+          if (selectedGroup !== null) {
+            setIsGroupModalVisible(!isGroupModalVisible)
+          } else {
+            ToastAndroid.showWithGravity(
+              "There is no bidding group",
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER
+            );
+            // setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
+          }
+        } else {
+          console.log("selectedGroup:=>",selectedGroup);
+          if (selectedGroup !== null) {
+            setIsGroupModalVisible(!isGroupModalVisible)
+          } else {
+            ToastAndroid.showWithGravity(
+              "There is no bidding group",
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER
+            );
+            // setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
+          }
+        }
       } else {
         console.error('detaildata array is empty');
       }
@@ -269,16 +298,10 @@ const T1Screen1 = ({ navigation }) => {
       console.log("Auction urlis:=.", url1)
       // console.log("auctiondata", data);
       settAuctionData(data);
-
-
-
     } catch (error) {
       console.log("the auction calling error is =>", error)
     }
-
-
   }
-
   const getOrderResponse = async () => {
     try {
       // Encode URI components to handle special characters in URLs
@@ -305,10 +328,8 @@ const T1Screen1 = ({ navigation }) => {
       console.log("Error fetching order data:", error);
     }
   };
-
   const [currentAddress, setCurrentAddress] = useState(null);
   const [currentAddress1, setCurrentAddress1] = useState(null);
-
   const locationSetup = async () => {
     const address = await getCurrentLocation();
     setCurrentAddress(address);
@@ -383,6 +404,7 @@ const T1Screen1 = ({ navigation }) => {
       console.error("Error:", error);
     }
   };
+
 
   // const [user_id, setUserIds] = useState(null); // User ID
   // const [userDataLOCAL_STORAGE, setUserDataLocalStorage] = useState(null);
@@ -535,6 +557,7 @@ const T1Screen1 = ({ navigation }) => {
     }
   };
   const getUsers1 = async () => {
+
     try {
       const email = await AsyncStorage.getItem("femail");
       const fuserid = await AsyncStorage.getItem("fid");
@@ -593,6 +616,33 @@ const T1Screen1 = ({ navigation }) => {
       console.log("Error fetching users: ", error);
     }
   };
+  
+  const getGroups = async (bidId: string, setSelectedGroup: (groups: { id: string, [key: string]: any }[]) => void) => {
+    console.log("bidId =>", bidId);
+    const firebaseDB = getFirestore();
+    
+    try {
+      const groupsRef = collection(firebaseDB, 'biddingGroups');
+      const q = query(groupsRef, where('bid_id', '==', bidId));
+      
+      onSnapshot(q, (querySnapshot) => {
+        const fetchedGroups: { id: string, [key: string]: any }[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          fetchedGroups.push({ id: doc.id, ...data });
+        });
+        console.log('fetchedGroups =>', fetchedGroups);
+        setSelectedGroup(fetchedGroups);
+      });
+  
+    } catch (error) {
+      console.error('Error fetching groups:', error);
+    }
+  };
+  const handleGroupSelection = (group) => {
+    setSelectedGroup(group);
+    setIsGroupModalVisible(true);
+  };
   ///////////////////////////////////////slider//////////////////////////////////////
 
   ////////////////////search//////////////////////
@@ -615,14 +665,14 @@ const T1Screen1 = ({ navigation }) => {
   //     setModalVisible(!modalVisible); 
   //   }
   // },[isAllBuyAuctionOrderModalVisible,isAllBuyCurrentOrderModalVisible])
-  const oncloseAllorderbuy = () => {  
-    navigation.navigate("Tab1",{screen:"T1Screen1"});
+  const oncloseAllorderbuy = () => {
+    navigation.navigate("Tab1", { screen: "T1Screen1" });
     setModalVisible(!modalVisible);
     setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
     onRefresh();
   }
   const oncloseAllAuctionbuy = () => {
-    navigation.navigate("Tab1",{screen:"T1Screen1"});
+    navigation.navigate("Tab1", { screen: "T1Screen1" });
     setModalVisible(!modalVisible);
     setModalVisible(!modalVisible);
     setIsAllBuyAuctionOrderModalVisible(!isAllBuyAuctionOrderModalVisible);
@@ -641,6 +691,14 @@ const T1Screen1 = ({ navigation }) => {
         <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} />
         <OrderBuyModal1 closeModal={oncloseAllorderbuy} visible={isAllBuyCurrentOrderModalVisible} />
         <AuctionBuyModal1 closeModal={oncloseAllAuctionbuy} visible={isAllBuyAuctionOrderModalVisible} />
+        <GroupChatModal
+          modalVisible={isGroupModalVisible}
+          onClose={() => {
+            setIsGroupModalVisible(!isGroupModalVisible);
+            setSelectedGroup(null);
+          }}
+          group={selectedGroup}
+        />
         <Modal
           // animationType="fade"
           transparent={true}
@@ -781,7 +839,7 @@ const T1Screen1 = ({ navigation }) => {
             <CaroselImage />
           </View>
           <View>
-            <RatingSlider navigation={navigation}/>
+            <RatingSlider navigation={navigation} />
           </View>
           <View>
             <LogoSlider1 navigation={navigation} />
@@ -851,7 +909,7 @@ const T1Screen1 = ({ navigation }) => {
                   <View key={index} style={styles.card}>
                     <Pressable
                       onPress={() =>
-                        handleAuctionDetailPres(item.auction_id)
+                        handleAuctionDetailPres(item)
                       }
                     >
                       <View style={styles.imageContainer}>

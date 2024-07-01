@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions, FlatList ,ScrollView, TouchableOpacity, Modal, Linking, RefreshControl} from "react-native";
+import { View, Text, StyleSheet, Dimensions, FlatList, ScrollView, TouchableOpacity, Modal, Linking, RefreshControl } from "react-native";
 import { getFirestore, collection, query, where, getDocs, Firestore, addDoc, QuerySnapshot, onSnapshot, orderBy } from 'firebase/firestore';
 import { GiftedChat, IMessage } from 'react-native-gifted-chat';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,39 +9,39 @@ import ChatBlank from './ChatBlank';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 import { useFocusEffect } from '@react-navigation/native';
 
-const AllChats = ({navigation}) => {
-  
+const AllChats = ({ navigation }) => {
+
   const [state, setState] = useContext(AuthContext);
-  const { gUserCred, userCred, userIdApp,f_email, f_mobile, f_id, f_name, f_password  } = state;
+  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password } = state;
   const [users, setUsers] = useState([]);
-  const [fromChatUserIdFbse,setFromChatUserIdFbse]=useState('')
-  const [toChatUserIdFbse,setToChatUserIdFbse]=useState('')
-  const [toChatUserMobileFbse,setToChatUserMobileFbse]=useState('')
-  const [toChatUserEmailFbse,setToChatUserEmailFbse]=useState('')
-  const [toChatUserNameFbse,setToChatUserNameFbse]=useState('')
-  const [uid,setUid] =useState(userIdApp)
+  const [fromChatUserIdFbse, setFromChatUserIdFbse] = useState('')
+  const [toChatUserIdFbse, setToChatUserIdFbse] = useState('')
+  const [toChatUserMobileFbse, setToChatUserMobileFbse] = useState('')
+  const [toChatUserEmailFbse, setToChatUserEmailFbse] = useState('')
+  const [toChatUserNameFbse, setToChatUserNameFbse] = useState('')
+  const [uid, setUid] = useState(userIdApp)
   const [refreshing, setRefreshing] = useState(false);
   const [userid, setuserid] = useState(userIdApp)
-const [hasRunUsersGettingFunc, setHasRunUsersGettingFunc] = useState(false)
-  
+  const [hasRunUsersGettingFunc, setHasRunUsersGettingFunc] = useState(false)
+
 
 
 
   useEffect(() => {
     getUsers();
-  }, [fromChatUserIdFbse,userIdApp]);
-  
-  
+  }, [fromChatUserIdFbse, userIdApp]);
 
-  const onRefresh=()=>{
+
+
+  const onRefresh = () => {
     getUsers();
 
   }
 
   useFocusEffect(() => {
-  if(userIdApp && users.length == 0){
-    getUsers();
-  }
+    if (userIdApp && users.length == 0) {
+      getUsers();
+    }
   });
 
   const getUsers = async () => {
@@ -65,7 +65,7 @@ const [hasRunUsersGettingFunc, setHasRunUsersGettingFunc] = useState(false)
         console.log("Fetched users data:", userData); // Check the fetched users data
         setFromChatUserIdFbse(f_id)
         // console.log("firebase form chat user Id:fromchatuseridfbse-",fromChatUserIdFbse);
-        
+
 
         setUsers(userData);
       }
@@ -73,7 +73,7 @@ const [hasRunUsersGettingFunc, setHasRunUsersGettingFunc] = useState(false)
       console.log("Error fetching users: ", error);
     }
   };
- 
+
 
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -83,63 +83,47 @@ const [hasRunUsersGettingFunc, setHasRunUsersGettingFunc] = useState(false)
     // setToChatUserIdFbse(id)
   };
 
-  const setsSelectedUserId=(id:any,name:any,mobile:any,email:any,)=>{
-        setToChatUserIdFbse(id)
-        setToChatUserNameFbse(name)
-        setToChatUserEmailFbse(email)
-        setToChatUserMobileFbse(mobile)
-        toggleModal();
+  const setsSelectedUserId = (id: any, name: any, mobile: any, email: any,) => {
+    setToChatUserIdFbse(id)
+    setToChatUserNameFbse(name)
+    setToChatUserEmailFbse(email)
+    setToChatUserMobileFbse(mobile)
+    toggleModal();
 
   }
- 
+
   return (
     <View >
-      
 
 
-      { userIdApp && users.length  > 0 ? (
-        
-    
-      <ScrollView style={{}} refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          colors={['#0000ff']}
-          tintColor="#0000ff"
-        />
-      }>
-      {users.map((item) => (
-        <TouchableOpacity
-          key={item.id}
-          style={styles.userItem}
-          onPress={() => setsSelectedUserId(item.id, item.name, item.mobile, item.email)}
-        >
-          <Text style={styles.userId}>ID: {item.id}</Text>
-          <Text style={styles.fullName}>Full Name: {item.name}</Text>
-          <Text style={styles.mobile}>Mobile: {item.mobile}</Text>
-          <Text style={styles.email}>Email: {item.email}</Text>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+
+      {userIdApp && users.length > 0 ? (
+
+
+        <ScrollView style={{}} refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#0000ff']}
+            tintColor="#0000ff"
+          />
+        }>
+          {users.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={styles.userItem}
+              onPress={() => setsSelectedUserId(item.id, item.name, item.mobile, item.email)}
+            >
+              <Text style={styles.userId}>ID: {item.id}</Text>
+              <Text style={styles.fullName}>Full Name: {item.name}</Text>
+              <Text style={styles.mobile}>Mobile: {item.mobile}</Text>
+              <Text style={styles.email}>Email: {item.email}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       ) : (
         <>
 
-        <ScrollView refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          colors={['#0000ff']}
-          tintColor="#0000ff"
-        />
-      }>
-
-          <ChatBlank navigation={navigation} />
-        </ScrollView>
-        
-       
-        </>
-      )}
-      {userIdApp &&(
           <ScrollView refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -148,11 +132,27 @@ const [hasRunUsersGettingFunc, setHasRunUsersGettingFunc] = useState(false)
               tintColor="#0000ff"
             />
           }>
-    
-              <ChatBlank navigation={navigation} />
-            </ScrollView>
-        )}
-  
+
+            <ChatBlank navigation={navigation} />
+          </ScrollView>
+
+
+        </>
+      )}
+      {userIdApp && (
+        <ScrollView refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#0000ff']}
+            tintColor="#0000ff"
+          />
+        }>
+
+          <ChatBlank navigation={navigation} />
+        </ScrollView>
+      )}
+
       <MainChats
         isModalVisible={isModalVisible}
         toggleModal={toggleModal}
@@ -160,11 +160,10 @@ const [hasRunUsersGettingFunc, setHasRunUsersGettingFunc] = useState(false)
         tochatUserIdFbse={toChatUserIdFbse}
         tochatUserNameFbse={toChatUserNameFbse}
         toChatUserMobileFbse={toChatUserMobileFbse}
-        
       />
     </View>
   );
-  
+
 };
 
 
@@ -176,10 +175,10 @@ const MainChats: React.FC<{
   formchatUserIdFbse: string;
   tochatUserIdFbse: string;
   tochatUserNameFbse: string;
-  toChatUserMobileFbse:string;
-  
-  
-}> = ({ isModalVisible, toggleModal, formchatUserIdFbse, tochatUserIdFbse,tochatUserNameFbse ,toChatUserMobileFbse}) => {
+  toChatUserMobileFbse: string;
+
+
+}> = ({ isModalVisible, toggleModal, formchatUserIdFbse, tochatUserIdFbse, tochatUserNameFbse, toChatUserMobileFbse }) => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const firebaseDB = getFirestore(); // Get the Firestore instance
 
@@ -247,24 +246,28 @@ const MainChats: React.FC<{
       <View style={styles.modalContainer}>
         <View style={styles.header}>
 
-          <View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity onPress={closeModal}>
-            <Ionicons name="arrow-back" style={{ fontSize: 30 }} />
-           
-          </TouchableOpacity>  
-          <Text style={{fontSize: 22,marginLeft: 10}}>{tochatUserNameFbse}</Text>        
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={closeModal}>
+              <Ionicons name="arrow-back" style={{ fontSize: 30 }} />
+
+            </TouchableOpacity>
+            <Text style={{ fontSize: 22, marginLeft: 10 }}>{tochatUserNameFbse}</Text>
           </View>
 
 
-        
 
-          <View style={{}}>
-          <TouchableOpacity style={{}} onPress={openDialer}>
-            <Ionicons name="call" style={{ fontSize: 25 ,marginRight: 10}} />
-          </TouchableOpacity>
-          </View>
-       
-          
+          {
+            toChatUserMobileFbse ?
+              <View style={{}}>
+                <TouchableOpacity style={{}} onPress={openDialer}>
+                  <Ionicons name="call" style={{ fontSize: 25, marginRight: 10 }} />
+                </TouchableOpacity>
+              </View> :
+              null
+          }
+
+
+
         </View>
         <GiftedChat
           messages={messages}
@@ -289,8 +292,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
-    backgroundColor:'white',
-    elevation:10,
+    backgroundColor: 'white',
+    elevation: 10,
   },
   closeButton: {
     padding: 10,
@@ -298,10 +301,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   modalContainer: {
- flex: 1,
-   
+    flex: 1,
+
     // backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background color
-    backgroundColor:'white',
+    backgroundColor: 'white',
   },
 
   header: {
