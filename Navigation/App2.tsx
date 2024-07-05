@@ -36,6 +36,8 @@ import { AuthContext } from '../redux/ContextApi/UserAuthProvider';
 import LoginModal from '../components/Credential/LoginModal';
 import ProductCatgry from './Tab3/ProductCatgry';
 import OrderAuction from './Tab2/OrderAuction';
+import ONBoarding from '../OnBoard/ONBoarding';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Stack = createStackNavigator();
@@ -70,7 +72,9 @@ const Stack2 = () => {
 
   return (
     <Stack.Navigator>
-            <Stack.Screen name='My Order' component={OrderAuction} />
+      <Stack.Screen name='My Order' component={OrderAuction}  options={{
+            headerShown: false, // Hide the header if needed
+          }}  />
 
       {/* <Stack.Screen name='My Order' component={T4Screen2} /> */}
       <Stack.Screen name='BuyOrder-Detail' component={InsideMYOrder_Buy} />
@@ -361,13 +365,37 @@ const App2 = () => {
 
   const [state, setState] = useContext(AuthContext);
   const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
+  const [isOnBoardEnable, setIsOnBoardEnable] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      try {
+        const value = await AsyncStorage.getItem('onboardingCompleted');
+        if (value !== null) {
+          setIsOnBoardEnable(true);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      setIsLoading(false);
+    };
+
+    checkOnboardingStatus();
+  }, []);
+
+  if (isLoading) {
+    return null; // or a loading spinner
+  }
 
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {/* <Stack.Screen name="Onboarding" component={ONBoarding} /> */}
 
+        {/* {isOnBoardEnable ? (
+          <> 
         <Stack.Screen name="Main" component={MainTabsComponents} />
         <Stack.Screen name='LoginModal' component={LoginModal} options={{
           headerTitle: 'Scrap Cart',
@@ -379,6 +407,27 @@ const App2 = () => {
           headerTitleAlign: 'center',
           headerShown: false
         }} />
+          </>
+        ) : ( 
+           <Stack.Screen name="Onboarding" component={ONBoarding} /> 
+        )}  */}
+        {!isOnBoardEnable && (
+          <Stack.Screen name="Onboarding" component={ONBoarding} />
+
+        )}
+        <Stack.Screen name="Main" component={MainTabsComponents} />
+        <Stack.Screen name='LoginModal' component={LoginModal} options={{
+          headerTitle: 'Scrap Cart',
+          headerTitleAlign: 'center',
+          headerShown: false
+        }} />
+        <Stack.Screen name='ProductCatgry' component={ProductCatgry} options={{
+          headerTitle: 'Product Catogory',
+          headerTitleAlign: 'center',
+          headerShown: false
+        }} />
+
+
       </Stack.Navigator>
     </NavigationContainer>
   )

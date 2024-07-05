@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Modal, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Modal, Pressable, Alert, ToastAndroid } from 'react-native';
 import { getFirestore, collection, doc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 
@@ -52,7 +52,12 @@ const sendMessageToBiddingGroup = async (groupId: string, userId: string, messag
           },
         });
 
-        console.log('Message sent to admin for approval.');
+        // console.log('Message sent to admin for approval.');
+        ToastAndroid.showWithGravity(
+          "Message sent to admin for approval.",
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER
+        );
       }
     } else {
       console.error('Group does not exist.');

@@ -45,6 +45,7 @@ const AllChats = ({ navigation }) => {
   });
 
   const getUsers = async () => {
+    console.log("f_id in allchats=>",f_id);
     try {
       if (f_email) {
         const firebaseDB = getFirestore();

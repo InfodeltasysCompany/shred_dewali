@@ -367,11 +367,22 @@ import {
           querySnapshot.forEach(async (doc) => {
             const userData = doc.data();
             if (userData != null) {
+              console.log("fireuserData=>=>",userData.idf);
+              setState(prevState => ({ ...prevState, 
+                // userCred: responseData,
+                // gUserCred:JSON.stringify(responseData),
+                // userIdApp:userId,
+                // f_email:responseData["0"].email,
+                // f_mobile:null,
+                f_id:userData.idf,
+                // f_name:null,
+                // f_password:null 
+              }));
               if (userData && Object.keys(userData).length > 0) {
                 try {
                   await AsyncStorage.setItem("femail", userData.email || "");
                   await AsyncStorage.setItem("fmobile", userData.mobile || "");
-                  await AsyncStorage.setItem("fid", userData.idf || "");
+                  await AsyncStorage.setItem("fid", userData.idf);
                   await AsyncStorage.setItem("fname", userData.name || "");
                   await AsyncStorage.setItem(
                     "fpassword",

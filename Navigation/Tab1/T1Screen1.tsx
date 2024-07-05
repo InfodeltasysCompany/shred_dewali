@@ -231,7 +231,7 @@ const T1Screen1 = ({ navigation }) => {
               ToastAndroid.SHORT,
               ToastAndroid.CENTER
             );
-            // setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
+            setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
           }
         } else {
           console.log("selectedGroup:=>",selectedGroup);
@@ -243,7 +243,7 @@ const T1Screen1 = ({ navigation }) => {
               ToastAndroid.SHORT,
               ToastAndroid.CENTER
             );
-            // setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
+            setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
           }
         }
       } else {
@@ -420,24 +420,7 @@ const T1Screen1 = ({ navigation }) => {
   useEffect(() => {
 
     async function onFetchUpdateAsync() {
-      // const osName = Platform.OS;
-      // console.log(`The os name is ${osName}`);
-
-      // try {
-      //   const update = await Updates.checkForUpdateAsync();
-
-      //   // if (update.isAvailable && Platform.OS === 'android') {
-      //   if (update.isAvailable) {
-      //     //  await Updates.fetchUpdateAsync();
-      //     //  await Updates.reloadAsync();
-      //     setIsandroidUpdateModalVisible(!isandroidUpdateModalVisible);
-      //   } else {
-      //     setIsandroidUpdateModalVisible(false);
-      //   }
-      // } catch (error) {
-      //   // You can also add an alert() to see the error message in case of an error when fetching updates.
-      //   console.log(`Error fetching latest Expo update: ${error}`);
-      // }
+      
 
 
       try {
@@ -447,9 +430,9 @@ const T1Screen1 = ({ navigation }) => {
 
         if (update.isAvailable) {
           await Updates.fetchUpdateAsync();
-          const newver = Updates.runtimeVersion;
-          setupdatesVersion(newver);
-          console.log("newVer=>", newver);
+          // const newver = Updates.runtimeVersion;
+          // setupdatesVersion(newver);
+          // console.log("newVer=>", newver);
 
           // Notify user to reload the app
           // Alert.alert('Update available', 'An update has been downloaded. Restart the app to apply the updates.', [
@@ -1508,23 +1491,23 @@ export const AskForAppUpdate: React.FC<{
   updatesVersion: string;
 
 }> = ({ isAndroidUpdateModal, setUpdateModal, updatesVersion }) => {
-  const handleUpdateModal = async () => {
-    const appVersion = Constants.expoConfig.version;
-    console.log("appVersion=>", appVersion);
-    const url = "https://play.google.com/store/apps/details?id=com.shreddersbay";
-    try {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) {
-        await Linking.openURL(url);
-      } else {
-        console.log(`Don't know how to Open Url: ${url}`);
+  // const handleUpdateModal = async () => {
+  //   const appVersion = Constants.expoConfig.version;
+  //   console.log("appVersion=>", appVersion);
+  //   const url = "https://play.google.com/store/apps/details?id=com.shreddersbay";
+  //   try {
+  //     const supported = await Linking.canOpenURL(url);
+  //     if (supported) {
+  //       await Linking.openURL(url);
+  //     } else {
+  //       console.log(`Don't know how to Open Url: ${url}`);
 
-      }
-    } catch (error) {
-      console.log(`Error occured while opening the url: ${error}`);
+  //     }
+  //   } catch (error) {
+  //     console.log(`Error occured while opening the url: ${error}`);
 
-    }
-  }
+  //   }
+  // }
   const [isthereNewVersion, setisthereNewVersion] = useState(false);
   useEffect(() => {
     const appVersion = Constants.expoConfig.version;
@@ -1535,27 +1518,7 @@ export const AskForAppUpdate: React.FC<{
       setisthereNewVersion(false);
     }
   }, [])
-  // const handleUpdateModal = async () => {
-  //   let url = "";
-
-  //   if (Platform.OS === "android") {
-  //     url = "https://play.google.com/store/apps/details?id=com.shreddersbay";
-  //   } else if (Platform.OS === "ios") {
-  //     url = "https://www.example.com/ios"; // Replace with your iOS URL
-  //   }
-
-  //   try {
-  //     const supported = await Linking.canOpenURL(url);
-  //     if (supported) {
-  //       await Linking.openURL(url);
-  //     } else {
-  //       console.log(`Don't know how to Open Url: ${url}`);
-  //     }
-  //   } catch (error) {
-  //     console.log(`Error occurred while opening the URL: ${error}`);
-  //   }
-  // };
-
+  
   return (
     <Modal
       transparent={true}
@@ -1583,16 +1546,17 @@ export const AskForAppUpdate: React.FC<{
           </View>
 
           <View style={styles.updatebtn}>
+
             <TouchableOpacity
               style={{
                 borderWidth: 2, // Adjust the border width as needed
-                borderColor: "gray", // Change the border color                                          // Adjust the padding
+                borderColor: "blue", // Change the border color                                          // Adjust the padding
                 borderRadius: 8, // Add border radius for rounded corners
-                backgroundColor: "white",
+                backgroundColor: "blue",
                 margin: 10,
                 alignItems: "center",
                 justifyContent: "center",
-                width: 160,
+                width: "90%",
                 height: 50,
                 marginLeft: 18,
                 // paddingHorizontal: 40,
@@ -1600,10 +1564,11 @@ export const AskForAppUpdate: React.FC<{
               }}
               onPress={() => setUpdateModal()}
             >
-              <Text style={{ fontSize: 20 }}>Later</Text>
+              
+              <Text style={{ fontSize: 20 ,color: 'white'}}>Restart </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 borderWidth: 2, // Adjust the border width as needed
                 borderColor: "blue", // Change the border color                                          // Adjust the padding
@@ -1624,7 +1589,7 @@ export const AskForAppUpdate: React.FC<{
               <Text style={{ color: "white", fontSize: 20, fontWeight: "500" }}>
                 {isthereNewVersion ? "Restart" : "Update"}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {/* <Image  source={require('../../assets/UpdateImage.jpeg')}  /> */}

@@ -1,30 +1,46 @@
-
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ScrollView, RefreshControl } from 'react-native';
 import { getFirestore, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 import GroupChatModal from './GroupChatModal'; // Adjust the import path as needed
+import { useFocusEffect } from '@react-navigation/native';
+import ChatBlank from './ChatBlank';
 
-const BuyingChats = () => {
+const BuyingChats = ({ navigation }) => {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   const [state] = useContext(AuthContext);
-  const { f_id } = state; // Assuming f_id is the user's ID
+  const { userIdApp, f_id,f_email } = state; // Assuming f_id is the user's ID
 
   const firebaseDB = getFirestore();
 
-  useEffect(() => {
-    const unsubscribe = getGroups();
-    return () => unsubscribe();
-  }, []); // Empty dependency array to run only once on mount
+  const getGroups =()=>{
+    console.log("f_id=>",f_id);
+    console.log("f_email=>",f_email)
 
-  const getGroups = () => {
+    // try {
+    //   const groupsRef = collection(firebaseDB, 'biddingGroups');
+    //   const q = query(groupsRef, where('createdBy', '==', f_id));
+
+    //    onSnapshot(q, (querySnapshot) => {
+    //     const fetchedGroups = [];
+    //     querySnapshot.forEach((doc) => {
+    //       fetchedGroups.push({ id: doc.id, ...doc.data() });
+    //     });
+
+    //     setGroups(fetchedGroups);
+    //     setRefreshing(false); // Update refreshing state here
+    //   });
+
+    // } catch (error) {
+    //   console.error('Error fetching groups:', error);
+    // }
     try {
       const groupsRef = collection(firebaseDB, 'biddingGroups');
-      const q = query(groupsRef, where('createdBy', '==', f_id));
+      const q = query(groupsRef, where('createdBy', '==', f_id)); // Adjust the field names according to your Firestore schema
 
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const fetchedGroups = [];
@@ -40,7 +56,20 @@ const BuyingChats = () => {
     } catch (error) {
       console.error('Error fetching groups:', error);
     }
-  };
+  }
+
+
+  useEffect(() => {
+    getGroups();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (userIdApp) {
+        getGroups();
+      }
+    }, [userIdApp, f_id])
+  );
 
   const handleGroupSelection = (group) => {
     console.log("Selected group =>", group);
@@ -58,23 +87,41 @@ const BuyingChats = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={groups}
-        renderItem={renderGroupItem}
-        keyExtractor={(item) => item.id}
-        refreshing={refreshing}
-        onRefresh={() => {
-          setRefreshing(true);
-          getGroups(); // Call getGroups directly without then()
-        }}
-      />
+      {groups.length > 0 ? (
+        <FlatList
+          data={groups}
+          renderItem={renderGroupItem}
+          keyExtractor={(item) => item.id}
+          refreshing={refreshing}
+          onRefresh={() => {
+            setRefreshing(true);
+            getGroups();
+          }}
+        />
+      ) : (
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                setRefreshing(true);
+                getGroups();
+              }}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+
+        >
+          <ChatBlank navigation={navigation} />
+        </ScrollView>
+      )}
 
       <GroupChatModal
         modalVisible={modalVisible}
         onClose={() => {
           console.log("Closing modal");
           setModalVisible(false);
-          setSelectedGroup(null);
+          // setSelectedGroup(null);
         }}
         group={selectedGroup}
       />

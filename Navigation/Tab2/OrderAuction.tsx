@@ -114,7 +114,7 @@ const OrderAuction = () => {
       {/* Pass modal visibility and close functions as props */}
       <OrderBuyModal visible={isOrderBuyModalVisible} closeModal={closeOrderBuyModal} />
       <OrderSellModal visible={isOrderSellModalVisible} closeModal={closeOrderSellModal} />
-      <AuctionBuyModal visible={isAuctionBuyModalVisible} closeModal={closeAuctionBuyModal} />
+      {/* <AuctionBuyModal visible={isAuctionBuyModalVisible} closeModal={closeAuctionBuyModal} /> */}
       <AuctionSellModal visible={isAuctionSellModalVisible} closeModal={closeAuctionSellModal} />
 
     </View>
