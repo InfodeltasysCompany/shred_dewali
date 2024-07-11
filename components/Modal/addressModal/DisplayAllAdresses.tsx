@@ -9,6 +9,7 @@ import HandleAddAddress from './HandleAddAddress';
 import EditAddress from './EditAddress';
 import LoginModal from '../../Credential/LoginModal';
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
@@ -27,10 +28,10 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
         setIsEditAddressModal(true);
     }
     const hanleAddAddressModal = () => {
-       
+
         if (userIdApp) {
             setIsAddAddressModal(prevState => !prevState);
-        } 
+        }
         else {
             // navigation.navigate("LoginModal")
             setIsloginModalVisible(!isloginModalVisible)
@@ -38,9 +39,9 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
 
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         onRefresh();
-    },[isAddAddressModal,isEditAddressModal])
+    }, [isAddAddressModal, isEditAddressModal])
     const handlePickCurrentLocationModal = async () => {
         const address = await getCurrentLocation();
         setcurrentLocation(address);
@@ -79,12 +80,44 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
         }
     }
     useEffect(() => {
-      
+
     }, [userIdApp])
     const [refreshing, setRefreshing] = useState(false)
     const onRefresh = () => {
         getMyAllAddress();
     }
+    const addAddressToLocalStorage = async (newAddress) => {
+        try {
+          // Get existing addresses from local storage or initialize an empty array
+          let addressesJSON = await AsyncStorage.getItem('addresses');
+          let addresses = addressesJSON ? JSON.parse(addressesJSON) : [];
+      
+          // Check if the new address already exists in the addresses array
+          const existingAddressIndex = addresses.findIndex(addr => addr.address === newAddress.address);
+      
+          if (existingAddressIndex !== -1) {
+            // Address already exists, remove it from current position to prevent duplicates
+            addresses.splice(existingAddressIndex, 1);
+          }
+      
+          // Add the new address to the end of the array
+          addresses.push(newAddress);
+      
+          // Check if there are more than 5 addresses
+          if (addresses.length > 5) {
+            // Remove the oldest address (first element)
+            addresses.shift();
+          }
+      
+          // Update local storage with the updated addresses array
+          await AsyncStorage.setItem('addresses', JSON.stringify(addresses));
+      
+          console.log('Addresses updated successfully:', addresses);
+        } catch (error) {
+          console.error('Error updating addresses:', error);
+        }
+      };
+      
     const getMyAllAddress = async () => {
         const url = userIdApp ? 'https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=' + userIdApp : 'https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=';
         const myaddress = await fetchApiData(url);
@@ -106,6 +139,7 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
             setCheckedAddressId(addressId);
             setSelectedAddressDetails(addressDetails);
             addrseter(addressDetails)
+            addAddressToLocalStorage(addressDetails)
             onClose();
             console.log(addressDetails);
             console.log(userIdApp);
@@ -142,15 +176,15 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
                     <Text style={{ color: "white", marginLeft: 105, fontSize: 20, fontWeight: "400" }}> ADDRESS</Text>
 
                 </View> */}
-                 <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={onClose} style={styles.iconContainer}>
-                <AntDesign name='arrowleft' size={25} color={"white"} />
-                <Text style={styles.headerText}>ADDRESS</Text>
-            </TouchableOpacity>
-         
-        </View>
+                <View style={styles.headerContainer}>
+                    <TouchableOpacity onPress={onClose} style={styles.iconContainer}>
+                        <AntDesign name='arrowleft' size={25} color={"white"} />
+                        <Text style={styles.headerText}>ADDRESS</Text>
+                    </TouchableOpacity>
 
-                
+                </View>
+
+
 
                 {/* <Text>header file</Text> */}
                 <TouchableOpacity style={{ ...styles.addaddressbtncontainer, paddingBottom: 10 }} onPress={hanleAddAddressModal}>
@@ -159,7 +193,7 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
                 </TouchableOpacity>
                 <View>
 
-              
+
 
                 </View>
                 {/* <TouchableOpacity style={{ ...styles.addaddressbtncontainer, marginTop: 5 }} onPress={handlePickCurrentLocationModal}>
@@ -281,7 +315,12 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
                                                     />
 
                                                     <View style={{ padding: 20, marginTop: 30, }}>
-
+                                                            {/* /////////////////// */}
+                                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                                                            <Text style={{ fontWeight: 'bold', color: '#888' }}>addr_id:</Text>
+                                                            <Text style={{ color: '#888' }}>{address.addr_id}</Text>
+                                                        </View>
+                                                            {/* ////////////////// */}
                                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
                                                             <Text style={{ fontWeight: 'bold', color: '#888' }}>pincode:</Text>
                                                             <Text style={{ color: '#888' }}>{address.pin_code}</Text>
@@ -352,49 +391,49 @@ const styles = StyleSheet.create({
         height: 60,
         width: "100%",
         backgroundColor: '#00457E', // Assuming a black background for example
-},
+    },
 
-iconContainer:{
-    backgroundColor: "#00457E",
-    flex: 1,
-    width: "100%",
-    flexDirection: "row",
-    elevation: 10,
-    marginTop: 20,
- 
-},
+    iconContainer: {
+        backgroundColor: "#00457E",
+        flex: 1,
+        width: "100%",
+        flexDirection: "row",
+        elevation: 10,
+        marginTop: 20,
 
-headerText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: '400',
-    paddingLeft: 20,
+    },
 
-},
+    headerText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: '400',
+        paddingLeft: 20,
 
-//     headerContainer: {
-//         flexDirection: 'row',
-//         alignItems: 'center',
-//         justifyContent: 'space-between',  // Ensures the elements are spread out
-//         paddingHorizontal: 10,
-//         height: 60,
-//         width: "100%",
-//         backgroundColor: '#00457E', // Assuming a black background for example
-// },
+    },
 
-// iconContainer: {
-   
-//     // Adjust width as necessary
-// },
-// headerText: {
-//   color: 'white',
-//   fontSize: 20,
-//   fontWeight: '400',
-//   position: 'absolute',
-//   left: 0,
-//   right: 0,
-//   textAlign: 'center',
-// },
+    //     headerContainer: {
+    //         flexDirection: 'row',
+    //         alignItems: 'center',
+    //         justifyContent: 'space-between',  // Ensures the elements are spread out
+    //         paddingHorizontal: 10,
+    //         height: 60,
+    //         width: "100%",
+    //         backgroundColor: '#00457E', // Assuming a black background for example
+    // },
+
+    // iconContainer: {
+
+    //     // Adjust width as necessary
+    // },
+    // headerText: {
+    //   color: 'white',
+    //   fontSize: 20,
+    //   fontWeight: '400',
+    //   position: 'absolute',
+    //   left: 0,
+    //   right: 0,
+    //   textAlign: 'center',
+    // },
 
     addaddressbtncontainer: {
         backgroundColor: "white",

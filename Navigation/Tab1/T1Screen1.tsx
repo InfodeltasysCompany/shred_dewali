@@ -670,7 +670,7 @@ const T1Screen1 = ({ navigation }) => {
 
       <View>
         <HandleAddAddressModal visible={isAddressModalOpen} onClose={handleAddresModalOpen} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
-        <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} comp={<SearchModalContent />} />
+        <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} navigation={navigation}  />
         <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} />
         <OrderBuyModal1 closeModal={oncloseAllorderbuy} visible={isAllBuyCurrentOrderModalVisible} />
         <AuctionBuyModal1 closeModal={oncloseAllAuctionbuy} visible={isAllBuyAuctionOrderModalVisible} />
@@ -1203,6 +1203,7 @@ const styles = StyleSheet.create({
   order: {
 
     fontSize: 20,
+
     color: "#00457E",
     // fontFamily: 'sans-sarif',
     marginBottom: 20,
@@ -1518,7 +1519,27 @@ export const AskForAppUpdate: React.FC<{
       setisthereNewVersion(false);
     }
   }, [])
-  
+  // const handleUpdateModal = async () => {
+  //   let url = "";
+
+  //   if (Platform.OS === "android") {
+  //     url = "https://play.google.com/store/apps/details?id=com.shreddersbay";
+  //   } else if (Platform.OS === "ios") {
+  //     url = "https://www.example.com/ios"; // Replace with your iOS URL
+  //   }
+
+  //   try {
+  //     const supported = await Linking.canOpenURL(url);
+  //     if (supported) {
+  //       await Linking.openURL(url);
+  //     } else {
+  //       console.log(`Don't know how to Open Url: ${url}`);
+  //     }
+  //   } catch (error) {
+  //     console.log(`Error occurred while opening the URL: ${error}`);
+  //   }
+  // };
+
   return (
     <Modal
       transparent={true}
@@ -1544,15 +1565,15 @@ export const AskForAppUpdate: React.FC<{
               <Text style={styles.shredsbay}>ShreddersBay</Text>
             </View>
           </View>
-
+          
           <View style={styles.updatebtn}>
 
             <TouchableOpacity
               style={{
                 borderWidth: 2, // Adjust the border width as needed
-                borderColor: "blue", // Change the border color                                          // Adjust the padding
+                borderColor: "gray", // Change the border color                                          // Adjust the padding
                 borderRadius: 8, // Add border radius for rounded corners
-                backgroundColor: "blue",
+                backgroundColor: "white",
                 margin: 10,
                 alignItems: "center",
                 justifyContent: "center",
@@ -1565,7 +1586,7 @@ export const AskForAppUpdate: React.FC<{
               onPress={() => setUpdateModal()}
             >
               
-              <Text style={{ fontSize: 20 ,color: 'white'}}>Restart </Text>
+              <Text style={{ fontSize: 20 }}>Restart </Text>
             </TouchableOpacity>
 
             {/* <TouchableOpacity
