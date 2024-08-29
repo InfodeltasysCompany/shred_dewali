@@ -382,7 +382,7 @@ console.log("formdata for ")
       </View>
       {/* </View> */}
 
-      <View >
+      <View>
         {images.length > 0 && (
           <ScrollView
             ref={scrollViewRef}

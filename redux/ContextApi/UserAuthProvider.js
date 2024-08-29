@@ -41,6 +41,7 @@ const UserAuthProvider = (props) => {
         let fire_id = await AsyncStorage.getItem("fid");
         let fire_name = await AsyncStorage.getItem("fname");
         let fire_password = await AsyncStorage.getItem("fpassword");
+        let f_name= await AsyncStorage.getItem("flname")
   
         let userCred = JSON.parse(data1);
         let gUserCred=JSON.parse(data);
@@ -56,9 +57,10 @@ const UserAuthProvider = (props) => {
           userIdApp: appUserId,
           f_email: fire_mail,
           f_id: fire_id,
-          f_name: fire_name,
+          f_name1: fire_name,
           f_mobile: fire_mobile,
           f_password: fire_password,
+          f_name,
 
           
         }));

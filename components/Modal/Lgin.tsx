@@ -188,7 +188,7 @@ import {
               f_email:responseData["0"].email,
               // f_mobile:null,
               // f_id:null,
-              // f_name:null,
+              f_name:responseData["0"].name,
               // f_password:null 
             }));
             if(!(navigation == undefined)){
@@ -288,6 +288,7 @@ import {
             console.log("Login Successful:", responseData);
             ///////          setUserCred(responseData);
             const userId = responseData["0"].id;
+           await AsyncStorage.setItem("flname",responseData["0"].name)
             // const data = await response.json()
             console.log("my id is:--", userId);
             console.log("JSON.stringify(responseData)=>",JSON.stringify(responseData))
@@ -300,7 +301,7 @@ import {
               f_email:responseData["0"].email,
               // f_mobile:null,
               // f_id:null,
-              // f_name:null,
+              f_name:responseData["0"].name,
               // f_password:null 
             }));
   
@@ -375,7 +376,7 @@ import {
                 // f_email:responseData["0"].email,
                 // f_mobile:null,
                 f_id:userData.idf,
-                // f_name:null,
+                f_name:userData.name,
                 // f_password:null 
               }));
               if (userData && Object.keys(userData).length > 0) {

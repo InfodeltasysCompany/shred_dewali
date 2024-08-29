@@ -62,7 +62,6 @@ import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import LoginModal from "../../components/Credential/LoginModal";
 import HandleAddAddressModal from "../../components/Modal/addressModal/DisplayAllAdresses";
 import SearchModal from "../../components/Modal/Search/SearchModal";
-import SearchModalContent from "../../components/Modal/Search/SearchModalContent";
 import RatingSlider from "../../components/OrderImage/RatingSlider";
 import AuctionBuyModal1 from "./AuctionBuy/AuctionBuyModal1";
 import OrderBuyModal1 from "./OrderBuy/OrderBuyModal1";
@@ -638,16 +637,7 @@ const T1Screen1 = ({ navigation }) => {
   const onSeachModalclose = () => {
     setIsSearchModalVisible(!isSearchModalVisible)
   }
-  // useEffect(()=>{
-  //   if(isAllBuyAuctionOrderModalVisible){
-  //     navigation.navigate("Tab1",{screen:"T1Screen1"});
-  //     setModalVisible(!modalVisible); 
-  //   }
-  //   if(isAllBuyCurrentOrderModalVisible){
-  //     navigation.navigate("Tab1",{screen:"T1Screen1"});
-  //     setModalVisible(!modalVisible); 
-  //   }
-  // },[isAllBuyAuctionOrderModalVisible,isAllBuyCurrentOrderModalVisible])
+ 
   const oncloseAllorderbuy = () => {
     navigation.navigate("Tab1", { screen: "T1Screen1" });
     setModalVisible(!modalVisible);
@@ -765,7 +755,7 @@ const T1Screen1 = ({ navigation }) => {
             setIsSearchModalVisible(true);
           }}
         /> */}
-        <Pressable onPress={() => { setIsSearchModalVisible(true) }}>
+        <Pressable onPress={() => { setIsSearchModalVisible(!isSearchModalVisible) }}>
           <View style={styles.searchbox}>
 
 

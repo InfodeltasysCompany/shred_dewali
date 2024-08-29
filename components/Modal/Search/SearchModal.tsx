@@ -11,6 +11,10 @@ import SearchModalContent from "./SearchModalContent";
 const imgurl = "https://shreddersbay.com/API/uploads/";
 
 const SearchModal = ({ closeModal, visible, navigation }) => {
+  const inputRef1 = useRef(null);
+  const inputRef2 = useRef(null);
+
+
   const [searchText, setSearchText] = useState("");
   const [searchLocationText, setSearchLocationText] = useState("");
   const [state, setState] = useContext(AuthContext);
@@ -19,37 +23,57 @@ const SearchModal = ({ closeModal, visible, navigation }) => {
   const textInputRef = useRef(null); // Ref for TextInput
   const [orderData, setOrderData] = useState([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setSearchLocationText("");
     setSearchText("");
-  },[visible])
+  }, [visible])
   const handleSearch = async () => {
-    const checkurl = "https://shreddersbay.com/API/product_api.php?action=select";
+    if (!searchText.trim()) {
+      // Keep focus if search text is empty
+      inputRef1.current.focus();
+    } else {
+      // Handle search logic
+      console.log('Searching for:', searchText);
+      const checkurl = "https://shreddersbay.com/API/product_api.php?action=select";
 
-    // setSetselectedObjforSearch(foundProduct); // Update state or perform action with found data
-    setSetselectedObjforSearch(searchText);   
-    if(searchText === ""){
-      setIsSearchModalContentisDisplay(!isSearchModalContentisDisplay); // Toggle modal or handle display logic
-      setSearchLocationText("");
-      setSearchText("");
-    } 
-        
-        Keyboard.dismiss();
-    
-  };
+      // setSetselectedObjforSearch(foundProduct); // Update state or perform action with found data
+      setSetselectedObjforSearch(searchText);
+      if (searchText !== "") {
+        setIsSearchModalContentisDisplay(!isSearchModalContentisDisplay); // Toggle modal or handle display logic
+        setSearchLocationText("");
+        setSearchText("");
+      }
 
-  
-  const handleSearchLocation = () => {
-    // Implement your search logic here
-    console.log("Searching for location:", searchLocationText);
-    setSearchLocationText(searchLocationText)
-    {
-      console.log("for testing first", searchLocationText);
-      handleSearchLocationAgain(searchLocationText);
+      Keyboard.dismiss();
     }
-    // You can add logic here to handle the search functionality
-    Keyboard.dismiss(); // Dismiss keyboard after search
+
+
   };
+
+
+  const handleSearchLocation = () => {
+    // Check if the search text is empty
+    if (!searchLocationText.trim()) {
+      // If empty, keep focus on the input field
+      inputRef2.current.focus();
+    } else {
+      // If not empty, handle the search logic
+      console.log('Searching for:', searchLocationText);
+      console.log("Searching for location:", searchLocationText);
+
+      // Update the state with the current search location text
+      setSearchLocationText(searchLocationText);
+
+      // Call the function to handle the search with the location text
+      handleSearchLocationAgain(searchLocationText);
+
+      // Dismiss the keyboard and remove focus from the input field
+      Keyboard.dismiss();
+      // Optionally, you can also blur the input field explicitly if needed
+      inputRef2.current.blur();
+    }
+  };
+
   const handleSearchLocationAgain = (text) => {
     // Implement your search logic here
     console.log("Searching for location:", text);
@@ -80,7 +104,7 @@ const SearchModal = ({ closeModal, visible, navigation }) => {
       console.error('Error fetching addresses:', error);
     }
   };
-  const getPickChooseAddressfromAddressModal = async(addr) => {
+  const getPickChooseAddressfromAddressModal = async (addr) => {
     console.log("Choosen address=>", addr);
     setSearchLocationText(addr.address)
     // handleSearchLocation();
@@ -90,7 +114,7 @@ const SearchModal = ({ closeModal, visible, navigation }) => {
     setSearchLocationText("");
     setSearchText("");
   }
-  
+
   useEffect(() => {
     // getOrderResponse();
     getAddressFromLocalStorage();
@@ -179,14 +203,14 @@ const SearchModal = ({ closeModal, visible, navigation }) => {
           Keyboard.dismiss();
           closeModal();
           setIsSearchModalContentisDisplay(!isSearchModalContentisDisplay);
-          
+
         }} visible={isSearchModalContentisDisplay} navigation={navigation} dataforsearch={setselectedObjforSearch} />
         <View style={styles.searchContainer}>
           <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
             <AntDesign name="arrowleft" size={35} />
           </TouchableOpacity>
           <TextInput
-            ref={textInputRef}
+            ref={inputRef1}
             placeholder="Search your scrap here..."
             clearButtonMode="always"
             autoCapitalize="none"
@@ -206,7 +230,9 @@ const SearchModal = ({ closeModal, visible, navigation }) => {
             <EvilIcons name="location" size={30} color={"black"} />
           </TouchableOpacity>
           <TextInput
-            // ref={textInputRef}
+            ref={inputRef2}
+
+
             placeholder="Search scrap by location..."
             clearButtonMode="always"
             autoCapitalize="none"
@@ -352,15 +378,15 @@ const styles = StyleSheet.create({
   input1: {
     flex: 1,
     fontSize: 18,
-   // Adjust the margin as needed
+    // Adjust the margin as needed
   },
 
-  
+
   content: {
     flex: 1,
     marginTop: 25,
     alignItems: "center",
-    
+
   },
   textContainer6: {
     fontSize: 12,
@@ -391,7 +417,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 8,
-    
+
     shadowColor: '#000',
     // shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -399,7 +425,7 @@ const styles = StyleSheet.create({
     elevation: 0.5,
     width: "90%",
     height: "20%",
-    
+
   },
   addressText: {
     fontSize: 16,

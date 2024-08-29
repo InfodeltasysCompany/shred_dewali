@@ -115,6 +115,7 @@ const [visible, setVisible] = useState(true)
               await AsyncStorage.removeItem("fname");
               await AsyncStorage.removeItem("@user");
               await AsyncStorage.removeItem("fpassword");
+              await AsyncStorage.removeItem("flname");
               navigation.navigate("Tab1", { screen: "T1Screen1" });
               
               setState(prevState => ({ ...prevState, userCred: null,gUserCred:null,

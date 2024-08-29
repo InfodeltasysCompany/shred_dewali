@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity, Keyboard, KeyboardAvoidingView, Platform 
 import React, { useContext, useEffect, useState } from 'react'
 // import ConCompo from './components/ConCompo'
 import { AntDesign, Feather, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { MaterialIcons } from 'react-native-vector-icons'
 
 import { Provider } from 'react-redux'
 import store from './redux/store'

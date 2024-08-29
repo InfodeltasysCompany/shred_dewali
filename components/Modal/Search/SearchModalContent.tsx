@@ -23,11 +23,16 @@ const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) 
 
   const textInputRef = useRef(null); // Ref for TextInput
   const [orderData, setOrderData] = useState([]);
+  const [isSearchModalContentisDisplay, setIsSearchModalContentisDisplay] = useState(false);
+  const [setselectedObjforSearch, setSetselectedObjforSearch] = useState(null);
+
   const handleSearch = () => {
-    // Implement your search logic here
-    console.log("Searching for:", searchText);
-    // You can add logic here to handle the search functionality
-    Keyboard.dismiss(); // Dismiss keyboard after search
+  
+    
+    console.log("with location search text doing nothing =>",searchText)
+    getOrderResponse(searchText)
+    Keyboard.dismiss();
+
   };
   const handleSearchLocation = () => {
     // Implement your search logic here
@@ -62,35 +67,106 @@ const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) 
     setCurrentAddress(addr)
 
   }
-  const getOrderResponse = async () => {
+  const filterOrderData = (orders, searchCriteria) => {
+    if (typeof searchCriteria === 'object' && searchCriteria !== null) {
+      const { state_name, country_name, landmark } = searchCriteria;
+  
+      return orders.filter(order => {
+        const stateMatch = state_name && order.state_name 
+          ? order.state_name.toLowerCase() === state_name.toLowerCase()
+          : false;
+        const countryMatch = country_name && order.country_name 
+          ? order.country_name.toLowerCase() === country_name.toLowerCase()
+          : false;
+        const landmarkMatch = landmark && order.landmark 
+          ? order.landmark.toLowerCase() === landmark.toLowerCase()
+          : false;
+  
+        return stateMatch || countryMatch || landmarkMatch;
+      });
+    } else if (typeof searchCriteria === 'string') {
+      const lowerCaseSearch = searchCriteria.toLowerCase();
+  
+      return orders.filter(order => {
+        const pNameMatch = order.p_name 
+          ? order.p_name.toLowerCase().includes(lowerCaseSearch)
+          : false;
+        const landmarkMatch = order.landmark 
+          ? order.landmark.toLowerCase().includes(lowerCaseSearch)
+          : false;
+        const countryNameMatch = order.country_name 
+          ? order.country_name.toLowerCase().includes(lowerCaseSearch)
+          : false;
+  
+        return pNameMatch || landmarkMatch || countryNameMatch;
+      });
+    } else {
+      // Return all orders if searchCriteria is neither object nor string
+      return orders;
+    }
+  };
+  
+  
+  
+  
+  const getOrderResponse = async (searchCriteria) => {
     try {
       // Encode URI components to handle special characters in URLs
       const country = encodeURIComponent("");
       const city = encodeURIComponent("");
-      // const country = encodeURIComponent(currentAddress?.country || currentAddress?.country_name || "");
-      // const city = encodeURIComponent(currentAddress?.city || currentAddress?.city_name || "");
       const userId = encodeURIComponent(userIdApp || "");
-
+  
       // Construct the URL with encoded parameters
       const url = `https://shreddersbay.com/API/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`;
-
+  
       // Fetch data from the API using the constructed URL
       const data = await getApiResponse(url);
-
+  
       // Log the URL and received data for debugging
       console.log("Order URL:", url);
-      // console.log("Order data:", data);
-
-      // Update the component state with the fetched data
-      setOrderData(data);
+      console.log("Order data:", data);
+  
+      // Filter the data based on the search criteria
+      const filteredData = filterOrderData(data, searchCriteria);
+  
+      // Update the component state with the filtered data
+      setOrderData(filteredData);
     } catch (error) {
       // Handle any errors that occur during the API request
       console.log("Error fetching order data:", error);
     }
   };
+  
+  // const getOrderResponse = async () => {
+  //   try {
+  //     // Encode URI components to handle special characters in URLs
+  //     const country = encodeURIComponent("");
+  //     const city = encodeURIComponent("");
+  //     // const country = encodeURIComponent(currentAddress?.country || currentAddress?.country_name || "");
+  //     // const city = encodeURIComponent(currentAddress?.city || currentAddress?.city_name || "");
+  //     const userId = encodeURIComponent(userIdApp || "");
+
+  //     // Construct the URL with encoded parameters
+  //     const url = `https://shreddersbay.com/API/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`;
+
+  //     // Fetch data from the API using the constructed URL
+  //     const data = await getApiResponse(url);
+
+  //     // Log the URL and received data for debugging
+  //     console.log("Order URL:", url);
+  //     // console.log("Order data:", data);
+
+  //     // Update the component state with the fetched data
+  //     console.log("search order data =>>>",data);
+  //     setOrderData(data);
+  //   } catch (error) {
+  //     // Handle any errors that occur during the API request
+  //     console.log("Error fetching order data:", error);
+  //   }
+  // };
 
   useEffect(() => {
-    getOrderResponse();
+    getOrderResponse(dataforsearch);
     getAddressFromLocalStorage();
   }, [])
   const [currentAddress, setCurrentAddress] = useState(null);
