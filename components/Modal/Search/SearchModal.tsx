@@ -10,6 +10,7 @@ import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
 import SearchModalContent from "./SearchModalContent";
 const imgurl = "https://shreddersbay.com/API/uploads/";
 
+
 const SearchModal = ({ closeModal, visible, navigation }) => {
   const inputRef1 = useRef(null);
   const inputRef2 = useRef(null);

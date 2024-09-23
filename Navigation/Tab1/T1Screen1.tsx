@@ -45,6 +45,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import * as Updates from "expo-updates";
 
+
 import {
   addDoc,
   collection,
@@ -62,6 +63,7 @@ import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import LoginModal from "../../components/Credential/LoginModal";
 import HandleAddAddressModal from "../../components/Modal/addressModal/DisplayAllAdresses";
 import SearchModal from "../../components/Modal/Search/SearchModal";
+
 import RatingSlider from "../../components/OrderImage/RatingSlider";
 import AuctionBuyModal1 from "./AuctionBuy/AuctionBuyModal1";
 import OrderBuyModal1 from "./OrderBuy/OrderBuyModal1";

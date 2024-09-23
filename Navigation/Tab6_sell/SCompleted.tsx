@@ -49,7 +49,7 @@ const SCompleted = () => {
             // const formData = new FormData();
             // formData.append('user_id', userId);
         
-            const response = await fetch(`https://shreddersbay.com/API/orders_api.php?action=selectCustomerCurrent&user_id=${userId}`, {
+            const response = await fetch(`https://shreddersbay.com/API/orders_api.php?action=selectCustomerComplete&user_id=${userId}`, {
               method: 'GET',
               // body: formData,
               // Add headers if required, such as content-type or authorization

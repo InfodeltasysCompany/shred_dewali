@@ -8,7 +8,8 @@ import DisplayAllAddresses from "../addressModal/DisplayAllAdresses";
 import { getApiResponse } from "../../../Navigation/Tab3/functions";
 import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
 import GoodModal from "../../Credential/GoodModal";
-import { MainChats } from "../../../Navigation/Tab1/T1Screen1";
+// import { MainChats } from "../../../Navigation/Tab1/T1Screen1";
+import { MainChats1 } from "../../../Navigation/Tab1/OrderBuy/MainChats1";
 import Product from "../../OrderImage/Product";
 import GroupChatModal from "../../../Navigation/Tab5_buy/GroupChatModal";
 import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
@@ -97,8 +98,15 @@ const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) 
         const countryNameMatch = order.country_name 
           ? order.country_name.toLowerCase().includes(lowerCaseSearch)
           : false;
+         const stateNameMatch = order.state_name 
+          ? order.state_name.toLowerCase().includes(lowerCaseSearch)
+          : false;
+          const cityNameMatch = order.city_name 
+          ? order.city_name.toLowerCase().includes(lowerCaseSearch)
+          : false;
   
-        return pNameMatch || landmarkMatch || countryNameMatch;
+        return pNameMatch
+         || landmarkMatch || countryNameMatch || stateNameMatch || cityNameMatch;
       });
     } else {
       // Return all orders if searchCriteria is neither object nor string
@@ -578,7 +586,7 @@ const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) 
               </View>
             </TouchableWithoutFeedback>
             <View>
-              <MainChats
+              <MainChats1
                 isModalVisible={isModalVisible2}
                 toggleModal={togglemodal2}
                 formchatUserIdFbse={fromChatUserIdFbse}
