@@ -748,16 +748,7 @@ const T1Screen1 = ({ navigation }) => {
       </View>
 
       <View style={styles.container1}>
-        {/* <TextInput
-          placeholder="search"
-          clearButtonMode="always"
-          autoCapitalize="none"
-          autoCorrect={true}
-          style={styles.searchbox}
-          onFocus={()=>{
-            setIsSearchModalVisible(true);
-          }}
-        /> */}
+       
         <Pressable onPress={() => { setIsSearchModalVisible(!isSearchModalVisible) }}>
           <View style={styles.searchbox}>
 
@@ -767,36 +758,8 @@ const T1Screen1 = ({ navigation }) => {
         </Pressable>
 
         <View style={[userIdApp ? { flexDirection: "row", marginLeft: 15, justifyContent: "center" } : { flexDirection: 'row', justifyContent: "center" }]}>
-          {/* {!userIdApp &&(
-            
-          <TouchableOpacity>
-            <View style={{...styles.heading1,}}>
-              <Ionicons
-                name="person-add"
-                onPress={() => setIsLoginModalVisible(true)}
-                size={30}
-                color={"#00457E"}
-              />
-            </View>
-          </TouchableOpacity>
-          )} */}
-          {/* <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} /> */}
-          {/* 
-          <TouchableOpacity>
-            <View style={styles.heading1}>
-              <FontAwesome
-                name="shopping-cart"
-                // name="bell-o"
-                onPress={
-                  () => {
-                    // navigation.navigate("T2Screen1");
-                  }
-                }
-                size={30}
-                color={"#00457E"}
-              />
-            </View>
-          </TouchableOpacity> */}
+         
+         
         </View>
       </View>
 
@@ -1485,23 +1448,7 @@ export const AskForAppUpdate: React.FC<{
   updatesVersion: string;
 
 }> = ({ isAndroidUpdateModal, setUpdateModal, updatesVersion }) => {
-  // const handleUpdateModal = async () => {
-  //   const appVersion = Constants.expoConfig.version;
-  //   console.log("appVersion=>", appVersion);
-  //   const url = "https://play.google.com/store/apps/details?id=com.shreddersbay";
-  //   try {
-  //     const supported = await Linking.canOpenURL(url);
-  //     if (supported) {
-  //       await Linking.openURL(url);
-  //     } else {
-  //       console.log(`Don't know how to Open Url: ${url}`);
 
-  //     }
-  //   } catch (error) {
-  //     console.log(`Error occured while opening the url: ${error}`);
-
-  //   }
-  // }
   const [isthereNewVersion, setisthereNewVersion] = useState(false);
   useEffect(() => {
     const appVersion = Constants.expoConfig.version;
@@ -1512,26 +1459,7 @@ export const AskForAppUpdate: React.FC<{
       setisthereNewVersion(false);
     }
   }, [])
-  // const handleUpdateModal = async () => {
-  //   let url = "";
-
-  //   if (Platform.OS === "android") {
-  //     url = "https://play.google.com/store/apps/details?id=com.shreddersbay";
-  //   } else if (Platform.OS === "ios") {
-  //     url = "https://www.example.com/ios"; // Replace with your iOS URL
-  //   }
-
-  //   try {
-  //     const supported = await Linking.canOpenURL(url);
-  //     if (supported) {
-  //       await Linking.openURL(url);
-  //     } else {
-  //       console.log(`Don't know how to Open Url: ${url}`);
-  //     }
-  //   } catch (error) {
-  //     console.log(`Error occurred while opening the URL: ${error}`);
-  //   }
-  // };
+  
 
   return (
     <Modal
@@ -1582,31 +1510,9 @@ export const AskForAppUpdate: React.FC<{
               <Text style={{ fontSize: 20 }}>Restart </Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
-              style={{
-                borderWidth: 2, // Adjust the border width as needed
-                borderColor: "blue", // Change the border color                                          // Adjust the padding
-                borderRadius: 8, // Add border radius for rounded corners
-                backgroundColor: "blue",
-                margin: 10,
-                alignItems: "center",
-                justifyContent: "center",
-                // paddingHorizontal: 10,
-                // paddingVertical: 8,
-                width: 160,
-                height: 50,
-                marginRight: 18,
-              }}
-              // onPress={() => handleUpdateModal()}
-              onPress={() => (isthereNewVersion ? setUpdateModal() : handleUpdateModal())}
-            >
-              <Text style={{ color: "white", fontSize: 20, fontWeight: "500" }}>
-                {isthereNewVersion ? "Restart" : "Update"}
-              </Text>
-            </TouchableOpacity> */}
+           
           </View>
 
-          {/* <Image  source={require('../../assets/UpdateImage.jpeg')}  /> */}
         </View>
       </View>
     </Modal>
