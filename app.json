@@ -72,7 +72,7 @@
     "owner": "vinitrathore",
     "scheme": "shreddersbay", 
     "runtimeVersion": {
-      "policy": "appVersion"
+      "policy": "sdkVersion"
     },
     "updates": {
       "fallbackToCacheTimeout": 10000,

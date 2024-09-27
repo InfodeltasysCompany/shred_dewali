@@ -22,32 +22,15 @@ import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { CommonActions } from "@react-navigation/native";
 import { setLoginData } from "../../redux/actions/loginAction";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
-import { firebaseDB } from "../../Config/Firebaseconfig";
+
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import uuid from "react-native-uuid";
 import OTPScreen from "./OTPScreen";
 import GoodModal from "./GoodModal";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
-// web: "763429625259-ut8pfj2edgmiks42epfj9e4nla8nj706.apps.googleusercontent.com",
-// ios: "763429625259-4k2snc1nfjbdf6erh67htbgvrccpbr3v.apps.googleusercontent.com",
-// android: "763429625259-vt479t47a8p6r39g6k45fd02jicrc6n9.apps.googleusercontent.com",
-WebBrowser.maybeCompleteAuthSession();
 
-interface UserIdContextProps {
-  GetUserId: () => string | null;
-  setUserId: (id: string) => void;
-}
 
-const UserIdContext = createContext<UserIdContextProps | undefined>(undefined);
 
 type LoginProps = {
   navigation: NavigationProp<any>;
@@ -161,7 +144,7 @@ const Login = ({ navigation }: LoginProps) => {
       formData.append("name", gUserName);
       formData.append("email", gUserEmail);
       formData.append("profile_pic", gUserPic);
-      authenticateWithFirebase(gUserEmail);
+      // authenticateWithFirebase(gUserEmail);
       const response = await fetch(
         "https://shreddersbay.com/API/user_api.php?action=google_login",
         {
@@ -188,7 +171,7 @@ const Login = ({ navigation }: LoginProps) => {
             // f_password:null 
           }));
           navigation.navigate("Tab1", { screen: "T1Screen1" }),
-            authenticateWithFirebase(email);
+            // authenticateWithFirebase(email);
           navigation.navigate("Tab1", { screen: "T1Screen1" });
 
           ToastAndroid.showWithGravity(
@@ -321,7 +304,7 @@ const Login = ({ navigation }: LoginProps) => {
               screen: "T1Screen1",
             });
 
-            authenticateWithFirebase(email);
+            // authenticateWithFirebase(email);
             navigation.navigate("Tab1", { screen: "T1Screen1" });
 
            
@@ -347,59 +330,59 @@ const Login = ({ navigation }: LoginProps) => {
     }
   };
   
-  const authenticateWithFirebase = async (email) => {
-    const usersCollection = collection(firebaseDB, "users");
-    const q = query(usersCollection, where("email", "==", email));
+  // const authenticateWithFirebase = async (email) => {
+  //   const usersCollection = collection(firebaseDB, "users");
+  //   const q = query(usersCollection, where("email", "==", email));
 
-    try {
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        // User exists, log them in
-        querySnapshot.forEach(async (doc) => {
-          const userData = doc.data();
-          if (userData != null) {
-            if (userData && Object.keys(userData).length > 0) {
-              try {
-                await AsyncStorage.setItem("femail", userData.email || "");
-                await AsyncStorage.setItem("fmobile", userData.mobile || "");
-                await AsyncStorage.setItem("fid", userData.idf || "");
-                await AsyncStorage.setItem("fname", userData.name || "");
-                await AsyncStorage.setItem(
-                  "fpassword",
-                  userData.password || ""
-                );
-                // console.log(userData.idf);
+  //   try {
+  //     const querySnapshot = await getDocs(q);
+  //     if (!querySnapshot.empty) {
+  //       // User exists, log them in
+  //       querySnapshot.forEach(async (doc) => {
+  //         const userData = doc.data();
+  //         if (userData != null) {
+  //           if (userData && Object.keys(userData).length > 0) {
+  //             try {
+  //               await AsyncStorage.setItem("femail", userData.email || "");
+  //               await AsyncStorage.setItem("fmobile", userData.mobile || "");
+  //               await AsyncStorage.setItem("fid", userData.idf || "");
+  //               await AsyncStorage.setItem("fname", userData.name || "");
+  //               await AsyncStorage.setItem(
+  //                 "fpassword",
+  //                 userData.password || ""
+  //               );
+  //               // console.log(userData.idf);
 
-                console.log(
-                  "Data stored Of Firebase in AsyncStorage successfully"
-                );
-              } catch (error) {
-                console.log("Error storing data in AsyncStorage:", error);
-              }
-            } else {
-              console.log("User data is null or empty");
-            }
-          }
-        });
-      } else {
-        // User doesn't exist, sign them up
-        const userIdf = uuid.v4();
-        const userDocumentRef = doc(usersCollection, `${userIdf}`);
-        const userObjectf = {
-          name: "", // Set name if provided, otherwise empty string
-          email,
-          mobile: "", // Set mobile if provided, otherwise empty string
-          password: "", // Set password if provided, otherwise empty string
-          idf: userIdf,
-        };
+  //               console.log(
+  //                 "Data stored Of Firebase in AsyncStorage successfully"
+  //               );
+  //             } catch (error) {
+  //               console.log("Error storing data in AsyncStorage:", error);
+  //             }
+  //           } else {
+  //             console.log("User data is null or empty");
+  //           }
+  //         }
+  //       });
+  //     } else {
+  //       // User doesn't exist, sign them up
+  //       const userIdf = uuid.v4();
+  //       const userDocumentRef = doc(usersCollection, `${userIdf}`);
+  //       const userObjectf = {
+  //         name: "", // Set name if provided, otherwise empty string
+  //         email,
+  //         mobile: "", // Set mobile if provided, otherwise empty string
+  //         password: "", // Set password if provided, otherwise empty string
+  //         idf: userIdf,
+  //       };
 
-        await setDoc(userDocumentRef, userObjectf);
-        console.log("User signed up successfully:", userObjectf);
-      }
-    } catch (error) {
-      console.error("Error authenticating with Firebase:", error);
-    }
-  };
+  //       await setDoc(userDocumentRef, userObjectf);
+  //       console.log("User signed up successfully:", userObjectf);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error authenticating with Firebase:", error);
+  //   }
+  // };
 
   return (
     <SafeAreaView style={styles.container}>

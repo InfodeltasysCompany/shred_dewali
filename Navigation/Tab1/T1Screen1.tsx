@@ -46,16 +46,16 @@ import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import * as Updates from "expo-updates";
 
 
-import {
-  addDoc,
-  collection,
-  getDocs,
-  getFirestore,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+// import {
+//   addDoc,
+//   collection,
+//   getDocs,
+//   getFirestore,
+//   onSnapshot,
+//   orderBy,
+//   query,
+//   where,
+// } from "firebase/firestore";
 import { getApiResponse, getCurrentLocation, postData } from "../Tab3/functions";
 import GoodModal from "../../components/Credential/GoodModal";
 import Product from "../../components/OrderImage/Product";
@@ -68,7 +68,7 @@ import RatingSlider from "../../components/OrderImage/RatingSlider";
 import AuctionBuyModal1 from "./AuctionBuy/AuctionBuyModal1";
 import OrderBuyModal1 from "./OrderBuy/OrderBuyModal1";
 import GroupChatModal from "../Tab5_buy/GroupChatModal";
-import { firebaseDB } from "../../Config/Firebaseconfig";
+// import { firebaseDB } from "../../Config/Firebaseconfig";
 
 const T1Screen1 = ({ navigation }) => {
   const imgurl = "https://shreddersbay.com/API/uploads/";
@@ -197,7 +197,7 @@ const T1Screen1 = ({ navigation }) => {
 
   ) => {
     console.log("object:=>",object);
-    getGroups(object.bid_id,setSelectedGroup);
+    // getGroups(object.bid_id,setSelectedGroup);
     // console.log("d=>",d);
     const auctionId = object.auction_id;
     console.log("auctionId:-" + auctionId);
@@ -477,152 +477,152 @@ const T1Screen1 = ({ navigation }) => {
 
   const [users, setUsers] = useState([]);
 
-  const getUsers = async () => {
-    if (((gUserCred !== null && typeof gUserCred === 'object') || (userCred !== null && typeof userCred === 'object')) && userIdApp !== null) {
-      try {
-        const email = await AsyncStorage.getItem("femail");
-        const fuserid = await AsyncStorage.getItem("fid");
+  // const getUsers = async () => {
+  //   if (((gUserCred !== null && typeof gUserCred === 'object') || (userCred !== null && typeof userCred === 'object')) && userIdApp !== null) {
+  //     try {
+  //       const email = await AsyncStorage.getItem("femail");
+  //       const fuserid = await AsyncStorage.getItem("fid");
 
-        console.log("Current user's email:", email);
-        console.log("firebase form chat user Id:fuser-", fuserid);
+  //       console.log("Current user's email:", email);
+  //       console.log("firebase form chat user Id:fuser-", fuserid);
 
-        if (email) {
-          setFromChatUserIdFbse(fuserid);
-          const firebaseDB = getFirestore();
-          const userCollection = collection(firebaseDB, "users");
-          const usersQuery = query(userCollection, where("email", "!=", email));
+  //       if (email) {
+  //         setFromChatUserIdFbse(fuserid);
+  //         const firebaseDB = getFirestore();
+  //         const userCollection = collection(firebaseDB, "users");
+  //         const usersQuery = query(userCollection, where("email", "!=", email));
 
-          // console.log("Users query:", usersQuery); // Check the users query
+  //         // console.log("Users query:", usersQuery); // Check the users query
 
-          const querySnapshot = await getDocs(usersQuery);
-          const userData = querySnapshot.docs.map((documentSnapshot) => ({
-            id: documentSnapshot.id,
-            fullName: documentSnapshot.get("name"),
-            mobile: documentSnapshot.get("mobile"),
-            email: documentSnapshot.get("email"),
-            ...documentSnapshot.data(),
-          }));
+  //         const querySnapshot = await getDocs(usersQuery);
+  //         const userData = querySnapshot.docs.map((documentSnapshot) => ({
+  //           id: documentSnapshot.id,
+  //           fullName: documentSnapshot.get("name"),
+  //           mobile: documentSnapshot.get("mobile"),
+  //           email: documentSnapshot.get("email"),
+  //           ...documentSnapshot.data(),
+  //         }));
 
-          console.log("Fetched users data:", userData); // Check the fetched users data
-          // console.log("firebase form chat user Id:fromchatuseridfbse-",fromChatUserIdFbse);
+  //         console.log("Fetched users data:", userData); // Check the fetched users data
+  //         // console.log("firebase form chat user Id:fromchatuseridfbse-",fromChatUserIdFbse);
 
-          console.log("this is detail data:--", detaildata);
+  //         console.log("this is detail data:--", detaildata);
 
-          const detaildataEmail = detaildata[0]?.email;
+  //         const detaildataEmail = detaildata[0]?.email;
 
-          // Finding the object in userData with a matching email
-          const matchingUser = userData.find(
-            (user) => user.email === detaildataEmail
-          );
+  //         // Finding the object in userData with a matching email
+  //         const matchingUser = userData.find(
+  //           (user) => user.email === detaildataEmail
+  //         );
 
-          if (matchingUser) {
-            // Perform your action here with the matching user object
-            console.log("Found matching user:", matchingUser);
-            setToChatUserEmailFbse(matchingUser.email);
-            setToChatUserNameFbse(matchingUser.fullName);
-            setToChatUserIdFbse(matchingUser.id);
-            setToChatUserMobileFbse(matchingUser.mobile);
-            setIsModalVisible2(true);
+  //         if (matchingUser) {
+  //           // Perform your action here with the matching user object
+  //           console.log("Found matching user:", matchingUser);
+  //           setToChatUserEmailFbse(matchingUser.email);
+  //           setToChatUserNameFbse(matchingUser.fullName);
+  //           setToChatUserIdFbse(matchingUser.id);
+  //           setToChatUserMobileFbse(matchingUser.mobile);
+  //           setIsModalVisible2(true);
 
-            // Example: Access properties of the matching user object
-            // e.g., matchingUser.id, matchingUser.name, matchingUser.whatever
-            // Your action here...
-          } else {
-            console.log("No matching user found");
-          }
+  //           // Example: Access properties of the matching user object
+  //           // e.g., matchingUser.id, matchingUser.name, matchingUser.whatever
+  //           // Your action here...
+  //         } else {
+  //           console.log("No matching user found");
+  //         }
 
-          setUsers(userData);
-        }
-      } catch (error) {
-        console.log("Error fetching users: ", error);
-      }
-    } else {
-      showCustomAlert();
-    }
-  };
+  //         setUsers(userData);
+  //       }
+  //     } catch (error) {
+  //       console.log("Error fetching users: ", error);
+  //     }
+  //   } else {
+  //     showCustomAlert();
+  //   }
+  // };
   const getUsers1 = async () => {
 
-    try {
-      const email = await AsyncStorage.getItem("femail");
-      const fuserid = await AsyncStorage.getItem("fid");
+    // try {
+    //   const email = await AsyncStorage.getItem("femail");
+    //   const fuserid = await AsyncStorage.getItem("fid");
 
-      console.log("Current user's email:", email);
-      console.log("firebase form chat user Id:fuser-", fuserid);
+    //   console.log("Current user's email:", email);
+    //   console.log("firebase form chat user Id:fuser-", fuserid);
 
-      if (email) {
-        setFromChatUserIdFbse(fuserid);
-        const firebaseDB = getFirestore();
-        const userCollection = collection(firebaseDB, "users");
-        const usersQuery = query(userCollection, where("email", "!=", email));
+    //   if (email) {
+    //     setFromChatUserIdFbse(fuserid);
+    //     const firebaseDB = getFirestore();
+    //     const userCollection = collection(firebaseDB, "users");
+    //     const usersQuery = query(userCollection, where("email", "!=", email));
 
-        // console.log("Users query:", usersQuery); // Check the users query
+    //     // console.log("Users query:", usersQuery); // Check the users query
 
-        const querySnapshot = await getDocs(usersQuery);
-        const userData = querySnapshot.docs.map((documentSnapshot) => ({
-          id: documentSnapshot.id,
-          fullName: documentSnapshot.get("name"),
-          mobile: documentSnapshot.get("mobile"),
-          email: documentSnapshot.get("email"),
-          ...documentSnapshot.data(),
-        }));
+    //     const querySnapshot = await getDocs(usersQuery);
+    //     const userData = querySnapshot.docs.map((documentSnapshot) => ({
+    //       id: documentSnapshot.id,
+    //       fullName: documentSnapshot.get("name"),
+    //       mobile: documentSnapshot.get("mobile"),
+    //       email: documentSnapshot.get("email"),
+    //       ...documentSnapshot.data(),
+    //     }));
 
-        console.log("Fetched users data:", userData); // Check the fetched users data
-        // console.log("firebase form chat user Id:fromchatuseridfbse-",fromChatUserIdFbse);
+    //     console.log("Fetched users data:", userData); // Check the fetched users data
+    //     // console.log("firebase form chat user Id:fromchatuseridfbse-",fromChatUserIdFbse);
 
-        console.log("this is detail data:--", detaildata);
+    //     console.log("this is detail data:--", detaildata);
 
-        const detaildataEmail = detaildata[0]?.email;
+    //     const detaildataEmail = detaildata[0]?.email;
 
-        // Finding the object in userData with a matching email
-        const matchingUser = userData.find(
-          (user) => user.email === detaildataEmail
-        );
+    //     // Finding the object in userData with a matching email
+    //     const matchingUser = userData.find(
+    //       (user) => user.email === detaildataEmail
+    //     );
 
-        if (matchingUser) {
-          // Perform your action here with the matching user object
-          console.log("Found matching user:", matchingUser);
-          setToChatUserEmailFbse(matchingUser.email);
-          setToChatUserNameFbse(matchingUser.fullName);
-          setToChatUserIdFbse(matchingUser.id);
-          setToChatUserMobileFbse(matchingUser.mobile);
-          // setIsModalVisible2(true)
+    //     if (matchingUser) {
+    //       // Perform your action here with the matching user object
+    //       console.log("Found matching user:", matchingUser);
+    //       setToChatUserEmailFbse(matchingUser.email);
+    //       setToChatUserNameFbse(matchingUser.fullName);
+    //       setToChatUserIdFbse(matchingUser.id);
+    //       setToChatUserMobileFbse(matchingUser.mobile);
+    //       // setIsModalVisible2(true)
 
-          // Example: Access properties of the matching user object
-          // e.g., matchingUser.id, matchingUser.name, matchingUser.whatever
-          // Your action here...
-        } else {
-          console.log("No matching user found");
-        }
+    //       // Example: Access properties of the matching user object
+    //       // e.g., matchingUser.id, matchingUser.name, matchingUser.whatever
+    //       // Your action here...
+    //     } else {
+    //       console.log("No matching user found");
+    //     }
 
-        setUsers(userData);
-      }
-    } catch (error) {
-      console.log("Error fetching users: ", error);
-    }
+    //     setUsers(userData);
+    //   }
+    // } catch (error) {
+    //   console.log("Error fetching users: ", error);
+    // }
   };
   
-  const getGroups = async (bidId: string, setSelectedGroup: (groups: { id: string, [key: string]: any }[]) => void) => {
-    console.log("bidId =>", bidId);
-    const firebaseDB = getFirestore();
+  // const getGroups = async (bidId: string, setSelectedGroup: (groups: { id: string, [key: string]: any }[]) => void) => {
+  //   console.log("bidId =>", bidId);
+  //   const firebaseDB = getFirestore();
     
-    try {
-      const groupsRef = collection(firebaseDB, 'biddingGroups');
-      const q = query(groupsRef, where('bid_id', '==', bidId));
+  //   try {
+  //     const groupsRef = collection(firebaseDB, 'biddingGroups');
+  //     const q = query(groupsRef, where('bid_id', '==', bidId));
       
-      onSnapshot(q, (querySnapshot) => {
-        const fetchedGroups: { id: string, [key: string]: any }[] = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          fetchedGroups.push({ id: doc.id, ...data });
-        });
-        console.log('fetchedGroups =>', fetchedGroups);
-        setSelectedGroup(fetchedGroups);
-      });
+  //     onSnapshot(q, (querySnapshot) => {
+  //       const fetchedGroups: { id: string, [key: string]: any }[] = [];
+  //       querySnapshot.forEach((doc) => {
+  //         const data = doc.data();
+  //         fetchedGroups.push({ id: doc.id, ...data });
+  //       });
+  //       console.log('fetchedGroups =>', fetchedGroups);
+  //       setSelectedGroup(fetchedGroups);
+  //     });
   
-    } catch (error) {
-      console.error('Error fetching groups:', error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Error fetching groups:', error);
+  //   }
+  // };
   const handleGroupSelection = (group) => {
     setSelectedGroup(group);
     setIsGroupModalVisible(true);
@@ -674,6 +674,7 @@ const T1Screen1 = ({ navigation }) => {
           }}
           group={selectedGroup}
         />
+
         <Modal
           // animationType="fade"
           transparent={true}
@@ -692,21 +693,21 @@ const T1Screen1 = ({ navigation }) => {
                 {detaildata &&
                   detaildata.map((item, index) => (
                     <View key={index}>
-                      <GoodModal closeModal={() => setModalVisible(!modalVisible)} visible={modalVisible} comp={<Product item={item} handlebuypress={handleBuyPress} getusers={getUsers} />} />
+                      {/* <GoodModal closeModal={() => setModalVisible(!modalVisible)} visible={modalVisible} comp={<Product item={item} handlebuypress={handleBuyPress} getusers={getUsers} />} /> */}
                     </View>
                   ))}
               </View>
             </View>
           </TouchableWithoutFeedback>
           <View>
-            <MainChats
+            {/* <MainChats
               isModalVisible={isModalVisible2}
               toggleModal={togglemodal2}
               formchatUserIdFbse={fromChatUserIdFbse}
               tochatUserIdFbse={toChatUserIdFbse}
               tochatUserNameFbse={toChatUserNameFbse}
               toChatUserMobileFbse={toChatUserMobileFbse}
-            />
+            /> */}
           </View>
         </Modal>
         <AskForAppUpdate
@@ -1341,142 +1342,142 @@ const styles = StyleSheet.create({
 });
 export default T1Screen1;
 
-export const MainChats: React.FC<{
-  isModalVisible: boolean;
-  toggleModal: () => void;
-  formchatUserIdFbse: string;
-  tochatUserIdFbse: string;
-  tochatUserNameFbse: string;
-  toChatUserMobileFbse: string;
-}> = ({
-  isModalVisible,
-  toggleModal,
-  formchatUserIdFbse,
-  tochatUserIdFbse,
-  tochatUserNameFbse,
-  toChatUserMobileFbse,
-}) => {
-    const [messages, setMessages] = useState<IMessage[]>([]);
-    const firebaseDB = getFirestore(); // Get the Firestore instance
+// export const MainChats: React.FC<{
+//   isModalVisible: boolean;
+//   toggleModal: () => void;
+//   formchatUserIdFbse: string;
+//   tochatUserIdFbse: string;
+//   tochatUserNameFbse: string;
+//   toChatUserMobileFbse: string;
+// }> = ({
+//   isModalVisible,
+//   toggleModal,
+//   formchatUserIdFbse,
+//   tochatUserIdFbse,
+//   tochatUserNameFbse,
+//   toChatUserMobileFbse,
+// }) => {
+//     const [messages, setMessages] = useState<IMessage[]>([]);
+//     // const firebaseDB = getFirestore(); // Get the Firestore instance
 
-    useEffect(() => {
-      const subscriber = onSnapshot(
-        query(
-          collection(
-            firebaseDB,
-            "chats",
-            `${formchatUserIdFbse}_${tochatUserIdFbse}`,
-            "messages"
-          ),
-          orderBy("createdAt", "desc")
-        ),
-        (querySnapshot) => {
-          const allmessages: IMessage[] = [];
-          querySnapshot.forEach((doc) => {
-            const messageData = doc.data();
-            allmessages.push({
-              _id: doc.id,
-              text: messageData.text,
-              createdAt: new Date(messageData.createdAt),
-              user: {
-                _id: messageData.sendBy,
-              },
-            });
-          });
-          setMessages(allmessages);
-        }
-      );
-      return () => subscriber();
-    }, [firebaseDB, formchatUserIdFbse, tochatUserIdFbse]);
+//     // useEffect(() => {
+//     //   const subscriber = onSnapshot(
+//     //     query(
+//     //       collection(
+//     //         firebaseDB,
+//     //         "chats",
+//     //         `${formchatUserIdFbse}_${tochatUserIdFbse}`,
+//     //         "messages"
+//     //       ),
+//     //       orderBy("createdAt", "desc")
+//     //     ),
+//     //     (querySnapshot) => {
+//     //       const allmessages: IMessage[] = [];
+//     //       querySnapshot.forEach((doc) => {
+//     //         const messageData = doc.data();
+//     //         allmessages.push({
+//     //           _id: doc.id,
+//     //           text: messageData.text,
+//     //           createdAt: new Date(messageData.createdAt),
+//     //           user: {
+//     //             _id: messageData.sendBy,
+//     //           },
+//     //         });
+//     //       });
+//     //       setMessages(allmessages);
+//     //     }
+//     //   );
+//     //   return () => subscriber();
+//     // }, [firebaseDB, formchatUserIdFbse, tochatUserIdFbse]);
 
-    const onSend = useCallback(
-      async (messages = []) => {
-        const newMessage = messages[0];
-        const messageToSend: IMessage = {
-          ...newMessage,
-          sendBy: formchatUserIdFbse,
-          sendTo: tochatUserIdFbse,
-          createdAt: Date.now(),
-        };
+//     const onSend = useCallback(
+//       async (messages = []) => {
+//         const newMessage = messages[0];
+//         const messageToSend: IMessage = {
+//           ...newMessage,
+//           sendBy: formchatUserIdFbse,
+//           sendTo: tochatUserIdFbse,
+//           createdAt: Date.now(),
+//         };
 
-        // Update the state by merging the new message with the existing messages array
-        setMessages((previousMessages) => [...previousMessages, messageToSend]);
+//         // Update the state by merging the new message with the existing messages array
+//         setMessages((previousMessages) => [...previousMessages, messageToSend]);
 
-        // Add message to the sender's chat collection
-        try {
-          await addDoc(
-            collection(
-              firebaseDB,
-              "chats",
-              `${formchatUserIdFbse}_${tochatUserIdFbse}`,
-              "messages"
-            ),
-            messageToSend
-          );
-        } catch (error) {
-          console.error("Error sending message:", error);
-        }
+//         // Add message to the sender's chat collection
+//         // try {
+//         //   await addDoc(
+//         //     collection(
+//         //       firebaseDB,
+//         //       "chats",
+//         //       `${formchatUserIdFbse}_${tochatUserIdFbse}`,
+//         //       "messages"
+//         //     ),
+//         //     messageToSend
+//         //   );
+//         // } catch (error) {
+//         //   console.error("Error sending message:", error);
+//         // }
 
-        // Add message to the receiver's chat collection
-        try {
-          await addDoc(
-            collection(
-              firebaseDB,
-              "chats",
-              `${tochatUserIdFbse}_${formchatUserIdFbse}`,
-              "messages"
-            ),
-            messageToSend
-          );
-        } catch (error) {
-          console.error("Error sending message to the receiver:", error);
-        }
-      },
-      [firebaseDB, formchatUserIdFbse, tochatUserIdFbse]
-    );
+//         // Add message to the receiver's chat collection
+//       //   try {
+//       //     await addDoc(
+//       //       collection(
+//       //         firebaseDB,
+//       //         "chats",
+//       //         `${tochatUserIdFbse}_${formchatUserIdFbse}`,
+//       //         "messages"
+//       //       ),
+//       //       messageToSend
+//       //     );
+//       //   } catch (error) {
+//       //     console.error("Error sending message to the receiver:", error);
+//       //   }
+//       // },
+//       // [firebaseDB, formchatUserIdFbse, tochatUserIdFbse]
+//     // );
 
-    const closeModal = () => {
-      toggleModal();
-    };
-    const openDialer = () => {
-      Linking.openURL(`tel:${toChatUserMobileFbse}`);
-    };
+//     const closeModal = () => {
+//       toggleModal();
+//     };
+//     const openDialer = () => {
+//       Linking.openURL(`tel:${toChatUserMobileFbse}`);
+//     };
 
-    return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={toggleModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.header}>
-            <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-              <TouchableOpacity onPress={closeModal}>
-                <Ionicons name="arrow-back" style={{ fontSize: 30 }} />
-              </TouchableOpacity>
-              <Text style={{ fontSize: 22, marginLeft: 10 }}>
-                {tochatUserNameFbse}
-              </Text>
-            </View>
+//     return (
+//       <Modal
+//         animationType="slide"
+//         transparent={true}
+//         visible={isModalVisible}
+//         onRequestClose={toggleModal}
+//       >
+//         <View style={styles.modalContainer}>
+//           <View style={styles.header}>
+//             <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+//               <TouchableOpacity onPress={closeModal}>
+//                 <Ionicons name="arrow-back" style={{ fontSize: 30 }} />
+//               </TouchableOpacity>
+//               <Text style={{ fontSize: 22, marginLeft: 10 }}>
+//                 {tochatUserNameFbse}
+//               </Text>
+//             </View>
 
-            <View style={{}}>
-              <TouchableOpacity style={{}} onPress={openDialer}>
-                <Ionicons name="call" style={{ fontSize: 25, marginRight: 10 }} />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <GiftedChat
-            messages={messages}
-            onSend={(messages) => onSend(messages)}
-            user={{
-              _id: formchatUserIdFbse,
-            }}
-          />
-        </View>
-      </Modal>
-    );
-  };
+//             <View style={{}}>
+//               <TouchableOpacity style={{}} onPress={openDialer}>
+//                 <Ionicons name="call" style={{ fontSize: 25, marginRight: 10 }} />
+//               </TouchableOpacity>
+//             </View>
+//           </View>
+//           <GiftedChat
+//             messages={messages}
+//             onSend={(messages) => onSend(messages)}
+//             user={{
+//               _id: formchatUserIdFbse,
+//             }}
+//           />
+//         </View>
+//       </Modal>
+//     );
+//   };
 
 export const AskForAppUpdate: React.FC<{
   isAndroidUpdateModal: boolean;

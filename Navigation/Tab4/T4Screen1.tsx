@@ -13,6 +13,7 @@ const T4Screen1 = ({ navigation }) => {
   const [userId, setUserId] = useState(null);
   const [profileData, setProfileData] = useState([]);
   const [state, setState] = useContext(AuthContext);
+  const {name} =state;
   const { gUserCred, userCred, userIdApp,f_email, f_mobile, f_id, f_name, f_password  } = state;
   const [googleUserCred, setgoogleUserCred] = useState(null);
   const [appUserCred, setappUserCred] = useState(null);
@@ -203,7 +204,7 @@ setisFeedbackModalVisible(!isFeedbackModalVisible);
               fontSize: 25,
             }}
           >
-            {profileData[0]?.name}
+            {f_name? f_name:"hello"}
           </Text>
         </View>
       </View>
@@ -212,6 +213,24 @@ setisFeedbackModalVisible(!isFeedbackModalVisible);
       <View>
         <Text  style={styles.text3}>Account Settings</Text>
       </View>
+      {/* <Text>{userIdApp}</Text>
+
+<Text>{state.f_id?state.f_id:"not id is there"}</Text>
+<Text>{state.f_name?state.f_name:"not name is there"}</Text>
+<Text>{state.f_password?state.f_password:"not f_password is there"}</Text>
+<Text>{state.f_mobile?state.f_mobile:"not f_mobile is there"}</Text>
+<Text>{state.f_name1?state.f_name1:"not f_name1 is there"}</Text>
+<Text>{state.f_email?state.f_email:"not f_email is there"}</Text> */}
+
+{/*  gUserCred,
+          userCred,
+          userIdApp: appUserId,
+          f_email: fire_mail,
+          f_id: fire_id,
+          f_name1: fire_name,
+          f_mobile: fire_mobile,
+          f_password: fire_password,
+          f_name, */}
 
 
       <View style={{ marginTop: 20 , }}>

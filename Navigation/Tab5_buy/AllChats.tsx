@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions, FlatList, ScrollView, TouchableOpacity, Modal, Linking, RefreshControl } from "react-native";
-import { getFirestore, collection, query, where, getDocs, Firestore, addDoc, QuerySnapshot, onSnapshot, orderBy } from 'firebase/firestore';
+// import { getFirestore, collection, query, where, getDocs, Firestore, addDoc, QuerySnapshot, onSnapshot, orderBy } from 'firebase/firestore';
 import { GiftedChat, IMessage } from 'react-native-gifted-chat';
 import { Ionicons } from '@expo/vector-icons';
 import { Directions } from 'react-native-gesture-handler';
@@ -28,52 +28,52 @@ const AllChats = ({ navigation }) => {
 
 
   useEffect(() => {
-    getUsers();
+    // getUsers();
   }, [fromChatUserIdFbse, userIdApp]);
 
 
 
   const onRefresh = () => {
-    getUsers();
+    // getUsers();
 
   }
 
   useFocusEffect(() => {
     if (userIdApp && users.length == 0) {
-      getUsers();
+      // getUsers();
     }
   });
 
-  const getUsers = async () => {
-    console.log("f_id in allchats=>",f_id);
-    try {
-      if (f_email) {
-        const firebaseDB = getFirestore();
-        const userCollection = collection(firebaseDB, 'users');
-        const usersQuery = query(userCollection, where('email', '!=', f_email));
+  // const getUsers = async () => {
+  //   console.log("f_id in allchats=>",f_id);
+  //   try {
+  //     if (f_email) {
+  //       const firebaseDB = getFirestore();
+  //       const userCollection = collection(firebaseDB, 'users');
+  //       const usersQuery = query(userCollection, where('email', '!=', f_email));
 
-        // console.log("Users query:", usersQuery); // Check the users query
+  //       // console.log("Users query:", usersQuery); // Check the users query
 
-        const querySnapshot = await getDocs(usersQuery);
-        const userData = querySnapshot.docs.map(documentSnapshot => ({
-          id: documentSnapshot.id,
-          fullName: documentSnapshot.get("name"),
-          mobile: documentSnapshot.get("mobile"),
-          email: documentSnapshot.get("email"),
-          ...documentSnapshot.data()
-        }));
+  //       const querySnapshot = await getDocs(usersQuery);
+  //       const userData = querySnapshot.docs.map(documentSnapshot => ({
+  //         id: documentSnapshot.id,
+  //         fullName: documentSnapshot.get("name"),
+  //         mobile: documentSnapshot.get("mobile"),
+  //         email: documentSnapshot.get("email"),
+  //         ...documentSnapshot.data()
+  //       }));
 
-        console.log("Fetched users data:", userData); // Check the fetched users data
-        setFromChatUserIdFbse(f_id)
-        // console.log("firebase form chat user Id:fromchatuseridfbse-",fromChatUserIdFbse);
+  //       console.log("Fetched users data:", userData); // Check the fetched users data
+  //       setFromChatUserIdFbse(f_id)
+  //       // console.log("firebase form chat user Id:fromchatuseridfbse-",fromChatUserIdFbse);
 
 
-        setUsers(userData);
-      }
-    } catch (error) {
-      console.log("Error fetching users: ", error);
-    }
-  };
+  //       setUsers(userData);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error fetching users: ", error);
+  //   }
+  // };
 
 
   const [isModalVisible, setModalVisible] = useState(false);
@@ -181,59 +181,59 @@ const MainChats: React.FC<{
 
 }> = ({ isModalVisible, toggleModal, formchatUserIdFbse, tochatUserIdFbse, tochatUserNameFbse, toChatUserMobileFbse }) => {
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const firebaseDB = getFirestore(); // Get the Firestore instance
+  // const firebaseDB = getFirestore(); // Get the Firestore instance
 
-  useEffect(() => {
-    const subscriber = onSnapshot(
-      query(
-        collection(firebaseDB, 'chats', `${formchatUserIdFbse}_${tochatUserIdFbse}`, 'messages'),
-        orderBy('createdAt', 'desc')
-      ),
-      (querySnapshot) => {
-        const allmessages: IMessage[] = [];
-        querySnapshot.forEach((doc) => {
-          const messageData = doc.data();
-          allmessages.push({
-            _id: doc.id,
-            text: messageData.text,
-            createdAt: new Date(messageData.createdAt),
-            user: {
-              _id: messageData.sendBy,
-            },
-          });
-        });
-        setMessages(allmessages);
-      }
-    );
-    return () => subscriber();
-  }, [firebaseDB, formchatUserIdFbse, tochatUserIdFbse]);
+  // useEffect(() => {
+  //   const subscriber = onSnapshot(
+  //     query(
+  //       collection(firebaseDB, 'chats', `${formchatUserIdFbse}_${tochatUserIdFbse}`, 'messages'),
+  //       orderBy('createdAt', 'desc')
+  //     ),
+  //     (querySnapshot) => {
+  //       const allmessages: IMessage[] = [];
+  //       querySnapshot.forEach((doc) => {
+  //         const messageData = doc.data();
+  //         allmessages.push({
+  //           _id: doc.id,
+  //           text: messageData.text,
+  //           createdAt: new Date(messageData.createdAt),
+  //           user: {
+  //             _id: messageData.sendBy,
+  //           },
+  //         });
+  //       });
+  //       setMessages(allmessages);
+  //     }
+  //   );
+  //   return () => subscriber();
+  // }, [firebaseDB, formchatUserIdFbse, tochatUserIdFbse]);
 
-  const onSend = useCallback(async (messages = []) => {
-    const newMessage = messages[0];
-    const messageToSend: IMessage = {
-      ...newMessage,
-      sendBy: formchatUserIdFbse,
-      sendTo: tochatUserIdFbse,
-      createdAt: Date.now(),
-    };
+  // const onSend = useCallback(async (messages = []) => {
+  //   const newMessage = messages[0];
+  //   const messageToSend: IMessage = {
+  //     ...newMessage,
+  //     sendBy: formchatUserIdFbse,
+  //     sendTo: tochatUserIdFbse,
+  //     createdAt: Date.now(),
+  //   };
 
-    // Update the state by merging the new message with the existing messages array
-    setMessages((previousMessages) => [...previousMessages, messageToSend]);
+  //   // Update the state by merging the new message with the existing messages array
+  //   setMessages((previousMessages) => [...previousMessages, messageToSend]);
 
-    // Add message to the sender's chat collection
-    try {
-      await addDoc(collection(firebaseDB, 'chats', `${formchatUserIdFbse}_${tochatUserIdFbse}`, 'messages'), messageToSend);
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
+  //   // Add message to the sender's chat collection
+  //   try {
+  //     // await addDoc(collection(firebaseDB, 'chats', `${formchatUserIdFbse}_${tochatUserIdFbse}`, 'messages'), messageToSend);
+  //   } catch (error) {
+  //     console.error('Error sending message:', error);
+  //   }
 
-    // Add message to the receiver's chat collection
-    try {
-      await addDoc(collection(firebaseDB, 'chats', `${tochatUserIdFbse}_${formchatUserIdFbse}`, 'messages'), messageToSend);
-    } catch (error) {
-      console.error('Error sending message to the receiver:', error);
-    }
-  }, [firebaseDB, formchatUserIdFbse, tochatUserIdFbse]);
+  //   // Add message to the receiver's chat collection
+  //   try {
+  //     // await addDoc(collection(firebaseDB, 'chats', `${tochatUserIdFbse}_${formchatUserIdFbse}`, 'messages'), messageToSend);
+  //   } catch (error) {
+  //     console.error('Error sending message to the receiver:', error);
+  //   }
+  // }, [firebaseDB, formchatUserIdFbse, tochatUserIdFbse]);
 
   const closeModal = () => {
     toggleModal();
@@ -272,7 +272,7 @@ const MainChats: React.FC<{
         </View>
         <GiftedChat
           messages={messages}
-          onSend={(messages) => onSend(messages)}
+          // onSend={(messages) => onSend(messages)}
           user={{
             _id: formchatUserIdFbse,
           }}

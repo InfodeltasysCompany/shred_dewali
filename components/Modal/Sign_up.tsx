@@ -23,47 +23,59 @@ import * as WebBrowser from "expo-web-browser";
 import { useDispatch } from "react-redux";
 import { setLoginData } from "../../redux/actions/loginAction";
 import { getDocs, query, where } from "firebase/firestore";
-import { firebaseDB } from "../../Config/Firebaseconfig";
+import { db } from "../../Config/Firebaseconfig";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
+import { getAuth, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
+import { firebaseSignup } from "./Search/firebasefunctions";
 
 type SignProps = {
   navigation: NavigationProp<any>;
-  handleIsshowLogin:any;
+  handleIsshowLogin: any;
 };
 
-const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
+const Sign_up = ({ navigation, handleIsshowLogin }: SignProps) => {
   const dispatch = useDispatch();
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId:
-      "763429625259-vt479t47a8p6r39g6k45fd02jicrc6n9.apps.googleusercontent.com",
-    iosClientId:
-      "763429625259-4k2snc1nfjbdf6erh67htbgvrccpbr3v.apps.googleusercontent.com",
+      "254504701779-h6q77schmob167ed01kgc2ncenls2gg2.apps.googleusercontent.com",
+
     webClientId:
-      "763429625259-pqbkm905lr71d5k9u4qbt7o4p6i2ag9s.apps.googleusercontent.com",
+      "254504701779-h1969g4pfje50j76var1oa5htms97d8k.apps.googleusercontent.com",
   });
   useEffect(() => {
     handleSignInWithGoogle(response);
   }, [response]);
+
   const handleSignInWithGoogle = async (response) => {
     try {
       if (response?.type === "success") {
-        if (
-          response.authentication.accessToken &&
-          response.authentication.idToken
-        ) {
-          const userInfo = await getUserInfo(
-            response.authentication.accessToken
-          );
-          // console.log("userInfo:", userInfo); // Log userInfo to identify any unexpected content
+        const { accessToken, idToken } = response.authentication;
+
+        if (accessToken && idToken) {
+          // Fetch Google user info
+          const userInfo = await getUserInfo(accessToken);
+          console.log("userInfo:", userInfo);
+
           if (userInfo) {
+            // Create a Google OAuth credential with the Google ID token
+            const auth = getAuth();
+            const credential = GoogleAuthProvider.credential(idToken);
+
+            // Sign in to Firebase with the Google credential
+            const firebaseUser = await signInWithCredential(auth, credential);
+
+            console.log("User signed in to Firebase:", firebaseUser.user);
+
+            // Now check if the user exists in your backend and handle accordingly
+            const { uid, displayName, email, photoURL } = firebaseUser.user;
+
             handleGoogleLogin(
-              userInfo.id,
-              response.authentication.idToken,
-              userInfo.name,
-              userInfo.email,
-              userInfo.picture
+              uid,         // userInfo.id -> Firebase UID
+              idToken,     // Google ID Token
+              displayName, // userInfo.name -> Firebase displayName
+              email,       // userInfo.email -> Firebase email
+              photoURL     // userInfo.picture -> Firebase photoURL
             );
-            // authenticateWithFirebase(email);
           } else {
             console.log("Error fetching user info");
           }
@@ -75,15 +87,14 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
       // Handle specific errors
       if (error.response && error.response.status === 400) {
         console.log("Bad Request: The provided tokens are invalid or expired");
-        // Perform actions to handle invalid or expired tokens, such as logging out the user
       } else {
-        // Handle other errors
         console.error("Error handling sign in with Google:", error);
       }
     }
   };
+
   const [state, setState] = useContext(AuthContext);
-  const { gUserCred, userCred, userIdApp,f_email, f_mobile, f_id, f_name, f_password  } = state;
+  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password } = state;
 
   const getUserInfo = async (token) => {
     try {
@@ -107,6 +118,85 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
       return null;
     }
   };
+
+  // const handleGoogleLogin = async (
+  //   gUserId,
+  //   gAccessToken,
+  //   gUserName,
+  //   gUserEmail,
+  //   gUserPic
+  // ) => {
+  //   console.log(
+  //     "gUserid:-",
+  //     gUserId,
+  //     "gAccessToken:-",
+  //     gAccessToken,
+  //     "gUserName",
+  //     gUserName,
+  //     "gUserEmail",
+  //     gUserEmail,
+  //     "guserPic",
+  //     gUserPic
+  //   );
+  //   try {
+  //     if (!gUserId || !gAccessToken || !gUserName || !gUserEmail || !gUserPic) {
+  //       console.error("One or more required parameters are missing");
+  //       return;
+  //     }
+
+  //     const formData = new FormData();
+  //     formData.append("firebase_uid", gUserId);
+  //     formData.append("token", gAccessToken);
+  //     formData.append("name", gUserName);
+  //     formData.append("email", gUserEmail);
+  //     formData.append("profile_pic", gUserPic);
+  //     const response = await fetch(
+  //       "https://shreddersbay.com/API/user_api.php?action=google_login",
+  //       {
+  //         method: "POST",
+  //         body: formData,
+  //       }
+  //     );
+  //     if (response.ok) {
+  //       const responseData = await response.json();
+  //       console.log("Login Successful:", responseData);
+  //       const userId = responseData["0"].id;
+  //       dispatch(setLoginData(responseData));
+  //       try {
+  //         setState(prevState => ({
+  //           ...prevState,
+  //           userCred: JSON.stringify(responseData),
+  //           // gUserCred:JSON.stringify(responseData),
+  //           userIdApp: userId,
+  //           f_email: responseData["0"].email,
+  //           f_mobile: responseData["0"].mobile,
+  //           f_id: responseData["0"].firebase_uid,
+  //           f_name: responseData["0"].name,
+  //           // f_password:null 
+  //         }));
+  //         Alert.alert(
+  //           "Login Successfully",
+  //           "You have successfully logged in.",
+  //           [
+  //             {
+  //               text: "OK",
+  //               onPress: () =>
+  //                 navigation.navigate("Tab1", { screen: "T1Screen1" }),
+  //             },
+  //           ],
+  //           { cancelable: false }
+  //         );
+  //       } catch (error) {
+  //         console.error("Error storing data:", error);
+  //       }
+  //     } else {
+  //       console.error("Error:", response.status);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
+
 
   const handleGoogleLogin = async (
     gUserId,
@@ -132,10 +222,9 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
         console.error("One or more required parameters are missing");
         return;
       }
-       authenticateWithFirebase(gUserEmail);
 
       const formData = new FormData();
-      formData.append("google_id", gUserId);
+      formData.append("firebase_uid", gUserId);
       formData.append("token", gAccessToken);
       formData.append("name", gUserName);
       formData.append("email", gUserEmail);
@@ -147,96 +236,70 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
           body: formData,
         }
       );
+      
+
       if (response.ok) {
-        const responseData = await response.json();
-        console.log("Login Successful:", responseData);
-        const userId = responseData["0"].id;
-        dispatch(setLoginData(responseData));
         try {
-          await AsyncStorage.setItem("UserCred", JSON.stringify(responseData));
-          await AsyncStorage.setItem("UserIdapp", userId);
-          console.log("JSON.stringify(responseData)=>",JSON.stringify(responseData))
-          setState(prevState => ({ ...prevState, 
+          const responseData = await response.json();
+          console.log("Login Successful:", responseData);
+
+          // Assuming responseData is an array and accessing the first element
+          const user = responseData[0];
+          const userId = user.id;
+
+          // Dispatch the login data
+          dispatch(setLoginData(responseData));
+
+          // Logging the response data
+          console.log("JSON.stringify(responseData)=>", JSON.stringify(responseData));
+
+          // Update the state with the user's information
+          setState(prevState => ({
+            ...prevState,
             userCred: JSON.stringify(responseData),
-            // gUserCred:JSON.stringify(responseData),
-            userIdApp:userId,
-            // f_email:null,
-            // f_mobile:null,
-            // f_id:null,
-            // f_name:null,
-            // f_password:null 
+            userIdApp: userId,
+            f_email: user.email,
+            f_mobile: user.mobile,
+            f_id: user.firebase_uid,
+            f_name: user.name,
           }));
+
+          // Attempt to store the user's data in AsyncStorage
+          try {
+            await AsyncStorage.setItem("UserCred", JSON.stringify(responseData));
+            await AsyncStorage.setItem("UserIdapp", user.id);
+            await AsyncStorage.setItem("femail", user.email);
+            await AsyncStorage.setItem("@user", JSON.stringify(user));
+            await AsyncStorage.setItem("fmobile", user.mobile);
+            await AsyncStorage.setItem("fid", user.firebase_uid);
+            await AsyncStorage.setItem("fname", user.username);
+          } catch (storageError) {
+            console.log("Error setting data in AsyncStorage via login:", storageError);
+          };
+
+          // Show success alert and navigate to the Tab1 screen
           Alert.alert(
             "Login Successfully",
             "You have successfully logged in.",
             [
               {
                 text: "OK",
-                onPress: () =>
-                  navigation.navigate("Tab1", { screen: "T1Screen1" }),
+                onPress: () => navigation.navigate("Tab1", { screen: "T1Screen1" }),
               },
             ],
             { cancelable: false }
           );
         } catch (error) {
-          console.error("Error storing data:", error);
+          console.error("Error processing login response:", error);
         }
       } else {
         console.error("Error:", response.status);
       }
+
     } catch (error) {
       console.error("Error:", error);
     }
   };
-  const LoginWithfirebase = async (email1: string, password: string) => {
-    if (email1 !== null && password !== null) {
-      // console.log("i m in login with firebase function");
-      console.log("my email is :-", email1);
-
-      const usersCollection = collection(firebaseDB, "users");
-      const q = query(usersCollection, where("email", "==", email1));
-
-      try {
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach(async (doc) => {
-          if (doc.exists()) {
-            const userData = doc.data();
-            console.log("User data:---", userData);
-            if (userData != null) {
-              // console.log("hii this is vinit......");
-
-              if (userData && Object.keys(userData).length > 0) {
-                try {
-                  await AsyncStorage.setItem("femail", userData.email || "");
-                  await AsyncStorage.setItem("fmobile", userData.mobile || "");
-                  await AsyncStorage.setItem("fid", userData.idf || "");
-                  await AsyncStorage.setItem("fname", userData.name || "");
-                  await AsyncStorage.setItem(
-                    "fpassword",
-                    userData.password || ""
-                  );
-                  // console.log(userData.idf);
-
-                  console.log(
-                    "Data stored Of Firebase in AsyncStorage successfully"
-                  );
-                } catch (error) {
-                  console.log("Error storing data in AsyncStorage:", error);
-                }
-              } else {
-                console.log("User data is null or empty");
-              }
-            }
-          } else {
-            console.log("Document does not exist");
-          }
-        });
-      } catch (error) {
-        console.error("Error getting user data except email:", error);
-      }
-    }
-  };
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -306,7 +369,16 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
     return passwordRegex.test(password);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit1 = async () => {
+    try {
+      await firebaseSignup(email, password, handleSubmit)
+
+    } catch (error) {
+      console.log("Error=>", error);
+    }
+
+  }
+  const handleSubmit = (f_uid) => {
     if (!name.trim()) {
       setNameError("Name is required");
     }
@@ -351,7 +423,7 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
       };
       console.log("user object is ", userObject);
 
-      saveData(userObject);
+      saveData(userObject, f_uid);
     } else {
       console.log("Registration data is not submitted.");
     }
@@ -363,7 +435,7 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
     mobile: any;
     password: any;
     repassword: any;
-  }) => {
+  }, f_uid: any) => {
     const url = "https://shreddersbay.com/API/user_api.php?action=signup";
 
     const formData = new FormData();
@@ -373,6 +445,7 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
     formData.append("mobile", userObject.mobile);
     formData.append("password", userObject.password);
     formData.append("repassword", userObject.repassword);
+    formData.append("firebase_uid", f_uid)
     console.log("again user object is :-", userObject);
 
     try {
@@ -388,18 +461,19 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
         const response = await result.json();
         Alert.alert(
           "Sign Up Successful",
-          `Sign up was successful. Please check and verify on  your email ID: ${email}.\n${response.msg}`,
+          `Sign up was successful. Please check and verify on  your email ID: ${email}.\n${response.msg || ""}`,
           [
             {
               text: "OK",
               onPress: () => {
-                authenticateWithFirebase(email);
-                // handleIsshowLogin() // Navigate to 'Login' screen
+                // authenticateWithFirebase(email);
+                handleIsshowLogin() // Navigate to 'Login' screen
               },
             },
           ],
           { cancelable: false }
         );
+
         console.log("Response:", response);
       } else {
         console.error("Request failed with status:", result.status);
@@ -409,60 +483,7 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
     }
   };
 
-  
-  const authenticateWithFirebase = async (email) => {
-    const usersCollection = collection(firebaseDB, "users");
-    const q = query(usersCollection, where("email", "==", email));
 
-    try {
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        // User exists, log them in
-        querySnapshot.forEach(async (doc) => {
-          const userData = doc.data();
-          if (userData != null) {
-            if (userData && Object.keys(userData).length > 0) {
-              try {
-                await AsyncStorage.setItem("femail", userData.email || "");
-                await AsyncStorage.setItem("fmobile", userData.mobile || "");
-                await AsyncStorage.setItem("fid", userData.idf || "");
-                await AsyncStorage.setItem("fname", userData.name || "");
-                await AsyncStorage.setItem(
-                  "fpassword",
-                  userData.password || ""
-                );
-                // console.log(userData.idf);
-
-                console.log(
-                  "Data stored Of Firebase in AsyncStorage successfully"
-                );
-              } catch (error) {
-                console.log("Error storing data in AsyncStorage:", error);
-              }
-            } else {
-              console.log("User data is null or empty");
-            }
-          }
-        });
-      } else {
-        // User doesn't exist, sign them up
-        const userIdf = uuid.v4();
-        const userDocumentRef = doc(usersCollection, `${userIdf}`);
-        const userObjectf = {
-          name: name || "", // Set name if provided, otherwise empty string
-          email,
-          mobile: phone || "", // Set mobile if provided, otherwise empty string
-          password: password || "", // Set password if provided, otherwise empty string
-          idf: userIdf,
-        };
-
-        await setDoc(userDocumentRef, userObjectf);
-        console.log("User signed up successfully:", userObjectf);
-      }
-    } catch (error) {
-      console.error("Error authenticating with Firebase:", error);
-    }
-  };
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
@@ -536,16 +557,16 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
             <Text style={styles.error}>{passwordError}</Text>
 
             <TouchableOpacity onPress={togglePasswordVisibility}>
-                      <Ionicons
-                        name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
-                        size={30}
-                        style={styles.eyes}
-                        color="#666"
-                      />
-                </TouchableOpacity>
-           
+              <Ionicons
+                name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                size={30}
+                style={styles.eyes}
+                color="#666"
+              />
+            </TouchableOpacity>
+
           </View>
-         
+
 
           <View style={styles.container3}>
             <Ionicons
@@ -565,13 +586,13 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
             <Text style={styles.error}>{confirmPasswordError}</Text>
 
             <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
-                      <Ionicons
-                        name={isConfirmPasswordVisible ? "eye-off-outline" : "eye-outline"}
-                        size={30}
-                        style={styles.eyes}
-                        color="#666"
-                      />
-              </TouchableOpacity>
+              <Ionicons
+                name={isConfirmPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                size={30}
+                style={styles.eyes}
+                color="#666"
+              />
+            </TouchableOpacity>
           </View>
 
 
@@ -594,7 +615,7 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
         </View>
 
         <View>
-          <TouchableOpacity onPress={handleSubmit} style={styles.login}>
+          <TouchableOpacity onPress={handleSubmit1} style={styles.login}>
             <Text style={styles.loginText}>SignUp</Text>
           </TouchableOpacity>
         </View>
@@ -631,7 +652,7 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => {}} style={styles.container5}>
+          <TouchableOpacity onPress={() => { }} style={styles.container5}>
             <Ionicons
               name="phone-portrait"
               size={26}
@@ -657,7 +678,7 @@ const Sign_up = ({ navigation,handleIsshowLogin }: SignProps) => {
                 fontSize: 18,
               }}
               onPress={handleIsshowLogin}
-              
+
             >
               Login
             </Text>
@@ -752,7 +773,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
 
-  eyes:{
+  eyes: {
     marginTop: 10,
   },
 

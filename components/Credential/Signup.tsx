@@ -23,7 +23,7 @@ import * as WebBrowser from "expo-web-browser";
 import { useDispatch } from "react-redux";
 import { setLoginData } from "../../redux/actions/loginAction";
 import { getDocs, query, where } from "firebase/firestore";
-import { firebaseDB } from "../../Config/Firebaseconfig";
+import { db } from "../../Config/Firebaseconfig";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 
 type SignProps = {
@@ -192,7 +192,7 @@ const Signup = ({ navigation }: SignProps,{onclick}: any) => {
       // console.log("i m in login with firebase function");
       console.log("my email is :-", email1);
 
-      const usersCollection = collection(firebaseDB, "users");
+      const usersCollection = collection(db, "users");
       const q = query(usersCollection, where("email", "==", email1));
 
       try {
@@ -410,7 +410,7 @@ const Signup = ({ navigation }: SignProps,{onclick}: any) => {
 
   
   const authenticateWithFirebase = async (email) => {
-    const usersCollection = collection(firebaseDB, "users");
+    const usersCollection = collection(db, "users");
     const q = query(usersCollection, where("email", "==", email));
 
     try {
