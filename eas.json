@@ -35,14 +35,14 @@
       "android": {
         "track": "production",
         "releaseStatus": "completed",
-        "serviceAccountKeyPath": "./shreddersbay-6e906-250093ec84c2.json"
+        "serviceAccountKeyPath": "./shreddersbay-3aee0-e520be3e2e90.json"
       }
     },
     "distribution": {
       "android": {
         "track": "production",
         "releaseStatus": "completed",
-        "serviceAccountKeyPath": "./shreddersbay-6e906-250093ec84c2.json"
+        "serviceAccountKeyPath": "./shreddersbay-3aee0-e520be3e2e90.json"
       }
     }
   }

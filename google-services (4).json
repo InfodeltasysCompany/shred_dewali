@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "254504701779",
+    "firebase_url": "https://shreddersbay-3aee0.firebaseio.com",
+    "project_id": "shreddersbay-3aee0",
+    "storage_bucket": "shreddersbay-3aee0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254504701779:android:03ae2ad790c74ce8589ba6",
+        "android_client_info": {
+          "package_name": "com.sheddersbay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254504701779-h1969g4pfje50j76var1oa5htms97d8k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWygzAtwbXD58bGofkUEpvtfoYoVaniEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254504701779-h1969g4pfje50j76var1oa5htms97d8k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

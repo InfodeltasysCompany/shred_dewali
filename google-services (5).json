@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "254504701779",
+    "firebase_url": "https://shreddersbay-3aee0.firebaseio.com",
+    "project_id": "shreddersbay-3aee0",
+    "storage_bucket": "shreddersbay-3aee0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254504701779:android:c8dbf5397acaabfe589ba6",
+        "android_client_info": {
+          "package_name": "com.shreddersbay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254504701779-h6q77schmob167ed01kgc2ncenls2gg2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shreddersbay",
+            "certificate_hash": "a344197dee6cf4716467221f9810d3e015fcc0b8"
+          }
+        },
+        {
+          "client_id": "254504701779-h1969g4pfje50j76var1oa5htms97d8k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWygzAtwbXD58bGofkUEpvtfoYoVaniEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254504701779-h1969g4pfje50j76var1oa5htms97d8k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

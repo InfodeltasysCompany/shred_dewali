@@ -2,7 +2,7 @@
   "expo": {
     "name": "shreddersbay",
     "slug": "shreddersbay",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "orientation": "portrait",
     "icon": "./assets/icon2.png",
     "userInterfaceStyle": "light",
@@ -55,9 +55,9 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.shreddersbay",
-      "versionCode": 13,
-      "googleServicesFile": "./google-services.json",
-      "expo.android.googleServicesFile": "./google-services.json",
+      "versionCode": 14,
+      "googleServicesFile": "./google-services (5).json",
+      "expo.android.googleServicesFile": "./google-services (5).json",
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
@@ -77,6 +77,9 @@
     "updates": {
       "fallbackToCacheTimeout": 10000,
       "url": "https://u.expo.dev/899a3d51-4ab2-46d5-a140-644e3ad1b7be"
+     
+      
+      
     },
     "plugins": [
       "@react-native-firebase/app",
@@ -84,9 +87,9 @@
         "expo-build-properties",
         {
           "android": {
-            "compileSdkVersion": 33,
-            "targetSdkVersion": 33,
-            "buildToolsVersion": "33.0.0"
+            "compileSdkVersion": 34,
+        "targetSdkVersion": 34,
+        "buildToolsVersion": "34.0.0"
           },
           "ios": {
             "deploymentTarget": "13.4",

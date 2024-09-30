@@ -72,9 +72,9 @@ const LogoSlider1 = ({ navigation }) => {
         horizontal
         showsHorizontalScrollIndicator={false}
       />
+            <Text style={{...styles.order,marginBottom:-5,}}>Requirements</Text>
       {demandData.length > 0 &&
       <>
-            <Text style={{...styles.order,marginBottom:-5,}}>Requirements</Text>
 
       
         <Swiper
