@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, Keyboard, KeyboardAvoidingView, Platform 
 import React, { useContext, useEffect, useState } from 'react'
 // import ConCompo from './components/ConCompo'
 import { AntDesign, Feather, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Device from 'expo-device';
 
 import { Provider } from 'react-redux'
 import store from './redux/store'
@@ -41,12 +42,40 @@ import ChatBlank from './Navigation/Tab5_buy/ChatBlank';
 import T4Screen3 from './Navigation/Tab4/T4Screen3';
 import { Addbtnchanged, Addbtndef } from './components/Addbtn';
 import { AuthContext, UserAuthProvider } from './redux/ContextApi/UserAuthProvider';
-// import FullPageModal from './components/Credential/FullPageModal';
 
-import { FullPageModal } from './components/Credential/FullPageModal';
 import App2 from './Navigation/App2';
+import { handlePushNotifications } from './utils/NotificaitonFunction';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 const App = () => {
+  
+useEffect(() => {
+  async function registerForPushNotifications() {
+    if (!Device.isDevice) {
+      alert('Must use a physical device for Push Notifications');
+      return null;
+    }
 
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notifications!');
+      return null;
+    }
+
+    // Insert additional logic for handling the push token here if needed
+  }
+
+  // Call the function immediately after defining it
+  registerForPushNotifications();
+}, []);
+ 
   const Stack = createStackNavigator();
   const Tab = createBottomTabNavigator();
   const TTab = createMaterialTopTabNavigator()

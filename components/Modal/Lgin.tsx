@@ -41,6 +41,7 @@ import OTPScreen from "../Credential/OTPScreen";
 import GoodModal from "../Credential/GoodModal";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import { firebaseSignIn } from "./Search/firebasefunctions";
+import { handlePushNotifications } from "../../utils/NotificaitonFunction";
 // web: "763429625259-ut8pfj2edgmiks42epfj9e4nla8nj706.apps.googleusercontent.com",
 // ios: "763429625259-4k2snc1nfjbdf6erh67htbgvrccpbr3v.apps.googleusercontent.com",
 // android: "763429625259-vt479t47a8p6r39g6k45fd02jicrc6n9.apps.googleusercontent.com",
@@ -207,6 +208,8 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
 
           // Logging the response data
           console.log("JSON.stringify(responseData)=>", JSON.stringify(responseData));
+          await handlePushNotifications (userId, user.firebase_uid, 0);
+          console.log("handlePushNotifications called successfully");
 
           // Update the state with the user's information
           setState(prevState => ({
@@ -347,7 +350,9 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
           // Check if the userData is valid
           if (userData && typeof userData === 'object') {
             const userId = userData.id;
-  
+            await handlePushNotifications (userData.id, userData.firebase_uid, 0);
+            console.log("handlePushNotifications called successfully");
+
             // Set data in AsyncStorage
             await AsyncStorage.setItem("flname", userData.name || '');
             console.log("User ID:", userId);
@@ -414,7 +419,7 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.container1}>
         <View style={styles.signuplogo}>
           <Image
@@ -548,7 +553,7 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

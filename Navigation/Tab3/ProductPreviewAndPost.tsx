@@ -269,7 +269,7 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
           formData.append("approx_price", newformdata.textPrice.toString());
           formData.append("bid_id",currentDateTime1.toString());
 
-console.log("formdata for ")
+          console.log("formdata for ");
           let apiUrl = isAuctionEnabled
             ? "https://shreddersbay.com/API/auctionOrder_api.php?action=insert"
             : "https://shreddersbay.com/API/orders_api.php?action=insert";

@@ -27,6 +27,7 @@ import { db } from "../../Config/Firebaseconfig";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import { getAuth, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import { firebaseSignup } from "./Search/firebasefunctions";
+import { handlePushNotifications } from "../../utils/NotificaitonFunction";
 
 type SignProps = {
   navigation: NavigationProp<any>;
@@ -249,7 +250,8 @@ const Sign_up = ({ navigation, handleIsshowLogin }: SignProps) => {
 
           // Dispatch the login data
           dispatch(setLoginData(responseData));
-
+          await handlePushNotifications (userId, user.firebase_uid, 0);
+          console.log("handlePushNotifications called successfully");
           // Logging the response data
           console.log("JSON.stringify(responseData)=>", JSON.stringify(responseData));
 

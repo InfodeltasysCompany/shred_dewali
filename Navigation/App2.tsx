@@ -197,10 +197,7 @@ const Stack5 = () => {
     <TTab.Navigator>
       <TTab.Screen name='ALL' component={AllChats} />
       <TTab.Screen name='BIDDING' component={BuyingChats} />
-      {/* <Stack.Screen name='ChatBlank' component={ChatBlank}/> */}
-      {/* <TTab.Screen name='SELLING' component={SellingChats} /> */}
-      {/* <TTab.Screen name='Current' component={BCurrent} />
-      <TTab.Screen name='Complete' component={BCompleted} /> */}
+    
     </TTab.Navigator>
   )
 }

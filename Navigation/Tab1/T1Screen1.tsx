@@ -68,6 +68,7 @@ import RatingSlider from "../../components/OrderImage/RatingSlider";
 import AuctionBuyModal1 from "./AuctionBuy/AuctionBuyModal1";
 import OrderBuyModal1 from "./OrderBuy/OrderBuyModal1";
 import GroupChatModal from "../Tab5_buy/GroupChatModal";
+import { handlePushNotifications } from "../../utils/NotificaitonFunction";
 // import { firebaseDB } from "../../Config/Firebaseconfig";
 
 const T1Screen1 = ({ navigation }) => {
@@ -103,7 +104,7 @@ const T1Screen1 = ({ navigation }) => {
   const [auctionFiteredData, setAuctionFiteredData] = useState([]);
 
   const getPickChooseAddressfromAddressModal = (addr) => {
-    console.log("Choosen address=>", addr);
+    // console.log("Choosen address=>", addr);
     setCurrentAddress(addr)
   }
 
@@ -156,10 +157,10 @@ const T1Screen1 = ({ navigation }) => {
   const [imagename, setImagename] = useState("");
   const handleDetailPress = async (bookingId: number, filename: string) => {
     setImagename(filename);
-    console.log(filename);
+    // console.log(filename);
     setbookingId(bookingId);
     setModalVisible(!modalVisible);
-    console.log("booking_id", bookingId);
+    // console.log("booking_id", bookingId);
     try {
       const formdata = new FormData();
       formdata.append("booking_id", bookingId.toString());
@@ -182,7 +183,7 @@ const T1Screen1 = ({ navigation }) => {
         // For example:
         // console.log("getting order detail Data:=>",details);
         setdetaildata(details);
-        console.log("Detail Data:", details);
+        // console.log("Detail Data:", details);
       } else {
         // Handle error
         console.error("Error fetching details:", response.statusText);
@@ -196,20 +197,20 @@ const T1Screen1 = ({ navigation }) => {
     object
 
   ) => {
-    console.log("object:=>",object);
+    // console.log("object:=>", object);
     // getGroups(object.bid_id,setSelectedGroup);
     // console.log("d=>",d);
     const auctionId = object.auction_id;
-    console.log("auctionId:-" + auctionId);
+    // console.log("auctionId:-" + auctionId);
 
     const apiUrl =
       "https://shreddersbay.com/API/auctionOrder_api.php?action=select_id";
     const formdata = new FormData();
     formdata.append("auction_id", auctionId.toString());
     const auctionDetailData = await postData(formdata, apiUrl);
-    console.log("auctionDetailData", auctionDetailData);
+    // console.log("auctionDetailData", auctionDetailData);
     const auctiondetail = auctionDetailData[0];
-    console.log("images:-" + auctiondetail.filename)
+    // console.log("images:-" + auctiondetail.filename)
     setImagename(auctiondetail.filename);
     setModalVisible(!modalVisible);
     setdetaildata(auctionDetailData);
@@ -223,7 +224,7 @@ const T1Screen1 = ({ navigation }) => {
       // Check if booking_id exists in the first item of detaildata
       if (detaildata.length > 0) {
         if (detaildata[0].hasOwnProperty('booking_id') && detaildata[0].booking_id !== null) {
-          console.log("selectedGroup|=>",selectedGroup);
+          // console.log("selectedGroup|=>", selectedGroup);
           if (selectedGroup !== null) {
             setIsGroupModalVisible(!isGroupModalVisible)
           } else {
@@ -235,7 +236,7 @@ const T1Screen1 = ({ navigation }) => {
             setIsAllBuyCurrentOrderModalVisible(!isAllBuyCurrentOrderModalVisible);
           }
         } else {
-          console.log("selectedGroup:=>",selectedGroup);
+          // console.log("selectedGroup:=>", selectedGroup);
           if (selectedGroup !== null) {
             setIsGroupModalVisible(!isGroupModalVisible)
           } else {
@@ -296,7 +297,7 @@ const T1Screen1 = ({ navigation }) => {
 
       // console.log("calling order1")
       const data = await getApiResponse(url1);
-      console.log("Auction urlis:=.", url1)
+      // console.log("Auction urlis:=.", url1)
       // console.log("auctiondata", data);
       settAuctionData(data);
     } catch (error) {
@@ -319,7 +320,7 @@ const T1Screen1 = ({ navigation }) => {
       const data = await getApiResponse(url);
 
       // Log the URL and received data for debugging
-      console.log("Order URL:", url);
+      // console.log("Order URL:", url);
       // console.log("Order data:", data);
 
       // Update the component state with the fetched data
@@ -334,7 +335,7 @@ const T1Screen1 = ({ navigation }) => {
   const locationSetup = async () => {
     const address = await getCurrentLocation();
     setCurrentAddress(address);
-    console.log("address=>", address)
+    // console.log("address=>", address)
 
   }
   const locationSetupModal = async () => {
@@ -343,7 +344,7 @@ const T1Screen1 = ({ navigation }) => {
     setCurrentAddress1(address);
 
 
-    console.log("address=>", address)
+    // console.log("address=>", address)
 
   }
 
@@ -396,7 +397,7 @@ const T1Screen1 = ({ navigation }) => {
         const aceptData = await response.json();
         setacceptData(aceptData);
         // Process or set the acceptData if needed
-        console.log("Accept API request successful");
+        // console.log("Accept API request successful");
         // getOrderResponse();
       } else {
         console.error("Accept API request failed:", response.statusText);
@@ -421,13 +422,13 @@ const T1Screen1 = ({ navigation }) => {
   useEffect(() => {
 
     async function onFetchUpdateAsync() {
-      
+
 
 
       try {
         const update = await Updates.checkForUpdateAsync();
         const appVersion = Constants.expoConfig.version;
-        console.log("appVersion=>", appVersion);
+        // console.log("appVersion=>", appVersion);
 
         if (update.isAvailable) {
           await Updates.fetchUpdateAsync();
@@ -600,15 +601,15 @@ const T1Screen1 = ({ navigation }) => {
     //   console.log("Error fetching users: ", error);
     // }
   };
-  
+
   // const getGroups = async (bidId: string, setSelectedGroup: (groups: { id: string, [key: string]: any }[]) => void) => {
   //   console.log("bidId =>", bidId);
   //   const firebaseDB = getFirestore();
-    
+
   //   try {
   //     const groupsRef = collection(firebaseDB, 'biddingGroups');
   //     const q = query(groupsRef, where('bid_id', '==', bidId));
-      
+
   //     onSnapshot(q, (querySnapshot) => {
   //       const fetchedGroups: { id: string, [key: string]: any }[] = [];
   //       querySnapshot.forEach((doc) => {
@@ -618,7 +619,7 @@ const T1Screen1 = ({ navigation }) => {
   //       console.log('fetchedGroups =>', fetchedGroups);
   //       setSelectedGroup(fetchedGroups);
   //     });
-  
+
   //   } catch (error) {
   //     console.error('Error fetching groups:', error);
   //   }
@@ -639,7 +640,7 @@ const T1Screen1 = ({ navigation }) => {
   const onSeachModalclose = () => {
     setIsSearchModalVisible(!isSearchModalVisible)
   }
- 
+
   const oncloseAllorderbuy = () => {
     navigation.navigate("Tab1", { screen: "T1Screen1" });
     setModalVisible(!modalVisible);
@@ -662,7 +663,7 @@ const T1Screen1 = ({ navigation }) => {
 
       <View>
         <HandleAddAddressModal visible={isAddressModalOpen} onClose={handleAddresModalOpen} addrseter={getPickChooseAddressfromAddressModal} navigation={navigation} />
-        <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} navigation={navigation}  />
+        <SearchModal closeModal={onSeachModalclose} visible={isSearchModalVisible} navigation={navigation} />
         <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} />
         <OrderBuyModal1 closeModal={oncloseAllorderbuy} visible={isAllBuyCurrentOrderModalVisible} />
         <AuctionBuyModal1 closeModal={oncloseAllAuctionbuy} visible={isAllBuyAuctionOrderModalVisible} />
@@ -727,9 +728,16 @@ const T1Screen1 = ({ navigation }) => {
             flex: 1,
           }}
         >
+           {/* <Button
+            title="Notification"
+            onPress={async () => {
+              await handlePushNotifications(2705, "hello", 0);
+            }}
+          /> */}
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.heading}>ShreddersBay</Text>
           </View>
+         
 
           <Pressable style={{ justifyContent: "flex-end", alignItems: "flex-end", flexDirection: "row-reverse" }} onPress={locationSetupModal}>
             <Ionicons
@@ -748,7 +756,7 @@ const T1Screen1 = ({ navigation }) => {
       </View>
 
       <View style={styles.container1}>
-       
+
         <Pressable onPress={() => { setIsSearchModalVisible(!isSearchModalVisible) }}>
           <View style={styles.searchbox}>
 
@@ -758,8 +766,8 @@ const T1Screen1 = ({ navigation }) => {
         </Pressable>
 
         <View style={[userIdApp ? { flexDirection: "row", marginLeft: 15, justifyContent: "center" } : { flexDirection: 'row', justifyContent: "center" }]}>
-         
-         
+
+
         </View>
       </View>
 
@@ -1459,7 +1467,7 @@ export const AskForAppUpdate: React.FC<{
       setisthereNewVersion(false);
     }
   }, [])
-  
+
 
   return (
     <Modal
@@ -1486,7 +1494,7 @@ export const AskForAppUpdate: React.FC<{
               <Text style={styles.shredsbay}>ShreddersBay</Text>
             </View>
           </View>
-          
+
           <View style={styles.updatebtn}>
 
             <TouchableOpacity
@@ -1506,11 +1514,11 @@ export const AskForAppUpdate: React.FC<{
               }}
               onPress={() => setUpdateModal()}
             >
-              
+
               <Text style={{ fontSize: 20 }}>Restart </Text>
             </TouchableOpacity>
 
-           
+
           </View>
 
         </View>
