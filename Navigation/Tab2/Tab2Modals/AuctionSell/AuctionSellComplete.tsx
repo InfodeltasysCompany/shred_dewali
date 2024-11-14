@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../../redux/ContextApi/UserAuthProvider';
+import { BASE_URL } from '../../../../ReuseComponent/Env';
 
 const OrderSellComplete = ({ index, setIndex }) => {
     const [currentData, setCurrentData] = useState([]);
@@ -14,7 +15,7 @@ const OrderSellComplete = ({ index, setIndex }) => {
 
     const getCurrent = async () => {
         try {
-            const response = await fetch(`https://shreddersbay.com/API/auctionOrder_api.php?action=select_complete&user_id=${userIdApp}`);
+            const response = await fetch(`${BASE_URL}/auctionOrder_api.php?action=select_complete&user_id=${userIdApp}`);
 
             if (response.ok) {
                 const responseData = await response.json();

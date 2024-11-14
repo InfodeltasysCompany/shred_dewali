@@ -1,63 +1,7 @@
-// import { StyleSheet, Text, View } from 'react-native'
-// import React, { useState, useEffect } from 'react';
-// import { Picker } from '@react-native-picker/picker';
-
-// const Dropdown = () => {
-
-//      const [selected, setSelected] = useState('');
-//      const [data, setData] = useState([]);
-
-//      useEffect(() => {
-//           fetchData();
-//         }, []);
-
-//         const fetchData = async () => {
-//           try {
-//             const response = await fetch('https://shreddersbay.com/API/product_api.php?action=select_id');
-//             if (response.ok) {
-//               const responseData = await response.json();
-//               setData(responseData);
-//             } else {
-//               console.error('Failed to fetch data');
-//             }
-//           } catch (error) {
-//             console.error('Error fetching data:', error);
-//           }
-//         };
-//   return (
-//      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//      <Picker
-//        selectedValue={selected}
-//        style={{ height: 50, width: 300 }}
-//        itemStyle={{ fontSize: 18, color: 'blue', backgroundColor: 'lightgray', paddingHorizontal: 10 }}
-//        onValueChange={(itemValue, itemIndex) => setSelected(itemValue)}
-//      >
-//        <Picker.Item label="Select Scrap" value="" />
-//        {data && data.length > 0 && data.map((item, index) => (
-//          <Picker.Item label={item.label} value={item.value} key={index} />
-//        ))}
-//      </Picker>
-//    </View>
-//   )
-// }
-
-// export default Dropdown
-
-// const styles = StyleSheet.create({})
-
-
-
-
-
-
-
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { BASE_URL } from '../ReuseComponent/Env';
 
 const Dropdown = () => {
   const [selectedMetal, setSelectedMetal] = useState('');
@@ -73,7 +17,7 @@ const Dropdown = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('https://shreddersbay.com/API/product_api.php?action=select');
+      const response = await fetch(`${BASE_URL}/product_api.php?action=select`);
       if (response.ok) {
         const responseData = await response.json();
         setMetalData(responseData);
@@ -95,7 +39,7 @@ const Dropdown = () => {
         const formData = new FormData();
         formData.append('p_id', selectedItem.p_id);
 
-        const response = await fetch('https://shreddersbay.com/API/product_api.php?action=select_id', {
+        const response = await fetch(`${BASE_URL}/product_api.php?action=select_id`, {
           method: 'POST',
           body: formData,
         });

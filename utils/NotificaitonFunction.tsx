@@ -3,6 +3,7 @@
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import { BASE_URL } from '../ReuseComponent/Env';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -71,7 +72,7 @@ async function sendPushTokenToAPI(token, deviceInfo, user_id, firebase_id, reque
     formData.append('firebase_id', firebase_id);
     formData.append('request_number', request_number);
 
-    const response = await fetch('https://shreddersbay.com/API/Notify_Token.php', {
+    const response = await fetch(`${BASE_URL}/Notify_Token.php`, {
       method: 'POST',
       body: formData,
     });

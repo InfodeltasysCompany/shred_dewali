@@ -5,15 +5,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { chosenDateTimeAction, myScrapDetailsAction } from '../.././redux/actions/myScrapDetailsAction';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { chosenDateTimeAction, myScrapDetailsAction } from '../.././redux/actions/myScrapDetailsAction';
 import ShoppingCart from '../../components/ShoppingCart';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 import DisplayAllAddresses from '../../components/Modal/addressModal/DisplayAllAdresses';
 import LoginModal from '../../components/Credential/LoginModal';
-import { setAddress } from '../../redux/actions/sAddressAction';
+// import { setAddress } from '../../redux/actions/sAddressAction';
 import { fetchApiData } from '../../MyMethods/APIMethodsConstants';
-const imgrul = "https://shreddersbay.com/API/uploads"
+import { BASE_URL, IMG_URL } from '../../ReuseComponent/Env';
+const imgrul = IMG_URL;
 
 
 const T2Screen1 = ({ navigation }) => {
@@ -21,7 +22,7 @@ const T2Screen1 = ({ navigation }) => {
   const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password,isloginModalVisible } = state;
   const [userDataLOCAL_STORAGE, setLocalUserData] = useState<{ [key: string]: any } | null>(null);
   const [userId, setUserId] = useState(userIdApp);
-  const url = 'https://shreddersbay.com/API/cart_api.php?action=select_id&user_id=';
+  const url = `${BASE_URL}/cart_api.php?action=select_id&user_id=`;
   const [data, setData] = useState<any>(''); // Change the type according to your expected data
   const [data1, setData1] = useState<any>('');
   const [isAddressChooseModalDisplay, setIsAddressChooseModalDisplay] = useState(false)
@@ -91,11 +92,11 @@ const [result, setresult] = useState([]);
         console.log("result=>",result);
         // console.log('Fetched Data:', result);
         // console.log("filtered data:-", distinctData(result));
-        if(!scrapDetails){
-          if (result.length === 1) { dispatch(myScrapDetailsAction(result[0])); }
-        }else{
-          dispatch(myScrapDetailsAction(null))
-        }
+        // if(!scrapDetails){
+        //   // if (result.length === 1) { dispatch(myScrapDetailsAction(result[0])); }
+        // }else{
+        //   // dispatch(myScrapDetailsAction(null))
+        // }
         
 
       } else {
@@ -125,7 +126,7 @@ const [result, setresult] = useState([]);
             // Place your delete logic here
             console.log('Yes Pressed');
             try {
-              const deleteUrl = `https://shreddersbay.com/API/cart_api.php?action=delete&user_id=${userId}&cart_id=${itemId}`;
+              const deleteUrl = `${BASE_URL}/cart_api.php?action=delete&user_id=${userId}&cart_id=${itemId}`;
               const response = await fetch(deleteUrl, {
                 method: 'DELETE',
                 // Add necessary headers or body if required by your API
@@ -149,7 +150,7 @@ const [result, setresult] = useState([]);
               if (cart_Obj !== null) {
                 const cart_id = cart_Obj.cart_id;
 
-                const deleteUrl = `https://shreddersbay.com/API/cart_api.php?action=delete&user_id=${userId}&cart_id=${cart_id}`;
+                const deleteUrl = `${BASE_URL}/cart_api.php?action=delete&user_id=${userId}&cart_id=${cart_id}`;
                 const response = await fetch(deleteUrl, {
                   method: 'DELETE',
                   // Add necessary headers or body if required by your API
@@ -191,12 +192,12 @@ const [result, setresult] = useState([]);
     return null;
   };
   //////////////////////////
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [isChoose, setIsChoose] = useState(false)
   const handleChoosedItem = async (item) => {
     setIsChoose(!isChoose)
     console.log(" item is this :--", item);
-    dispatch(myScrapDetailsAction(item));
+    // dispatch(myScrapDetailsAction(item));
     const cart_Obj = findOtherObjectByCartId(item.cart_id, data1);
     console.log("cart obj is :-", cart_Obj);
 
@@ -204,7 +205,7 @@ const [result, setresult] = useState([]);
     if (cart_Obj !== null) {
       const cart_id = cart_Obj.cart_id;
 
-      const deleteUrl = `https://shreddersbay.com/API/cart_api.php?action=delete&user_id=${userId}&cart_id=${cart_id}`;
+      const deleteUrl = `${BASE_URL}/cart_api.php?action=delete&user_id=${userId}&cart_id=${cart_id}`;
       const response = await fetch(deleteUrl, {
         method: 'DELETE',
         // Add necessary headers or body if required by your API
@@ -256,15 +257,15 @@ const [result, setresult] = useState([]);
   const handleCardSelect = async (cardTitle: string, item: any, user_id: string) => {
     if (cardTitle === selectedCard) {
       setSelectedCard(null);
-      dispatch(myScrapDetailsAction(null)); // Dispatch null when no card is selected
+      // dispatch(myScrapDetailsAction(null)); // Dispatch null when no card is selected
     } else {
       setSelectedCard(cardTitle);
-      dispatch(myScrapDetailsAction(item)); // Dispatch the selected item
+      // dispatch(myScrapDetailsAction(item)); // Dispatch the selected item
       const cart_Obj = findOtherObjectByCartId(item.cart_id, data1);
 
       if (cart_Obj !== null) {
         const cart_id = cart_Obj.cart_id;
-        const deleteUrl = `https://shreddersbay.com/API/cart_api.php?action=delete&user_id=${user_id}&cart_id=${item.cart_id}`;
+        const deleteUrl = `${BASE_URL}/cart_api.php?action=delete&user_id=${user_id}&cart_id=${item.cart_id}`;
 
         try {
           const response = await fetch(deleteUrl, {
@@ -289,84 +290,84 @@ const [result, setresult] = useState([]);
 
   ////////////////////////////////////////////////////////////////////////
 
-  const scrapDetails = useSelector((state: any) => state.myscrap.scrapDetails);
-  const chosenDateTime = useSelector((state: any) => state.myscrap.chosenDateTime);
+  // const scrapDetails = useSelector((state: any) => state.myscrap.scrapDetails);
+  // const chosenDateTime = useSelector((state: any) => state.myscrap.chosenDateTime);
   const [selectedAddressDetails, setSelectedAddressDetails] = useState<any>({});
 
 
-  const apiUrl = 'https://shreddersbay.com/API/orders_api.php?action=insert';
+  const apiUrl = `${BASE_URL}/orders_api.php?action=insert`;
 
-  const continueWithChoosenDate = async () => {
-    console.log("this is for testing again--->", scrapDetails, chosenDateTime, selectedAddressDetails, choosenAddress);
-    console.log("my first log is for submit:-", userIdApp);
-    console.log(scrapDetails);
-    const scrrapdelails = [scrapDetails]
+  // const continueWithChoosenDate = async () => {
+  //   console.log("this is for testing again--->", scrapDetails, chosenDateTime, selectedAddressDetails, choosenAddress);
+  //   console.log("my first log is for submit:-", userIdApp);
+  //   console.log(scrapDetails);
+  //   const scrrapdelails = [scrapDetails]
 
-    try {
-      if (scrrapdelails && scrrapdelails.length > 0 && chosenDateTime && choosenAddress) {
-        // Use array indexing to get the first item
-        const scrapDetails = scrrapdelails[0];
-        console.log("for testing :-", scrapDetails);
-
-
-        const weight: string = scrapDetails.weight; // Get the weight string from the first item
-        const prod_id: string = scrapDetails.prod_id;
-        const price: string = scrapDetails.price;
-        const filename: string = scrapDetails.filename;
-        const add_id: string = choosenAddress.addr_id;
-        const booking_date: string = scrapDetails.filename;
+  //   try {
+  //     if (scrrapdelails && scrrapdelails.length > 0 && chosenDateTime && choosenAddress) {
+  //       // Use array indexing to get the first item
+  //       const scrapDetails = scrrapdelails[0];
+  //       console.log("for testing :-", scrapDetails);
 
 
+  //       const weight: string = scrapDetails.weight; // Get the weight string from the first item
+  //       const prod_id: string = scrapDetails.prod_id;
+  //       const price: string = scrapDetails.price;
+  //       const filename: string = scrapDetails.filename;
+  //       const add_id: string = choosenAddress.addr_id;
+  //       const booking_date: string = scrapDetails.filename;
 
-        console.log("weight:-" + weight, "pro_id-", +prod_id, "price-" + filename, "add_id-" + add_id, 'booking_date-' + booking_date);
 
-        const formData = new FormData();
-        formData.append('user_id', userIdApp);
-        formData.append('approx_weight', weight);
-        formData.append('prod_id', prod_id);
-        formData.append('booking_date', booking_date);
-        formData.append('schedule_date', chosenDateTime);
-        formData.append('approx_price', price);
-        formData.append('filename', filename);
-        formData.append('addr_id', add_id);
 
-        try {
-          const response = await fetch(apiUrl, {
-            method: 'POST',
-            body: formData,
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
+  //       console.log("weight:-" + weight, "pro_id-", +prod_id, "price-" + filename, "add_id-" + add_id, 'booking_date-' + booking_date);
 
-          if (response.ok) {
-            // Insertion successfuld
-            // navigation.navigate('Tab1', { screen: 'T2Screen2' });
-            console.log('Data inserted successfully!');
-            ToastAndroid.showWithGravity(
-              "Order Placed successfully",
-              ToastAndroid.SHORT,
-              ToastAndroid.CENTER
-            );
-            setChoosenAddress(null);
-            fetchApiData(userIdApp)
-            dispatch(myScrapDetailsAction(null));
-            navigation.navigate('Tab1', { screen: 'T2Screen2' });
-          } else {
-            // Insertion failed
-            console.error('Failed to insert data');
-          }
-        } catch (error) {
-          console.error('Error occurred while inserting data:', error);
-        }
+  //       const formData = new FormData();
+  //       formData.append('user_id', userIdApp);
+  //       formData.append('approx_weight', weight);
+  //       formData.append('prod_id', prod_id);
+  //       formData.append('booking_date', booking_date);
+  //       formData.append('schedule_date', chosenDateTime);
+  //       formData.append('approx_price', price);
+  //       formData.append('filename', filename);
+  //       formData.append('addr_id', add_id);
 
-      } else {
-        console.log('Data missing...');
-      }
-    } catch (error) {
-      console.error('Error occurred:', error);
-    }
-  };
+  //       try {
+  //         const response = await fetch(apiUrl, {
+  //           method: 'POST',
+  //           body: formData,
+  //           headers: {
+  //             'Content-Type': 'multipart/form-data',
+  //           },
+  //         });
+
+  //         if (response.ok) {
+  //           // Insertion successfuld
+  //           // navigation.navigate('Tab1', { screen: 'T2Screen2' });
+  //           console.log('Data inserted successfully!');
+  //           ToastAndroid.showWithGravity(
+  //             "Order Placed successfully",
+  //             ToastAndroid.SHORT,
+  //             ToastAndroid.CENTER
+  //           );
+  //           setChoosenAddress(null);
+  //           fetchApiData(userIdApp)
+  //           // dispatch(myScrapDetailsAction(null));
+  //           navigation.navigate('Tab1', { screen: 'T2Screen2' });
+  //         } else {
+  //           // Insertion failed
+  //           console.error('Failed to insert data');
+  //         }
+  //       } catch (error) {
+  //         console.error('Error occurred while inserting data:', error);
+  //       }
+
+  //     } else {
+  //       console.log('Data missing...');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error occurred:', error);
+  //   }
+  // };
 //   const [isLoginModalVisible, setIsLoginModalVisible] = useState<Boolean>(false);
 //   // Define setIsloginModalVisible outside the component
 // // Define setIsloginModalVisible outside the component
@@ -450,7 +451,7 @@ const [result, setresult] = useState([]);
              <View style={{ justifyContent: 'center', alignItems: 'center', borderRadius: 12 }}>
 
 <TouchableOpacity
-        onPress={continueWithChoosenDate}
+        // onPress={continueWithChoosenDate}
         style=
         {{
           marginBottom: 10,
@@ -655,29 +656,29 @@ const UpcomingDate: React.FC<UpcomingDateProps> = ({ data, navigation, oncloseAd
     const formattedDate = date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
     return formattedDate;
   };
-  const dispatch = useDispatch()
-  const scrapDetails = useSelector((state: any) => state.myscrap.scrapDetails);
-  console.log("scrapdetails=>",scrapDetails)
+  // const dispatch = useDispatch()
+  // const scrapDetails = useSelector((state: any) => state.myscrap.scrapDetails);
+  // console.log("scrapdetails=>",scrapDetails)
   const handleContinue = () => {
   
     const formattedDate = formatDate(selectedDate); ///formattedDate is current date 
     const currentDateTime = new Date().getTime(); // Current date and time in milliseconds
     const selectedDateTime = new Date(selectedDate).getTime(); // Selected date and time in milliseconds
     // if ((selectedDateTime >= currentDateTime) ) {
-    const arra = scrapDetails ? { ...scrapDetails } : {};
+    // const arra = scrapDetails ? { ...scrapDetails } : {};
 
-    if (selectedDateTime >= currentDateTime && Object.keys(arra).length > 0) {
+    // if (selectedDateTime >= currentDateTime && Object.keys(arra).length > 0) {
 
-      console.log("how can i say that it is blank:--", scrapDetails);
+    //   console.log("how can i say that it is blank:--");
 
-      dispatch(chosenDateTimeAction(selectedDate.toString()));
-      oncloseAddressPickModal();
-      // navigation.navigate('T2Screen2')
+    //   // dispatch(chosenDateTimeAction(selectedDate.toString()));
+    //   oncloseAddressPickModal();
+    //   // navigation.navigate('T2Screen2')
 
 
-    } else {
-      Alert.alert('Please pick one Item and choose a date and time after the current date and time.');
-    }
+    // } else {
+    //   Alert.alert('Please pick one Item and choose a date and time after the current date and time.');
+    // }
   };
 
   return (

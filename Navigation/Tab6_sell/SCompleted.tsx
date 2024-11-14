@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity,StyleSheet ,ScrollView, RefreshControl} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from '../../ReuseComponent/Env';
 // import { ScrollView } from 'react-native-gesture-handler';
 
 const SCompleted = () => {
@@ -49,7 +50,7 @@ const SCompleted = () => {
             // const formData = new FormData();
             // formData.append('user_id', userId);
         
-            const response = await fetch(`https://shreddersbay.com/API/orders_api.php?action=selectCustomerComplete&user_id=${userId}`, {
+            const response = await fetch(`${BASE_URL}/orders_api.php?action=selectCustomerComplete&user_id=${userId}`, {
               method: 'GET',
               // body: formData,
               // Add headers if required, such as content-type or authorization

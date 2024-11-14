@@ -14,9 +14,10 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { BASE_URL, IMG_URL } from "../../ReuseComponent/Env";
 
 const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isAuctionEnabled, navigation, newformdata }) => {
-  const imgurl = "https://shreddersbay.com/API/uploads/";
+  const imgurl = IMG_URL;
   const [state, setState] = useContext(AuthContext);
   const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
 
@@ -44,9 +45,9 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
   const fetchData = async () => {
     let url = "";
     if (isAuctionEnabled) {
-      url = "https://shreddersbay.com/API/auctioncart_api.php?action=select_id&user_id=";
+      url = `${BASE_URL}/auctioncart_api.php?action=select_id&user_id=`;
     } else {
-      url = "https://shreddersbay.com/API/cart_api.php?action=select_id&user_id=";
+      url = `${BASE_URL}/cart_api.php?action=select_id&user_id=`;
     }
     try {
       const response = await fetch(url + userIdApp);
@@ -58,7 +59,7 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
 
     try {
       const response = await fetch(
-        `https://shreddersbay.com/API/user_api.php?action=select_id&user_id=${userIdApp}`,
+        `${BASE_URL}/user_api.php?action=select_id&user_id=${userIdApp}`,
         { method: "GET" }
       );
       if (response.ok) {
@@ -77,7 +78,7 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
     const getprofiledata = async () => {
       try {
         const response = await fetch(
-          `https://shreddersbay.com/API/user_api.php?action=select_id&user_id=${userIdApp}`,
+          `${BASE_URL}/user_api.php?action=select_id&user_id=${userIdApp}`,
           { method: "GET" }
         );
         if (response.ok) {
@@ -138,9 +139,9 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
   const closeModal = () => {
     let url = "";
     if (isAuctionEnabled) {
-      url = "https://shreddersbay.com/API/auctioncart_api.php?action=delete&cart_id=";
+      url = `${BASE_URL}/auctioncart_api.php?action=delete&cart_id=`;
     } else {
-      url = "https://shreddersbay.com/API/cart_api.php?action=delete&cart_id=";
+      url = `${BASE_URL}/cart_api.php?action=delete&cart_id=`;
     }
     console.log("previewData:=>",)
     Alert.alert(
@@ -220,7 +221,7 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
           const seconds = currentDate.getSeconds().toString().padStart(2, "0");
           const currentDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-          const imageURIs = filenames.map(filename => `https://shreddersbay.com/API/uploads/${filename}`);
+          const imageURIs = filenames.map(filename => `${BASE_URL}/uploads/${filename}`);
 
           for (const uri of imageURIs) {
             try {
@@ -271,8 +272,8 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
 
           console.log("formdata for ");
           let apiUrl = isAuctionEnabled
-            ? "https://shreddersbay.com/API/auctionOrder_api.php?action=insert"
-            : "https://shreddersbay.com/API/orders_api.php?action=insert";
+            ? `${BASE_URL}/auctionOrder_api.php?action=insert`
+            : `${BASE_URL}/orders_api.php?action=insert`;
 
           const response = await fetch(apiUrl, {
             method: "POST",

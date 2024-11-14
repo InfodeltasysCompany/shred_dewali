@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl, A
 import React, { useContext, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../../../../redux/ContextApi/UserAuthProvider';
+import { BASE_URL } from '../../../../ReuseComponent/Env';
 
 const AuctionSellCurrent = ({ index, setIndex }) => {
   const [userId, setUserId] = useState(null);
@@ -19,7 +20,7 @@ const AuctionSellCurrent = ({ index, setIndex }) => {
       const formData = new FormData();
       formData.append('user_id', userIdApp);
 
-      const response = await fetch('https://shreddersbay.com/API/auctionOrder_api.php?action=select_current', {
+      const response = await fetch(`${BASE_URL}/auctionOrder_api.php?action=select_current`, {
         method: 'POST',
         body: formData,
       });
@@ -42,7 +43,7 @@ const AuctionSellCurrent = ({ index, setIndex }) => {
 
   const handleChoose = async (item) => {
     try {
-      const apiUrl = 'https://shreddersbay.com/API/auctionOrder_api.php?action=complete'; // Replace with your actual API endpoint
+      const apiUrl = `${BASE_URL}/auctionOrder_api.php?action=complete`; // Replace with your actual API endpoint
 
       const formData = new FormData();
       formData.append('auction_id', item.auction_id);

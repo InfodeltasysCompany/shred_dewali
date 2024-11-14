@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../../../../redux/ContextApi/UserAuthProvider';
+import { BASE_URL } from '../../../../ReuseComponent/Env';
 // import { ScrollView } from 'react-native-gesture-handler';
 
 const OrderBuyCurrent = ({index,setIndex}) => {
@@ -23,7 +24,7 @@ const OrderBuyCurrent = ({index,setIndex}) => {
       const formData = new FormData();
       formData.append('user_id', userIdApp);
 
-      const response = await fetch('https://shreddersbay.com/API/orders_api.php?action=select_current', {
+      const response = await fetch(`${BASE_URL}/orders_api.php?action=select_current`, {
         method: 'POST',
         body: formData,
         // Add headers if required, such as content-type or authorization
@@ -80,7 +81,7 @@ const OrderBuyCurrent = ({index,setIndex}) => {
 
   const handleChoose= async (item)=>{
     try {
-      const apiUrl = 'https://shreddersbay.com/API/orders_api.php?action=complete'; // Replace with your actual API endpoint
+      const apiUrl = `${BASE_URL}/orders_api.php?action=complete`; // Replace with your actual API endpoint
 
      
       const formData = new FormData()

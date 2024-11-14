@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Feather, Ionicons, MaterialCommunityIcons,AntDesign, MaterialIcons } from '@expo/vector-icons';
 import DisplayAllAddresses from '../../components/Modal/addressModal/DisplayAllAdresses';
 import FeedBackModal from '../../components/Modal/FeedBackModal';
+import { BASE_URL } from '../../ReuseComponent/Env';
 
 const T4Screen1 = ({ navigation }) => {
 
@@ -75,7 +76,7 @@ const [visible, setVisible] = useState(true)
     if (uid != null) {
       try {
         const response = await fetch(
-          `https://shreddersbay.com/API/user_api.php?action=select_id&user_id=${userIdApp}`,
+          `${BASE_URL}/user_api.php?action=select_id&user_id=${userIdApp}`,
           {
             method: "GET",
           }

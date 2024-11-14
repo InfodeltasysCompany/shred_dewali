@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity,StyleSheet ,ScrollView, RefreshControl} fr
 import React, { useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
+import { BASE_URL } from '../../../ReuseComponent/Env';
 // import { AuthContext } from '../../../../redux/ContextApi/UserAuthProvider';
 // import { ScrollView } from 'react-native-gesture-handler';
 
@@ -22,7 +23,7 @@ const OrderBuyComplete1 = ({index,setIndex}) => {
             const formData = new FormData();
             formData.append('user_id', userIdApp);
         
-            const response = await fetch('https://shreddersbay.com/API/auctionOrder_api.php?action=select_complete', {
+            const response = await fetch(`${BASE_URL}/auctionOrder_api.php?action=select_complete`, {
               method: 'POST',
               body: formData,
               // Add headers if required, such as content-type or authorization

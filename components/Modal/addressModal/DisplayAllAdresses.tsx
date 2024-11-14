@@ -10,6 +10,7 @@ import EditAddress from './EditAddress';
 import LoginModal from '../../Credential/LoginModal';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BASE_URL } from '../../../ReuseComponent/Env';
 
 
 
@@ -57,7 +58,7 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
 
     const handleDelete = async (address) => {
         // need to call a delete api for delete api's
-        const url = "https://shreddersbay.com/API/address_api.php?action=delete";
+        const url = `${BASE_URL}/address_api.php?action=delete`;
         const formData = new FormData();
         setADDEDITModalAddress(address)
         try {
@@ -119,8 +120,10 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
       };
       
     const getMyAllAddress = async () => {
-        const url = userIdApp ? 'https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=' + userIdApp : 'https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=';
-        const myaddress = await fetchApiData(url);
+        const url = userIdApp 
+        ? `${BASE_URL}/address_api.php?action=AddrByUserId&user_id=${userIdApp}` 
+        : `${BASE_URL}/address_api.php?action=AddrByUserId&user_id=`;
+            const myaddress = await fetchApiData(url);
         setMysavedAddresses(myaddress)
         console.log("mysavedaddress=<", myaddress);
         console.log("useridapp=<", userIdApp)

@@ -20,14 +20,15 @@ import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 
 // import 'expo-dev-client'
-import { useDispatch } from "react-redux";
-import { setLoginData } from "../../redux/actions/loginAction";
+// import { useDispatch } from "react-redux";
+// import { setLoginData } from "../../redux/actions/loginAction";
 import { getDocs, query, where } from "firebase/firestore";
 import { db } from "../../Config/Firebaseconfig";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import { getAuth, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import { firebaseSignup } from "./Search/firebasefunctions";
 import { handlePushNotifications } from "../../utils/NotificaitonFunction";
+import { BASE_URL } from "../../ReuseComponent/Env";
 
 type SignProps = {
   navigation: NavigationProp<any>;
@@ -35,7 +36,7 @@ type SignProps = {
 };
 
 const Sign_up = ({ navigation, handleIsshowLogin }: SignProps) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId:
       "254504701779-h6q77schmob167ed01kgc2ncenls2gg2.apps.googleusercontent.com",
@@ -120,84 +121,7 @@ const Sign_up = ({ navigation, handleIsshowLogin }: SignProps) => {
     }
   };
 
-  // const handleGoogleLogin = async (
-  //   gUserId,
-  //   gAccessToken,
-  //   gUserName,
-  //   gUserEmail,
-  //   gUserPic
-  // ) => {
-  //   console.log(
-  //     "gUserid:-",
-  //     gUserId,
-  //     "gAccessToken:-",
-  //     gAccessToken,
-  //     "gUserName",
-  //     gUserName,
-  //     "gUserEmail",
-  //     gUserEmail,
-  //     "guserPic",
-  //     gUserPic
-  //   );
-  //   try {
-  //     if (!gUserId || !gAccessToken || !gUserName || !gUserEmail || !gUserPic) {
-  //       console.error("One or more required parameters are missing");
-  //       return;
-  //     }
-
-  //     const formData = new FormData();
-  //     formData.append("firebase_uid", gUserId);
-  //     formData.append("token", gAccessToken);
-  //     formData.append("name", gUserName);
-  //     formData.append("email", gUserEmail);
-  //     formData.append("profile_pic", gUserPic);
-  //     const response = await fetch(
-  //       "https://shreddersbay.com/API/user_api.php?action=google_login",
-  //       {
-  //         method: "POST",
-  //         body: formData,
-  //       }
-  //     );
-  //     if (response.ok) {
-  //       const responseData = await response.json();
-  //       console.log("Login Successful:", responseData);
-  //       const userId = responseData["0"].id;
-  //       dispatch(setLoginData(responseData));
-  //       try {
-  //         setState(prevState => ({
-  //           ...prevState,
-  //           userCred: JSON.stringify(responseData),
-  //           // gUserCred:JSON.stringify(responseData),
-  //           userIdApp: userId,
-  //           f_email: responseData["0"].email,
-  //           f_mobile: responseData["0"].mobile,
-  //           f_id: responseData["0"].firebase_uid,
-  //           f_name: responseData["0"].name,
-  //           // f_password:null 
-  //         }));
-  //         Alert.alert(
-  //           "Login Successfully",
-  //           "You have successfully logged in.",
-  //           [
-  //             {
-  //               text: "OK",
-  //               onPress: () =>
-  //                 navigation.navigate("Tab1", { screen: "T1Screen1" }),
-  //             },
-  //           ],
-  //           { cancelable: false }
-  //         );
-  //       } catch (error) {
-  //         console.error("Error storing data:", error);
-  //       }
-  //     } else {
-  //       console.error("Error:", response.status);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
-
+ 
 
   const handleGoogleLogin = async (
     gUserId,
@@ -231,7 +155,7 @@ const Sign_up = ({ navigation, handleIsshowLogin }: SignProps) => {
       formData.append("email", gUserEmail);
       formData.append("profile_pic", gUserPic);
       const response = await fetch(
-        "https://shreddersbay.com/API/user_api.php?action=google_login",
+        `${BASE_URL}/user_api.php?action=google_login`,
         {
           method: "POST",
           body: formData,
@@ -249,7 +173,7 @@ const Sign_up = ({ navigation, handleIsshowLogin }: SignProps) => {
           const userId = user.id;
 
           // Dispatch the login data
-          dispatch(setLoginData(responseData));
+          // dispatch(setLoginData(responseData));
           await handlePushNotifications (userId, user.firebase_uid, 0);
           console.log("handlePushNotifications called successfully");
           // Logging the response data
@@ -438,7 +362,7 @@ const Sign_up = ({ navigation, handleIsshowLogin }: SignProps) => {
     password: any;
     repassword: any;
   }, f_uid: any) => {
-    const url = "https://shreddersbay.com/API/user_api.php?action=signup";
+    const url = `${BASE_URL}/user_api.php?action=signup`;
 
     const formData = new FormData();
 

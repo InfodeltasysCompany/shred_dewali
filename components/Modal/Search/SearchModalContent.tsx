@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { View, Modal, TouchableOpacity, StyleSheet, TextInput, Keyboard, Pressable, Image, ScrollView, TouchableWithoutFeedback, ToastAndroid, Alert } from "react-native";
 import { AntDesign, EvilIcons, FontAwesome } from "@expo/vector-icons";
-import ResolveImagePost from "./ResolveImagePost";
+// import ResolveImagePost from "./ResolveImagePost";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text } from "react-native";
 import DisplayAllAddresses from "../addressModal/DisplayAllAdresses";
@@ -14,7 +14,8 @@ import Product from "../../OrderImage/Product";
 import GroupChatModal from "../../../Navigation/Tab5_buy/GroupChatModal";
 import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 import LoginModal from "../../Credential/LoginModal";
-const imgurl = "https://shreddersbay.com/API/uploads/";
+import { BASE_URL, IMG_URL } from "../../../ReuseComponent/Env";
+const imgurl = IMG_URL
 
 const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) => {
   const [searchText, setSearchText] = useState("");
@@ -125,7 +126,7 @@ const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) 
       const userId = encodeURIComponent(userIdApp || "");
   
       // Construct the URL with encoded parameters
-      const url = `https://shreddersbay.com/API/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`;
+      const url = `${BASE_URL}/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`;
   
       // Fetch data from the API using the constructed URL
       const data = await getApiResponse(url);
@@ -145,34 +146,7 @@ const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) 
     }
   };
   
-  // const getOrderResponse = async () => {
-  //   try {
-  //     // Encode URI components to handle special characters in URLs
-  //     const country = encodeURIComponent("");
-  //     const city = encodeURIComponent("");
-  //     // const country = encodeURIComponent(currentAddress?.country || currentAddress?.country_name || "");
-  //     // const city = encodeURIComponent(currentAddress?.city || currentAddress?.city_name || "");
-  //     const userId = encodeURIComponent(userIdApp || "");
-
-  //     // Construct the URL with encoded parameters
-  //     const url = `https://shreddersbay.com/API/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`;
-
-  //     // Fetch data from the API using the constructed URL
-  //     const data = await getApiResponse(url);
-
-  //     // Log the URL and received data for debugging
-  //     console.log("Order URL:", url);
-  //     // console.log("Order data:", data);
-
-  //     // Update the component state with the fetched data
-  //     console.log("search order data =>>>",data);
-  //     setOrderData(data);
-  //   } catch (error) {
-  //     // Handle any errors that occur during the API request
-  //     console.log("Error fetching order data:", error);
-  //   }
-  // };
-
+ 
   useEffect(() => {
     getOrderResponse(dataforsearch);
     getAddressFromLocalStorage();
@@ -221,7 +195,7 @@ const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) 
       formdata.append("booking_id", bookingId.toString());
 
       const response = await fetch(
-        "https://shreddersbay.com/API/orders_api.php?action=select_id",
+        `${BASE_URL}/orders_api.php?action=select_id`,
         {
           method: "POST",
           headers: {
@@ -270,7 +244,7 @@ const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) 
       formdata.append("user_id", userIdApp);
 
       const response = await fetch(
-        "https://shreddersbay.com/API/orders_api.php?action=accept",
+          `${BASE_URL}/orders_api.php?action=accept`,
         {
           method: "POST",
           headers: {

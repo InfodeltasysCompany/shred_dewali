@@ -4,23 +4,23 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign, Feather, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Device from 'expo-device';
 
-import { Provider } from 'react-redux'
-import store from './redux/store'
+// import { Provider } from 'react-redux'
+// import store from './redux/store'
 import { CommonActions, NavigationContainer, RouteProp, useFocusEffect } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import T1Screen1 from './Navigation/Tab1/T1Screen1'
-import T2Screen1 from './Navigation/Tab2/T2Screen1'
+import T2Screen1 from './Navigation/Tab2/T2Screen1';
 import T3Screen1 from './Navigation/Tab3/T3Screen1'
 import T4Screen1 from './Navigation/Tab4/T4Screen1'
-import T1Screen2 from './Navigation/Tab1/T1Screen2'
-import T1Screen3 from './Navigation/Tab1/T1Screen3'
+// import T1Screen2 from './Navigation/Tab1/T1Screen2'
+// import T1Screen3 from './Navigation/Tab1/T1Screen3'
 import T2Screen3 from './Navigation/Tab2/T2Screen3'
 import T2Screen2 from './Navigation/Tab2/T2Screen2'
 import T3Screen2 from './Navigation/Tab3/T3Screen2'
 import T3Screen3 from './Navigation/Tab3/T3Screen3'
 import T4Screen2 from './Navigation/Tab4/T4Screen_myorder_chooseBuySell'
-import T1Screen1modal1 from './Navigation/Tab1/T1Screen1modal1';
+// import T1Screen1modal1 from './Navigation/Tab1/T1Screen1modal1';
 import Login from './components/Credential/Login';
 import Signup from './components/Credential/Signup';
 import shoppingCart from './components/ShoppingCart';
@@ -37,9 +37,9 @@ import BuyingChats from './Navigation/Tab5_buy/BuyingChats';
 import SellingChats from './Navigation/Tab5_buy/SellingChats';
 import SCurrent from './Navigation/Tab6_sell/SCurrent';
 import SCompleted from './Navigation/Tab6_sell/SCompleted';
-import SCancel from './Navigation/Tab6_sell/SCancel';
+// import SCancel from './Navigation/Tab6_sell/SCancel';
 import ChatBlank from './Navigation/Tab5_buy/ChatBlank';
-import T4Screen3 from './Navigation/Tab4/T4Screen3';
+// import T4Screen3 from './Navigation/Tab4/T4Screen3';
 import { Addbtnchanged, Addbtndef } from './components/Addbtn';
 import { AuthContext, UserAuthProvider } from './redux/ContextApi/UserAuthProvider';
 
@@ -47,6 +47,10 @@ import App2 from './Navigation/App2';
 import { handlePushNotifications } from './utils/NotificaitonFunction';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import OrderDetailModal from './Navigation/Tab1/OrderComps/OrderDetailModal';
+import { app } from './Config/Firebaseconfig';
+import Test1 from './ReuseComponent/Test1';
+
 const App = () => {
   
 useEffect(() => {
@@ -81,9 +85,11 @@ useEffect(() => {
   const TTab = createMaterialTopTabNavigator()
   return (
     <UserAuthProvider>
-      <Provider store={store}>
+      {/* <Provider store={store}> */}
         <App2 />
-      </Provider>
+        {/* <OrderDetailModal/> */}
+      {/* </Provider> */}
+      {/* <Test1/> */}
     </UserAuthProvider>
   );
 }

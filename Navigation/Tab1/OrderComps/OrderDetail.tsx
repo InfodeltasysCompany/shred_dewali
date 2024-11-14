@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Dimensions, Image, Text, TouchableOpacity, TouchableHighlight, useWindowDimensions } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import ImageSlider from 'react-native-image-slider';
-import { IMG_URL } from '../../ReuseComponent/Env';
+import { IMG_URL } from '../../../ReuseComponent/Env';
+
 
 const { width } = Dimensions.get('window');
 
-const Product = ({ item }) => {
+const OrderDetail = ({ item }) => {
   const imgurl = IMG_URL;
   const [images, setImages] = useState([]);
   const layout = useWindowDimensions();
@@ -185,7 +186,7 @@ const SecondRoute = ({ item }) => {
   );
 };
 
-export default Product;
+export default OrderDetail;
 
 const styles = StyleSheet.create({
   container: {

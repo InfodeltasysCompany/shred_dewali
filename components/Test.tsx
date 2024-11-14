@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native
 import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Picker } from '@react-native-picker/picker'
+import { BASE_URL } from '../ReuseComponent/Env'
 
 const Test = () => {
   return (
@@ -114,7 +115,7 @@ const Dropdowns = () => {
   const pollApi = async () => {
     setSelectedMetal(selectedMetal)
     try {
-      const response = await fetch('https://shreddersbay.com/API/product_api.php?action=select');
+      const response = await fetch(`${BASE_URL}/product_api.php?action=select`);
 
       if (response.ok) {
         const responseData = await response.json();
@@ -142,7 +143,7 @@ const Dropdowns = () => {
       formData.append('p_id', Id);
 
 
-      const response = await fetch('https://shreddersbay.com/API/product_api.php?action=select_id', {
+      const response = await fetch(`${BASE_URL}/product_api.php?action=select_id`, {
         method: 'POST',
         body: formData,
       });

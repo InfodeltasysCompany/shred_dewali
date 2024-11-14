@@ -8,12 +8,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import T1Screen1 from './Tab1/T1Screen1';
 import T4Screen2 from '../Navigation/Tab4/T4Screen_myorder_chooseBuySell'
-import T1Screen2 from './Tab1/T1Screen2';
-import T1Screen3 from './Tab1/T1Screen3';
+// import T1Screen2 from './Tab1/T1Screen2';
+// import T1Screen3 from './Tab1/T1Screen3';
 import Login from '../components/Credential/Login';
 import Signup from '../components/Credential/Signup';
 import ShoppingCart from '../components/ShoppingCart';
-import T1Screen1modal1 from './Tab1/T1Screen1modal1';
+// import T1Screen1modal1 from './Tab1/T1Screen1modal1';
 import T2Screen1 from './Tab2/T2Screen1';
 import T2Screen2AddAddress from './Tab2/T2Screen2AddAddress';
 import T2Screen3AddAddress2 from './Tab2/T2Screen3AddAddress2';
@@ -50,14 +50,14 @@ const Stack1 = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name='T1Screen1' component={T1Screen1} options={{ headerShown: false }} />
-      <Stack.Screen name='T1Screen2' component={T1Screen2} />
-      <Stack.Screen name='T1Screen3' component={T1Screen3} />
+      {/* <Stack.Screen name='T1Screen2' component={T1Screen2} />
+      <Stack.Screen name='T1Screen3' component={T1Screen3} /> */}
       <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
       <Stack.Screen name='Signup' component={Signup} options={{ headerShown: false }} />
       <Stack.Screen name='ShoppingCart' component={ShoppingCart} options={{
         headerTitle: '', // Hide the header title
       }} />
-      <Stack.Screen name='T1Screen1modal1' component={T1Screen1modal1} />
+      {/* <Stack.Screen name='T1Screen1modal1' component={T1Screen1modal1} /> */}
       {/* //// */}
       <Stack.Screen name='T2Screen1' component={T2Screen1} options={{
         headerTitle: 'Scrap Cart',

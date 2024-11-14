@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, ScrollView, Alert } from "react-native";
 import ProductSubCatgry from "./ProductSubCatgry";
 import { AntDesign } from "@expo/vector-icons";
+import { BASE_URL } from "../../ReuseComponent/Env";
 
 // Define the type for the items
 interface Item {
@@ -53,7 +54,7 @@ const ProductCatgry = ({ navigation, visible }) => {
   //   };
   // });
   const getCatagory = async () => {
-    const url = "https://shreddersbay.com/API/product_api.php?action=select";
+    const url = `${BASE_URL}/product_api.php?action=select`;
 
     try {
       const result = await fetch(url);

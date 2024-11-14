@@ -5,6 +5,7 @@ import React, { useCallback, useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal } from "react-native";
 import { TextInput } from "react-native-paper";
 import ProductImageAdd from "./ProductImageAdd";
+import { BASE_URL } from "../../ReuseComponent/Env";
 
 export const CloseIcon = ({ onPress }) => (
     <TouchableOpacity onPress={onPress} style={styles.closeButton}>
@@ -14,6 +15,7 @@ export const CloseIcon = ({ onPress }) => (
         />
     </TouchableOpacity>
 );
+
 
 
 const ProductSubCatgry = ({ closeModal, visible, p_id, navigation }) => {
@@ -36,7 +38,7 @@ const ProductSubCatgry = ({ closeModal, visible, p_id, navigation }) => {
 
     const displayForm = useCallback(async () => {
         // setReset1(resetBtn);
-        const url = "https://shreddersbay.com/API/product_api.php?action=select_id";
+        const url = `${BASE_URL}/product_api.php?action=select_id`;
         const formData = new FormData();
         formData.append('p_id', p_id);
 

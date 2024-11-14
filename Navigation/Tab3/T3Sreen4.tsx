@@ -31,8 +31,9 @@ import { EvilIcons } from "@expo/vector-icons";
 import DisplayAllAddresses from "../../components/Modal/addressModal/DisplayAllAdresses";
 import ImageSlider from 'react-native-image-slider';
 import { CommonActions } from "@react-navigation/native";
+import { BASE_URL, IMG_URL } from "../../ReuseComponent/Env";
 
-const imgurl = "https://shreddersbay.com/API/uploads/";
+const imgurl = IMG_URL;
 
 const T3Screen4 = ({ navigation }) => {
   const [userIds, setuserIds] = useState(null);
@@ -82,7 +83,7 @@ const T3Screen4 = ({ navigation }) => {
 
       // Construct the base API URL
       const apiUrlBase =
-        "https://shreddersbay.com/API/auctioncart_api.php?action=delete&cart_id=";
+        `${BASE_URL}/auctioncart_api.php?action=delete&cart_id=`;
 
       // Iterate through all elements except the last one
       for (let i = 0; i < resData.length - 1; i++) {
@@ -165,9 +166,8 @@ const T3Screen4 = ({ navigation }) => {
     ////////1attempt
     console.log("Address:", address);
 
-    const url1 =
-      "https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=" +
-      userIds;
+    const url1 = `${BASE_URL}/address_api.php?action=AddrByUserId&user_id=${userIds}`;
+
 
     try {
       let addressdata = await getApiResponse(url1);
@@ -215,7 +215,7 @@ const T3Screen4 = ({ navigation }) => {
         for (const addrId of matchedAddrIds) {
           try {
             const response = await fetch(
-              `https://shreddersbay.com/API/address_api.php?action=delete&addr_id=${addrId}`,
+              `${BASE_URL}/address_api.php?action=delete&addr_id=${addrId}`,
               {
                 method: "DELETE",
                 headers: {
@@ -257,15 +257,14 @@ const T3Screen4 = ({ navigation }) => {
     formData.append("pincode", address.postalCode);
     formData.append("user_id", userIds);
 
-    const apiUrl = "https://shreddersbay.com/API/address_api.php?action=insert";
+    const apiUrl = `${BASE_URL}/address_api.php?action=insert`;
 
     handleFinalSubmitSAddress(formData, apiUrl)
       .then(async (response) => {
         // Handle the response here
         console.log(response);
-        const url =
-          "https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=" +
-          userIds;
+        const url = `${BASE_URL}/address_api.php?action=AddrByUserId&user_id=${userIds}`;
+
         try {
           let addressdata = await getApiResponse(url);
           console.log("check response:-", addressdata);
@@ -334,13 +333,13 @@ const T3Screen4 = ({ navigation }) => {
   // }, [userIds,counter]);
   const getData = async () => {
     if (userIds) {
-      const url = `https://shreddersbay.com/API/auctioncart_api.php?action=select_id&user_id=${userIds}`;
+      const url = `${BASE_URL}/auctioncart_api.php?action=select_id&user_id=${userIds}`;
       try {
         if (counter < 5) {
           const auctionCart = await getApiResponse(url);
           if (auctionCart !== null && auctionCart.length > 1) {
             const lastCartId = auctionCart[auctionCart.length - 1].cart_id;
-            const apiUrlBase = "https://shreddersbay.com/API/auctioncart_api.php?action=delete&cart_id=";
+            const apiUrlBase = `${BASE_URL}/auctioncart_api.php?action=delete&cart_id=`;
 
             for (let i = 0; i < auctionCart.length - 1; i++) {
               const element = auctionCart[i];
@@ -376,7 +375,7 @@ const T3Screen4 = ({ navigation }) => {
   //   }
   // };
   const fetchData1 = async () => {
-    const url = `https://shreddersbay.com/API/auctioncart_api.php?action=select_id&user_id=${userIds}`;
+    const url = `${BASE_URL}/auctioncart_api.php?action=select_id&user_id=${userIds}`;
 
     await getData(); // Call getData and await the result
     const auctionCart = await getApiResponse(url);
@@ -474,7 +473,7 @@ const T3Screen4 = ({ navigation }) => {
 
         for (const filename of filenames) {
           try {
-            const imgurl = "https://shreddersbay.com/API/uploads/";
+            const imgurl = IMG_URL;
             const uri = `${imgurl}${filename}`;
 
             // Push the URI to the array
@@ -537,7 +536,7 @@ const T3Screen4 = ({ navigation }) => {
         console.log("formdata:-", formData);
 
         const apiUrl =
-          "https://shreddersbay.com/API/auctionOrder_api.php?action=insert";
+          `${BASE_URL}/auctionOrder_api.php?action=insert`;
         const response = await fetch(apiUrl, {
           method: "POST",
           body: formData,

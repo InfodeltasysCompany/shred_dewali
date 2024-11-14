@@ -20,18 +20,19 @@ import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 
 // import 'expo-dev-client'
-import { useDispatch } from "react-redux";
-import { setLoginData } from "../../redux/actions/loginAction";
+// import { useDispatch } from "react-redux";
+// import { setLoginData } from "../../redux/actions/loginAction";
 import { getDocs, query, where } from "firebase/firestore";
 import { db } from "../../Config/Firebaseconfig";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
+import { BASE_URL } from "../../ReuseComponent/Env";
 
 type SignProps = {
   navigation: NavigationProp<any>;
 };
 
 const Signup = ({ navigation }: SignProps,{onclick}: any) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId:
       "763429625259-vt479t47a8p6r39g6k45fd02jicrc6n9.apps.googleusercontent.com",
@@ -140,7 +141,7 @@ const Signup = ({ navigation }: SignProps,{onclick}: any) => {
       formData.append("email", gUserEmail);
       formData.append("profile_pic", gUserPic);
       const response = await fetch(
-        "https://shreddersbay.com/API/user_api.php?action=google_login",
+        `${BASE_URL}/user_api.php?action=google_login`,
         {
           method: "POST",
           body: formData,
@@ -150,7 +151,7 @@ const Signup = ({ navigation }: SignProps,{onclick}: any) => {
         const responseData = await response.json();
         console.log("Login Successful:", responseData);
         const userId = responseData["0"].id;
-        dispatch(setLoginData(responseData));
+        // dispatch(setLoginData(responseData));
         try {
           await AsyncStorage.setItem("UserCred", JSON.stringify(responseData));
           await AsyncStorage.setItem("UserIdapp", userId);
@@ -363,7 +364,7 @@ const Signup = ({ navigation }: SignProps,{onclick}: any) => {
     password: any;
     repassword: any;
   }) => {
-    const url = "https://shreddersbay.com/API/user_api.php?action=signup";
+    const url = `${BASE_URL}/user_api.php?action=signup`;
 
     const formData = new FormData();
 

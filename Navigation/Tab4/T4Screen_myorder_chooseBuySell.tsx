@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet,TouchableOpacity } from 'react-native'
 import React from 'react'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+// import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const T4Screen_myorder_chooseBuySell = ({navigation}) => {
    const myorder_buy = () => {

@@ -5,6 +5,7 @@ import { AirbnbRating } from 'react-native-ratings';
 import Swiper from 'react-native-swiper';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 import LoginModal from '../Credential/LoginModal';
+import { BASE_URL } from '../../ReuseComponent/Env';
 
 const { width } = Dimensions.get('window');
 
@@ -40,7 +41,7 @@ const RatingSlider = ({navigation}) => {
 
   const getdata = async () => {
     try {
-      const url = "https://shreddersbay.com/API/rating_api.php?action=select";
+      const url = `${BASE_URL}/rating_api.php?action=select`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -55,7 +56,7 @@ const RatingSlider = ({navigation}) => {
   };
   
   useEffect(() => {
-    const profile_url = `https://shreddersbay.com/API/user_api.php?action=select_id&user_id=${userIdApp}`;
+    const profile_url = `${BASE_URL}/user_api.php?action=select_id&user_id=${userIdApp}`;
     const getUserProfile = async () => {
       const data = await fetch(profile_url);
       const jdata = await data.json();
@@ -66,7 +67,7 @@ const RatingSlider = ({navigation}) => {
     getUserProfile();
   }, []);
   useEffect(()=>{
-    const profile_url = `https://shreddersbay.com/API/user_api.php?action=select_id&user_id=${userIdApp}`;
+    const profile_url = `${BASE_URL}/user_api.php?action=select_id&user_id=${userIdApp}`;
   const getUserProfile = async () => {
     const data = await fetch(profile_url);
     const jdata = await data.json();
@@ -123,7 +124,7 @@ const RatingSlider = ({navigation}) => {
           return;
         }
   
-        const url = "https://shreddersbay.com/API/rating_api.php?action=insert";
+        const url = `${BASE_URL}/rating_api.php?action=insert`;
         const formdata = new FormData();
         formdata.append("user_id", userIdApp);
         formdata.append("name", profileData[0]?.name || ""); // Handle undefined case

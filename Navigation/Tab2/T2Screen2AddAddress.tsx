@@ -1,10 +1,11 @@
 import React, { useEffect, useId, useState, useLayoutEffect, useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesome } from '@expo/vector-icons';
-import { setAddress } from '../../redux/actions/sAddressAction';
+// import { setAddress } from '../../redux/actions/sAddressAction';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
+import { BASE_URL } from '../../ReuseComponent/Env';
 
 
 const T2Screen2AddAddress = ({ navigation }) => {
@@ -59,9 +60,9 @@ const T2Screen2AddAddress = ({ navigation }) => {
   // };
 
   const fetchApiData = async (id: string) => {
-    const url = 'https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=' + userIdApp;
+    const url = `${BASE_URL}/address_api.php?action=AddrByUserId&user_id=${userIdApp}`;
     try {
-      // const url = `https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=1999`;
+      // const url = `${BASE_URL}/address_api.php?action=AddrByUserId&user_id=1999`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -88,47 +89,47 @@ const T2Screen2AddAddress = ({ navigation }) => {
       setRefreshing(false);
     }
   }, []);
-  const sellFormData = useSelector((state: any) => state.sellFormData.formData);
-  const weight1 = useSelector((state: any) => state.weight);
-  const image1 = useSelector((state: any) => state.image);
-  const { currentDateTime, formattedDateTime } = useSelector((state: any) => state.datetime);
-  const address = useSelector((state: any) => state.address.address);
-  const apiUrl = 'https://shreddersbay.com/API/orders_api.php?action=insert';
+  // const sellFormData = useSelector((state: any) => state.sellFormData.formData);
+  // const weight1 = useSelector((state: any) => state.weight);
+  // const image1 = useSelector((state: any) => state.image);
+  // const { currentDateTime, formattedDateTime } = useSelector((state: any) => state.datetime);
+  // const address = useSelector((state: any) => state.address.address);
+  const apiUrl = `${BASE_URL}/orders_api.php?action=insert`;
 
 
 
   const continueWithChoosenDate = async () => {
     console.log("my first log is for submit:-", userIdApp);
-    console.log(sellFormData);
+    // console.log(sellFormData);
 
     // Extract values from sellFormData
-    const prodId = sellFormData.prod_id;
-    const price = sellFormData.price;
-    const weight = sellFormData.weight;
+    // const prodId = sellFormData.prod_id;
+    // const price = sellFormData.price;
+    // const weight = sellFormData.weight;
 
     // To get the name object
     let name = '';
-    sellFormData._parts.forEach(part => {
-      if (part[0] === "file") {
-        name = part[1].name;
-      }
-    });
+    // sellFormData._parts.forEach(part => {
+    //   if (part[0] === "file") {
+    //     name = part[1].name;
+    //   }
+    // });
     // console.warn(name);
     console.log(name);
     
     
-    const fileObject = sellFormData.file;
+    // const fileObject = sellFormData.file;
     // const name = sellFormData.file ? sellFormData.file.name : undefined;
-    const addrId = address.addr_id;
+    // const addrId = address.addr_id;
     const formData = new FormData();
     formData.append('user_id', userIdApp);
-    formData.append('approx_weight', weight);
-    formData.append('prod_id', prodId);
-    formData.append('booking_date', currentDateTime.toString());
-    formData.append('schedule_date', formattedDateTime.toString());
-    formData.append('approx_price', price);
+    // formData.append('approx_weight', weight);
+    // formData.append('prod_id', prodId);
+    // formData.append('booking_date', currentDateTime..toString());
+    // formData.append('schedule_date', formattedDateTime.toString());
+    // formData.append('approx_price', price);
     formData.append('filename', name);
-    formData.append('addr_id', addrId);
+    // formData.append('addr_id', addrId);
 
     try {
       const response = await fetch(apiUrl, {
@@ -171,13 +172,13 @@ const T2Screen2AddAddress = ({ navigation }) => {
       setSelectedAddressDetails(addressDetails);
       console.log(addressDetails);
       console.log(userIdApp);
-      dispatch(setAddress(addressDetails));
+      // dispatch(setAddress(addressDetails));
 
 
 
     }
   };
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   // const address = useSelector((state: any) => state.address.address);
 
 

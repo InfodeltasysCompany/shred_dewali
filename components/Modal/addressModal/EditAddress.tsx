@@ -9,7 +9,8 @@ import {
   MaterialIcons
 } from '@expo/vector-icons';
 import { getCurrentLocation } from "../../../Navigation/Tab3/functions"
-import { setAddress } from '../../../redux/actions/sAddressAction';
+import { BASE_URL } from '../../../ReuseComponent/Env';
+// import { setAddress } from '../../../redux/actions/sAddressAction';
 
 const EditAddress = ({ visible, onClose, item }) => {
 
@@ -160,7 +161,7 @@ const EditAddress = ({ visible, onClose, item }) => {
 
   const fetchCountries = async () => {
     try {
-      const url = 'https://shreddersbay.com/API/country_api.php?action=select';
+      const url = `${BASE_URL}/API/country_api.php?action=select`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -177,7 +178,7 @@ const EditAddress = ({ visible, onClose, item }) => {
   // Fetch states based on the selected country
   const fetchStates = async (countryId) => {
     try {
-      const url = `https://shreddersbay.com/API/state_api.php?action=select&country_id=${countryId}`;
+      const url = `${BASE_URL}/state_api.php?action=select&country_id=${countryId}`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -195,7 +196,7 @@ const EditAddress = ({ visible, onClose, item }) => {
   const fetchCities = async (stateId) => {
     console.log("stateId=>", stateId);
     try {
-      const url = `https://shreddersbay.com/API/city_api.php?action=select&state_id=${stateId}`;
+      const url = `${BASE_URL}/city_api.php?action=select&state_id=${stateId}`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -212,7 +213,7 @@ const EditAddress = ({ visible, onClose, item }) => {
   // Fetch areas based on the selected city
   const fetchAreas = async (cityId) => {
     try {
-      const url = `https://shreddersbay.com/API/area_api.php?action=select&city_id=${cityId}`;
+      const url = `${BASE_URL}/area_api.php?action=select&city_id=${cityId}`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -298,7 +299,7 @@ const EditAddress = ({ visible, onClose, item }) => {
 
 
     // Make the POST request
-    fetch('https://shreddersbay.com/API/address_api.php?action=insert', {
+    fetch(`${BASE_URL}/address_api.php?action=insert`, {
       method: 'POST',
       body: formData,
       headers: {

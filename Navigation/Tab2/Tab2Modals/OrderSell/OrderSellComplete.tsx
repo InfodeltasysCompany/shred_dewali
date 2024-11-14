@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } 
 import React, { useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../../../../redux/ContextApi/UserAuthProvider';
+import { BASE_URL } from '../../../../ReuseComponent/Env';
 
 const OrderSellComplete = () => {
   const [currentdata, setcurrentdata] = useState([]);
@@ -16,7 +17,7 @@ const OrderSellComplete = () => {
   const getcurrent = async () => {
     try {
       const response = await fetch(
-        `https://shreddersbay.com/API/orders_api.php?action=selectCustomerComplete&user_id=${userIdApp}`,
+        `${BASE_URL}/orders_api.php?action=selectCustomerComplete&user_id=${userIdApp}`,
         {
           method: 'GET',
         }

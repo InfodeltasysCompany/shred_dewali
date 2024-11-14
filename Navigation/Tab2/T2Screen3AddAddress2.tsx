@@ -3,6 +3,7 @@ import { View ,Text, Alert,StyleSheet,TextInput, TouchableOpacity } from 'react-
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
+import { BASE_URL } from '../../ReuseComponent/Env';
 
 const T2Screen3AddAddress2 = ({navigation}) => {
 
@@ -62,7 +63,7 @@ fetchData();
   // Fetch countries data
   const fetchCountries = async () => {
     try {
-      const url = 'https://shreddersbay.com/API/country_api.php?action=select';
+      const url = `${BASE_URL}/country_api.php?action=select`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -79,7 +80,7 @@ fetchData();
   // Fetch states based on the selected country
   const fetchStates = async (countryId) => {
     try {
-      const url = `https://shreddersbay.com/API/state_api.php?action=select&country_id=${countryId}`;
+      const url = `${BASE_URL}/state_api.php?action=select&country_id=${countryId}`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -96,7 +97,7 @@ fetchData();
   // Fetch cities based on the selected state
   const fetchCities = async (stateId) => {
     try {
-      const url = `https://shreddersbay.com/API/city_api.php?action=select_id&state_id=${stateId}`;
+      const url = `${BASE_URL}/city_api.php?action=select_id&state_id=${stateId}`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -113,7 +114,7 @@ fetchData();
   // Fetch areas based on the selected city
   const fetchAreas = async (cityId) => {
     try {
-      const url = `https://shreddersbay.com/API/area_api.php?action=select&city_id=${cityId}`;
+      const url = `${BASE_URL}/area_api.php?action=select&city_id=${cityId}`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -197,7 +198,7 @@ fetchData();
 
 
     // Make the POST request
-    fetch('https://shreddersbay.com/API/address_api.php?action=insert', {
+    fetch(`${BASE_URL}/address_api.php?action=insert`, {
       method: 'POST',
       body: formData,
       headers: {

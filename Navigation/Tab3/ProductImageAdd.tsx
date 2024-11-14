@@ -7,6 +7,7 @@ import DisplayAllAddresses from "../../components/Modal/addressModal/DisplayAllA
 import LoginModal from "../../components/Credential/LoginModal";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import { useFocusEffect } from "@react-navigation/native";
+import { BASE_URL } from "../../ReuseComponent/Env";
 
 const ProductImageAdd = ({ closeModal, visible, navigation, formfilledpost, setformfilledPost }) => {
   const [state, setState] = useContext(AuthContext);
@@ -182,7 +183,7 @@ const closePreviewModal=()=>{
             formData.append("maximum_price", c.toString());
     
             const url =
-              "https://shreddersbay.com/API/auctioncart_api.php?action=insert";
+              `${BASE_URL}/auctioncart_api.php?action=insert`;
             const uploadResponse = await fetch(url, {
               method: "POST",
               body: formData,
@@ -307,7 +308,7 @@ const closePreviewModal=()=>{
           let b = Number(minimum_price);
           let c = a * b;
           formData.append("maximum_price", c.toString());
-            const url = 'https://shreddersbay.com/API/cart_api.php?action=insert';
+            const url = `${BASE_URL}/cart_api.php?action=insert`;
           // const url = "";
           const uploadResponse = await fetch(url, {
             method: "POST",

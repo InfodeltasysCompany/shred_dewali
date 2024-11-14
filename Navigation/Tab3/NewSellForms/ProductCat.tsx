@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
-const imgurl = "https://shreddersbay.com/API/uploads/";
-
+import { BASE_URL, IMG_URL } from '../../../ReuseComponent/Env';
+const imgurl = IMG_URL;
 
 const ProductCat = () => {
 
@@ -14,7 +14,7 @@ const ProductCat = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const url ="https://shreddersbay.com/API/product_api.php?action=select";
+            const url =`${BASE_URL}/product_api.php?action=select`;
             try {
                 const response = await fetch(url);
                 const resdata = await response.json();

@@ -3,6 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, View, Alert, TouchableOpacity, Butt
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
 import LoginModal from '../../components/Credential/LoginModal';
 import { TextInput } from 'react-native-paper';
+import { BASE_URL } from '../../ReuseComponent/Env';
 
 function DemandModal({ item, Open, onClose, navigation }) {
      const [requirement, setRequirement] = useState(item.requirement || '');
@@ -22,7 +23,7 @@ function DemandModal({ item, Open, onClose, navigation }) {
      //                formData.append('user_id', userIdApp);
 
      //                try {
-     //                     const response = await fetch('https://shreddersbay.com/API/requirement_api.php?action=insert', { // Replace with your API endpoint
+     //                     const response = await fetch(`${BASE_URL}/requirement_api.php?action=insert`, { // Replace with your API endpoint
      //                          method: 'POST',
      //                          body: formData,
      //                          headers: {
@@ -65,7 +66,7 @@ function DemandModal({ item, Open, onClose, navigation }) {
                   formData.append('user_id', userIdApp);
       
                   try {
-                      const response = await fetch('https://shreddersbay.com/API/requirement_api.php?action=insert', { 
+                      const response = await fetch(`${BASE_URL}/requirement_api.php?action=insert`, { 
                           method: 'POST',
                           body: formData,
                           headers: {

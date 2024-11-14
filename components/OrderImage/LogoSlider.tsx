@@ -4,6 +4,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Pressable } 
 import Swiper from 'react-native-swiper';
 import DemandModal from '../../Navigation/Tab1/DemandModal';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
+import { BASE_URL } from '../../ReuseComponent/Env';
 
 const data1 = [
   { imageSource: require('../../assets/aluminum.jpeg'), name: 'Aluminum' },
@@ -34,7 +35,7 @@ const LogoSlider1 = ({ navigation }) => {
   useEffect(() => {
     const getDemandData = async () => {
       try {
-        const url = 'https://shreddersbay.com/API/requirement_api.php?action=select';
+        const url = `${BASE_URL}/requirement_api.php?action=select`;
         const response = await fetch(url);
 
         if (!response.ok) {

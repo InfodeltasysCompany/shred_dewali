@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { View, Modal, TouchableOpacity, StyleSheet, TextInput, Keyboard, Pressable, Image } from "react-native";
 import { AntDesign, EvilIcons, FontAwesome } from "@expo/vector-icons";
-import ResolveImagePost from "./ResolveImagePost";
+// import ResolveImagePost from "./ResolveImagePost";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text } from "react-native";
 import DisplayAllAddresses from "../addressModal/DisplayAllAdresses";
 import { getApiResponse } from "../../../Navigation/Tab3/functions";
 import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
 import SearchModalContent from "./SearchModalContent";
-const imgurl = "https://shreddersbay.com/API/uploads/";
+import { BASE_URL, IMG_URL } from "../../../ReuseComponent/Env";
+let imgurl = IMG_URL;
 
 
 const SearchModal = ({ closeModal, visible, navigation }) => {
@@ -35,7 +36,7 @@ const SearchModal = ({ closeModal, visible, navigation }) => {
     } else {
       // Handle search logic
       console.log('Searching for:', searchText);
-      const checkurl = "https://shreddersbay.com/API/product_api.php?action=select";
+      const checkurl = `${BASE_URL}/product_api.php?action=select`;
 
       // setSetselectedObjforSearch(foundProduct); // Update state or perform action with found data
       setSetselectedObjforSearch(searchText);
@@ -167,7 +168,7 @@ const SearchModal = ({ closeModal, visible, navigation }) => {
       formdata.append("booking_id", bookingId.toString());
 
       const response = await fetch(
-        "https://shreddersbay.com/API/orders_api.php?action=select_id",
+        `${BASE_URL}/orders_api.php?action=select_id`,
         {
           method: "POST",
           headers: {

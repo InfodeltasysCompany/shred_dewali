@@ -1,11 +1,12 @@
 import React, { useEffect, useId, useState, useLayoutEffect, useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { getApiResponse } from '../Tab3/functions';
 import { AuthContext } from '../../redux/ContextApi/UserAuthProvider';
+import { BASE_URL } from '../../ReuseComponent/Env';
 // import { Stack2ParamList } from '../../App';
 // import { setAddress } from '../../redux/actions/sAddressAction';
 
@@ -56,7 +57,7 @@ const T2Screen2 = ({ navigation }) => {
   };
 
   const fetchApiData = async (id: string) => {
-    const url = 'https://shreddersbay.com/API/address_api.php?action=AddrByUserId&user_id=' + userIdApp;
+    const url = `${BASE_URL}/address_api.php?action=AddrByUserId&user_id=${userIdApp}`;
     try {
            
       let response = await getApiResponse(url);
@@ -68,82 +69,82 @@ const T2Screen2 = ({ navigation }) => {
     }
   };
 
-  const scrapDetails = useSelector((state: any) => state.myscrap.scrapDetails);
-  const chosenDateTime = useSelector((state: any) => state.myscrap.chosenDateTime);
+  // const scrapDetails = useSelector((state: any) => state.myscrap.scrapDetails);
+  // const chosenDateTime = useSelector((state: any) => state.myscrap.chosenDateTime);
 
-  const apiUrl = 'https://shreddersbay.com/API/orders_api.php?action=insert';
+  const apiUrl = `${BASE_URL}/orders_api.php?action=insert`;
 
 
 
-  const continueWithChoosenDate = async () => {
-    console.log("this is for testing again--->", scrapDetails, chosenDateTime, selectedAddressDetails);
-    console.log("my first log is for submit:-", userIdApp);
-    console.log(scrapDetails);
-    const scrrapdelails = [scrapDetails]
+  // const continueWithChoosenDate = async () => {
+  //   console.log("this is for testing again--->", scrapDetails, chosenDateTime, selectedAddressDetails);
+  //   console.log("my first log is for submit:-", userIdApp);
+  //   console.log(scrapDetails);
+  //   const scrrapdelails = [scrapDetails]
     
-    try {
-      if (scrrapdelails && scrrapdelails.length > 0 && chosenDateTime && selectedAddressDetails) {
-        // Use array indexing to get the first item
-        const scrapDetails = scrrapdelails[0];
-        console.log("for testing :-",scrapDetails);
+  //   try {
+  //     if (scrrapdelails && scrrapdelails.length > 0 && chosenDateTime && selectedAddressDetails) {
+  //       // Use array indexing to get the first item
+  //       const scrapDetails = scrrapdelails[0];
+  //       console.log("for testing :-",scrapDetails);
         
   
-        const weight: string = scrapDetails.weight; // Get the weight string from the first item
-      const prod_id: string = scrapDetails.prod_id;
-      const price: string = scrapDetails.price;
-      const filename: string = scrapDetails.filename;
-      const add_id: string = selectedAddressDetails.addr_id;
-      const booking_date: string = scrapDetails.filename;
+  //       const weight: string = scrapDetails.weight; // Get the weight string from the first item
+  //     const prod_id: string = scrapDetails.prod_id;
+  //     const price: string = scrapDetails.price;
+  //     const filename: string = scrapDetails.filename;
+  //     const add_id: string = selectedAddressDetails.addr_id;
+  //     const booking_date: string = scrapDetails.filename;
 
 
 
-      console.log("weight:-" + weight, "pro_id-", +prod_id, "price-" + filename, "add_id-" + add_id, 'booking_date-' + booking_date);
+  //     console.log("weight:-" + weight, "pro_id-", +prod_id, "price-" + filename, "add_id-" + add_id, 'booking_date-' + booking_date);
 
-      const formData = new FormData();
-      formData.append('user_id', userIdApp);
-      formData.append('approx_weight', weight);
-      formData.append('prod_id', prod_id);
-      formData.append('booking_date', booking_date);
-      formData.append('schedule_date', chosenDateTime);
-      formData.append('approx_price', price);
-      formData.append('filename', filename);
-      formData.append('addr_id', add_id);
+  //     const formData = new FormData();
+  //     formData.append('user_id', userIdApp);
+  //     formData.append('approx_weight', weight);
+  //     formData.append('prod_id', prod_id);
+  //     formData.append('booking_date', booking_date);
+  //     // formData.append('schedule_date', chosenDateTime);
+  //     formData.append('approx_price', price);
+  //     formData.append('filename', filename);
+  //     formData.append('addr_id', add_id);
 
-      try {
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+  //     try {
+  //       const response = await fetch(apiUrl, {
+  //         method: 'POST',
+  //         body: formData,
+  //         headers: {
+  //           'Content-Type': 'multipart/form-data',
+  //         },
+  //       });
 
-        if (response.ok) {
-          // Insertion successfuld
-          // navigation.navigate('Tab1', { screen: 'T2Screen2' });
-          console.log('Data inserted successfully!');
-          navigation.navigate('Tab1', { screen: 'T2Screen2' });
-        } else {
-          // Insertion failed
-          console.error('Failed to insert data');
-        }
-      } catch (error) {
-        console.error('Error occurred while inserting data:', error);
-      }
+  //       if (response.ok) {
+  //         // Insertion successfuld
+  //         // navigation.navigate('Tab1', { screen: 'T2Screen2' });
+  //         console.log('Data inserted successfully!');
+  //         navigation.navigate('Tab1', { screen: 'T2Screen2' });
+  //       } else {
+  //         // Insertion failed
+  //         console.error('Failed to insert data');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error occurred while inserting data:', error);
+  //     }
 
-      } else {
-        console.log('Data missing...');
-      }
-    } catch (error) {
-      console.error('Error occurred:', error);
-    }
-  };
+  //     } else {
+  //       console.log('Data missing...');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error occurred:', error);
+  //   }
+  // };
   
   
   
   const deleteAdd = async (address) => {
     // need to call a delete api for delete api's
-    const url = "https://shreddersbay.com/API/address_api.php?action=delete";
+    const url = `${BASE_URL}/address_api.php?action=delete`;
     const formData = new FormData();
     // setADDEDITModalAddress(address);
     try {
@@ -167,7 +168,7 @@ const T2Screen2 = ({ navigation }) => {
   //   try {
   //     const id = address;
   //     const response = await fetch(
-  //       `https://shreddersbay.com/API/address_api.php?action=delete&addr_id=${id}`,
+  //       `${BASE_URL}/address_api.php?action=delete&addr_id=${id}`,
   //       {
   //         method: "DELETE",
   //       }
@@ -206,7 +207,7 @@ const T2Screen2 = ({ navigation }) => {
 
     }
   };
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   // const address = useSelector((state: any) => state.address.address);
 
   const [refreshing, setRefreshing] = useState(false);

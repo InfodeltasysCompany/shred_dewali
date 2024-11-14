@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Dimensions, Image, Text, TouchableOpacity, TouchableHighlight, useWindowDimensions } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import ImageSlider from 'react-native-image-slider';
-import { IMG_URL } from '../../ReuseComponent/Env';
+import { IMG_URL } from '../../../ReuseComponent/Env';
+
 
 const { width } = Dimensions.get('window');
 
-const Product = ({ item }) => {
+const AuctionDetail = ({ item }) => {
   const imgurl = IMG_URL;
   const [images, setImages] = useState([]);
   const layout = useWindowDimensions();
@@ -29,35 +30,6 @@ const Product = ({ item }) => {
   
   
 
-  // const handleBuyPressOnMOdal = async (bookingId: any, getOrderResponse: any) => {
-
-  //   try {
-  //     const formdata = new FormData();
-  //     formdata.append("booking_id", bookingId);
-  //     formdata.append("user_id", userIdApp);
-
-  //     const response = await fetch(
-  //       `${BASE_URL}/orders_api.php?action=accept`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-type": "multipart/form-data",
-  //         },
-  //         body: formdata,
-  //       }
-  //     );
-
-  //     if (response.ok) {
-  //       const aceptData = await response.json();
-  //       // setacceptData(aceptData);
-       
-  //     } else {
-  //       console.error("Accept API request failed:", response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
   const renderTabBar = props => (
     <TabBar
       {...props}
@@ -185,7 +157,7 @@ const SecondRoute = ({ item }) => {
   );
 };
 
-export default Product;
+export default AuctionDetail;
 
 const styles = StyleSheet.create({
   container: {

@@ -18,11 +18,11 @@ import { TouchableOpacity } from "react-native";
 import { NavigationProp, useRoute } from "@react-navigation/native";
 // import Screen3 from '../navigation/Screen3';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 // import { setUserId } from '../Context/userSlice';
 import { useNavigation } from "@react-navigation/native";
 import { CommonActions } from "@react-navigation/native";
-import { setLoginData } from "../../redux/actions/loginAction";
+// import { setLoginData } from "../../redux/actions/loginAction";
 import {
   collection,
   doc,
@@ -42,6 +42,7 @@ import GoodModal from "../Credential/GoodModal";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import { firebaseSignIn } from "./Search/firebasefunctions";
 import { handlePushNotifications } from "../../utils/NotificaitonFunction";
+import { BASE_URL } from "../../ReuseComponent/Env";
 // web: "763429625259-ut8pfj2edgmiks42epfj9e4nla8nj706.apps.googleusercontent.com",
 // ios: "763429625259-4k2snc1nfjbdf6erh67htbgvrccpbr3v.apps.googleusercontent.com",
 // android: "763429625259-vt479t47a8p6r39g6k45fd02jicrc6n9.apps.googleusercontent.com",
@@ -186,7 +187,7 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
       formData.append("email", gUserEmail);
       formData.append("profile_pic", gUserPic);
       const response = await fetch(
-        "https://shreddersbay.com/API/user_api.php?action=google_login",
+        `${BASE_URL}/user_api.php?action=google_login`,
         {
           method: "POST",
           body: formData,
@@ -204,7 +205,7 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
           const userId = user.id;
 
           // Dispatch the login data
-          dispatch(setLoginData(responseData));
+          // dispatch(setLoginData(responseData));
 
           // Logging the response data
           console.log("JSON.stringify(responseData)=>", JSON.stringify(responseData));
@@ -264,7 +265,7 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   // const[userId,setUserId] = useState('')
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   //////////////////////////////
 
@@ -330,7 +331,7 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
       formData.append("password", password);
   
       const response = await fetch(
-        "https://shreddersbay.com/API/user_api.php?action=signin",
+        `${BASE_URL}/user_api.php?action=signin`,
         {
           method: "POST",
           body: formData,
@@ -359,7 +360,7 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
             console.log("JSON.stringify(responseData):", JSON.stringify(responseData));
   
             // Update state and dispatch actions
-            dispatch(setLoginData(responseData));
+            // dispatch(setLoginData(responseData));
             setState(prevState => ({
               ...prevState,
               userCred: JSON.stringify(responseData),

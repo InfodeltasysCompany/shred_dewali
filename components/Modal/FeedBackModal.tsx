@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { CheckBox } from 'react-native-elements';
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
+import { BASE_URL } from "../../ReuseComponent/Env";
 
 export const CloseIcon = ({ onPress }) => (
     <TouchableOpacity onPress={onPress} style={styles.closeButton}>
@@ -93,7 +94,7 @@ const FeedBackModal = ({ closeModal, visible }) => {
         formdata.append("name", `${firstName} ${lastName}`);
       
         // API endpoint URL
-        const url = "https://shreddersbay.com/API/feedback_api.php?action=insert";
+        const url = `${BASE_URL}/feedback_api.php?action=insert`;
       
         // Send POST request
         fetch(url, {

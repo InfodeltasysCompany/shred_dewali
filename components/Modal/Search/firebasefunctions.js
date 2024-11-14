@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
-import { Alert } from "react-native";
+import { Alert, ToastAndroid } from "react-native";
 // import { getAuth } from 'firebase/auth';
 import { getAuth, signInWithPopup } from 'firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -130,7 +130,9 @@ const firebaseSignIn = (email, password, callMe = (a,b) => console.log("Default 
           })
           .catch((error) => {
                // setError(error.message);
-               console.error('SignIn error:', error);
+              //  console.error('SignIn error:', error);
+               ToastAndroid.show(error, ToastAndroid.SHORT);
+
           });
 }
 export {firebaseSignup, firebaseSignIn,handleGoogleLogin}

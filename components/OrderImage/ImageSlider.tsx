@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Image, Dimensions, ToastAndroid } from 'react-native';
 import Swiper from 'react-native-swiper';
+import { BASE_URL, IMG_URL } from '../../ReuseComponent/Env';
 
 const { width } = Dimensions.get('window');
 
 const CaroselImage = () => {
   const [fileNames, setFileNames] = useState([]);
-  const imgurl = "https://shreddersbay.com/API/uploads/";
-
+  const imgurl = IMG_URL;
   const localImages = [
     require('../../assets/screw.jpeg'),
     require('../../assets/auction.png'),
@@ -19,7 +19,7 @@ const CaroselImage = () => {
   ];
 
   const getSliderApiResponse = async () => {
-    const url = "https://shreddersbay.com/API/product_api.php?action=select";
+    const url = `${BASE_URL}/product_api.php?action=select`;
     const response = await fetch(url);
     
     const resdata1 = await response.json();

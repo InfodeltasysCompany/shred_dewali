@@ -6,6 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { BASE_URL } from '../../ReuseComponent/Env';
 const T3Screen3 = ({ navigation }) => {
   return (
 
@@ -142,7 +143,7 @@ const Dropdowns = ({ navigation }) => {
         formData.append('p_id', selectedItem.p_id);
         set_p_id(selectedItem.p_id);
 
-        const response = await fetch('https://shreddersbay.com/API/product_api.php?action=select_id', {
+        const response = await fetch(`${BASE_URL}/product_api.php?action=select_id`, {
           method: 'POST',
           body: formData,
         });
@@ -164,7 +165,7 @@ const Dropdowns = ({ navigation }) => {
   const pollApi = useCallback(async () => {
     // Your existing pollApi logic
     try {
-      const response = await fetch('https://shreddersbay.com/API/product_api.php?action=select');
+      const response = await fetch(`${BASE_URL}/product_api.php?action=select`);
 
       if (response.ok) {
         const responseData = await response.json();
@@ -341,7 +342,7 @@ const Dropdowns = ({ navigation }) => {
           formData.append('price', price1.toString())
           formData.append('prod_id', p_id);
 
-          const uploadResponse = await fetch('https://shreddersbay.com/API/cart_api.php?action=insert', {
+          const uploadResponse = await fetch(`${BASE_URL}/cart_api.php?action=insert`, {
             method: 'POST',
             body: formData,
             headers: {

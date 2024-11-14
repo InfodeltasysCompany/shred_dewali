@@ -22,6 +22,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import Login from "../../components/Credential/Login";
 import LoginModal from "../../components/Credential/LoginModal";
+import { BASE_URL } from "../../ReuseComponent/Env";
 
 const T3Screen2 = ({ navigation }) => {
   return (
@@ -220,7 +221,7 @@ const Dropdowns = ({ navigation }) => {
         formData.append('p_id', selectedItem.p_id);
         set_p_id(selectedItem.p_id);
 
-        const response = await fetch('https://shreddersbay.com/API/product_api.php?action=select_id', {
+        const response = await fetch(`${BASE_URL}/product_api.php?action=select_id`, {
           method: 'POST',
           body: formData,
         });
@@ -242,7 +243,7 @@ const Dropdowns = ({ navigation }) => {
   const pollApi = useCallback(async () => {
     // Your existing pollApi logic
     try {
-      const response = await fetch('https://shreddersbay.com/API/product_api.php?action=select');
+      const response = await fetch(`${BASE_URL}/product_api.php?action=select`);
 
       if (response.ok) {
         const responseData = await response.json();
@@ -481,7 +482,7 @@ const Dropdowns = ({ navigation }) => {
         formData.append("maximum_price", c.toString());
 
         const url =
-          "https://shreddersbay.com/API/auctioncart_api.php?action=insert";
+          `${BASE_URL}/auctioncart_api.php?action=insert`;
         const uploadResponse = await fetch(url, {
           method: "POST",
           body: formData,
