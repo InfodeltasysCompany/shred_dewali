@@ -85,12 +85,12 @@ useEffect(() => {
   return (
     <UserAuthProvider>
       {/* <Provider store={store}> */}
-        {/* <App2 /> */}
+        <App2 />
         {/* <OrderDetailModal/> */}
       {/* </Provider> */}
       {/* <Test1/> */}
       {/* <Combine/> */}
-      <Chat_MakeOfferModal/>
+      {/* <Chat_MakeOfferModal visible={undefined} closeModal={undefined}/> */}
     </UserAuthProvider>
   );
 }
