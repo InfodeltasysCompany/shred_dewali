@@ -23,11 +23,7 @@ import T3Screen1 from './Tab3/T3Screen1';
 import T3Screen2 from './Tab3/T3Screen2';
 import T3Screen3 from './Tab3/T3Screen3';
 import T4Screen1 from './Tab4/T4Screen1';
-import AllChats from './Tab5_buy/AllChats';
-import BuyingChats from './Tab5_buy/BuyingChats';
-import SellingChats from './Tab5_buy/SellingChats';
-import BCurrent from './Tab5_buy/BCurrent';
-import BCompleted from './Tab5_buy/BCompleted';
+
 import SCurrent from './Tab6_sell/SCurrent';
 import SCompleted from './Tab6_sell/SCompleted';
 import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
@@ -38,6 +34,9 @@ import ProductCatgry from './Tab3/ProductCatgry';
 import OrderAuction from './Tab2/OrderAuction';
 import ONBoarding from '../OnBoard/ONBoarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ChatBlank from './Conversation/ChatBlank';
+import CombineChat from './Conversation/Order/CombineChat';
+import CombineBidding from './Conversation/Bidding/CombineBidding';
 
 
 const Stack = createStackNavigator();
@@ -195,8 +194,8 @@ const Stack5 = () => {
 
 
     <TTab.Navigator>
-      <TTab.Screen name='ALL' component={AllChats} />
-      <TTab.Screen name='BIDDING' component={BuyingChats} />
+      <TTab.Screen name='CHAT' component={CombineChat} />
+      <TTab.Screen name='BIDDING' component={CombineBidding} />
     
     </TTab.Navigator>
   )
@@ -204,8 +203,7 @@ const Stack5 = () => {
 const InsideMYOrder_Buy = () => {
   return (
     <TTab.Navigator>
-      <TTab.Screen name='Current' component={BCurrent} />
-      <TTab.Screen name='Complete' component={BCompleted} />
+      <TTab.Screen name='Current' component={ChatBlank} />
     </TTab.Navigator>
   )
 }

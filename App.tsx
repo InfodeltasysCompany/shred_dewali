@@ -29,16 +29,13 @@ import OpenCamAndGalT3S1 from './Navigation/Tab3/T3Sreen4';
 import T2Screen3AddAddress2 from './Navigation/Tab2/T2Screen3AddAddress2';
 import T2Screen2AddAddress from './Navigation/Tab2/T2Screen2AddAddress';
 import * as Permissions from 'expo-permissions';
-import BCurrent from './Navigation/Tab5_buy/BCurrent';
-import BCompleted from './Navigation/Tab5_buy/BCompleted';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import AllChats from './Navigation/Tab5_buy/AllChats';
-import BuyingChats from './Navigation/Tab5_buy/BuyingChats';
-import SellingChats from './Navigation/Tab5_buy/SellingChats';
+// import BuyingChats from './Navigation/Tab5_buy/BuyingChats';
+// import SellingChats from './Navigation/Tab5_buy/SellingChats';
 import SCurrent from './Navigation/Tab6_sell/SCurrent';
 import SCompleted from './Navigation/Tab6_sell/SCompleted';
 // import SCancel from './Navigation/Tab6_sell/SCancel';
-import ChatBlank from './Navigation/Tab5_buy/ChatBlank';
+import ChatBlank from './Navigation/Conversation/ChatBlank';
 // import T4Screen3 from './Navigation/Tab4/T4Screen3';
 import { Addbtnchanged, Addbtndef } from './components/Addbtn';
 import { AuthContext, UserAuthProvider } from './redux/ContextApi/UserAuthProvider';
@@ -50,6 +47,8 @@ import Constants from 'expo-constants';
 import OrderDetailModal from './Navigation/Tab1/OrderComps/OrderDetailModal';
 import { app } from './Config/Firebaseconfig';
 import Test1 from './ReuseComponent/Test1';
+import Combine from './Navigation/Conversation/Bidding/CombineBidding';
+import Chat_MakeOfferModal from './Navigation/Conversation/Order/Chat_MakeOfferModal';
 
 const App = () => {
   
@@ -86,10 +85,12 @@ useEffect(() => {
   return (
     <UserAuthProvider>
       {/* <Provider store={store}> */}
-        <App2 />
+        {/* <App2 /> */}
         {/* <OrderDetailModal/> */}
       {/* </Provider> */}
       {/* <Test1/> */}
+      {/* <Combine/> */}
+      <Chat_MakeOfferModal/>
     </UserAuthProvider>
   );
 }

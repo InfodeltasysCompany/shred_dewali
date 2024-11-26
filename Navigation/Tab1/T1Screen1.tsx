@@ -51,7 +51,6 @@ import SearchModal from "../../components/Modal/Search/SearchModal";
 import RatingSlider from "../../components/OrderImage/RatingSlider";
 import AuctionBuyModal1 from "./AuctionBuy/AuctionBuyModal1";
 import OrderBuyModal1 from "./OrderBuy/OrderBuyModal1";
-import GroupChatModal from "../Tab5_buy/GroupChatModal";
 import { handlePushNotifications } from "../../utils/NotificaitonFunction";
 import AppUpdateModal from "../../utils/AppUpdateModal";
 import OrderDetailModal from "./OrderComps/OrderDetailModal";

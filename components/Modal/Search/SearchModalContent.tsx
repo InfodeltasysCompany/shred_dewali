@@ -11,7 +11,7 @@ import GoodModal from "../../Credential/GoodModal";
 // import { MainChats } from "../../../Navigation/Tab1/T1Screen1";
 import { MainChats1 } from "../../../Navigation/Tab1/OrderBuy/MainChats1";
 import Product from "../../OrderImage/Product";
-import GroupChatModal from "../../../Navigation/Tab5_buy/GroupChatModal";
+// import GroupChatModal from "../../../Navigation/Tab5_buy/GroupChatModal";
 import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 import LoginModal from "../../Credential/LoginModal";
 import { BASE_URL, IMG_URL } from "../../../ReuseComponent/Env";
@@ -553,7 +553,7 @@ const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) 
                   {detaildata &&
                     detaildata.map((item, index) => (
                       <View key={index}>
-                        <GoodModal closeModal={() => setModalVisible(!modalVisible)} visible={modalVisible} comp={<Product item={item} handlebuypress={handleBuyPress} getusers={getUsers} />} />
+                        {/* <GoodModal closeModal={() => setModalVisible(!modalVisible)} visible={modalVisible} comp={<Product item={item} handlebuypress={handleBuyPress} getusers={getUsers} />} /> */}
                       </View>
                     ))}
                 </View>
@@ -570,14 +570,7 @@ const SearchModalContent = ({ closeModal, visible, navigation, dataforsearch }) 
               />
             </View>
           </Modal>
-          <GroupChatModal
-            modalVisible={isGroupModalVisible}
-            onClose={() => {
-              setIsGroupModalVisible(!isGroupModalVisible);
-              setSelectedGroup(null);
-            }}
-            group={selectedGroup}
-          />
+        
                   <LoginModal navigation={navigation} visible={isLoginModalVisible} setVisible={setIsLoginModalVisible} />
 
         </View>
