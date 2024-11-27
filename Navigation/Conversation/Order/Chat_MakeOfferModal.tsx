@@ -1,6 +1,6 @@
 import { AntDesign } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Pressable, Image } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Pressable, Image, Animated } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Chat from './Chat';
 import MakeOffer from './MakeOffer';
@@ -10,7 +10,27 @@ import MakeOffer from './MakeOffer';
 const Chat_MakeOfferModal = ({ visible, closeModal }) => {
   const [activeTab, setActiveTab] = useState('Chat'); // Initially set to 'Chat'
   const [ispressed, setIspressed] = useState(false);
+  const tabanim = useRef(new Animated.Value(0)).current;
   // Render content based on the active tab
+
+ useEffect(()=>{
+  Animated.timing(tabanim,{
+    toValue:ispressed?1:0,
+    duration:300,
+    useNativeDriver:true,
+  }).start();
+ },[ispressed])
+ useEffect(()=>{
+  Animated.timing(tabanim,{
+    toValue:0,
+    duration:300,
+    useNativeDriver:true,
+  }).start();
+ },[activeTab])
+  const translateY = tabanim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [300, 620], // Adjust the range based on your layout
+  })
   const renderContent = () => {
     switch (activeTab) {
       case 'Make Offer':
@@ -21,12 +41,15 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
     }
   };
 
+
   return (
-    <Modal animationType="none" transparent={true} visible={visible}>
+    <Modal animationType="none" transparent={false} visible={visible}>
 
       <View style={styles.header}>
         {/* Back Arrow */}
-        <TouchableOpacity onPress={() => console.log('Back Arrow Pressed')}>
+        <TouchableOpacity onPress={() => {console.log('Back Arrow Pressed');
+          closeModal();
+        }}>
           <AntDesign name="arrowleft" size={24} color="#00457E" />
         </TouchableOpacity>
 
@@ -48,9 +71,9 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
 
         {/* Action Buttons */}
         <View style={styles.actions}>
-          {/* <TouchableOpacity onPress={() => console.log('Call Button Pressed')}>
+          <TouchableOpacity onPress={() => console.log('Call Button Pressed')}>
             <AntDesign name="phone" size={24} color="#00457E" />
-          </TouchableOpacity> */}
+          </TouchableOpacity>
           <Svg
       width={30} // Set width
       height={30} // Set height
@@ -62,9 +85,9 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
         fill="#00457E" // Set fill color (customize as needed)
       />
     </Svg>
-          <TouchableOpacity onPress={() => console.log('Video Button Pressed')}>
+          {/* <TouchableOpacity onPress={() => console.log('Video Button Pressed')}>
             <AntDesign name="videocamera" size={24} color="#00457E" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity onPress={() => console.log('Menu Button Pressed')}>
             <AntDesign name="ellipsis1" size={24} color="#00457E" />
           </TouchableOpacity>
@@ -72,12 +95,12 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
       </View>
 
 
-      <View style={[styles.modalContainer, ispressed ? styles.modalExpanded : styles.modalCollapsed]}>
+      <Animated.View style={[styles.modalContainer, { transform: [{ translateY }] }]}>
         {/* Header */}
 
         {/* Tabs and Toggle */}
         <View style={{ alignItems: 'center', position: "relative", bottom: 2 }}>
-          <TouchableOpacity style={styles.opentab} onPress={() => setIspressed(!ispressed)} activeOpacity={1}>
+          <TouchableOpacity style={styles.opentab} onPress={() => {setIspressed(!ispressed)}} activeOpacity={1}>
             {ispressed ? (
               <AntDesign name="up" size={25} color={"#00457E"} />
             ) : (
@@ -89,11 +112,13 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
               style={[styles.tab, activeTab === 'Chat' && styles.activeTab]}
               onPress={() => {
                 setActiveTab('Chat');
-                if(!ispressed){
-                  setIspressed(!ispressed);
+              // if (!ispressed) {
+                  setIspressed(true);
+                // }
+                              
 
-                }
               }}
+              activeOpacity={1}
             >
               <Text style={[styles.tabText, activeTab === 'Chat' && styles.activeTabText]}>Chat</Text>
             </TouchableOpacity>
@@ -102,11 +127,12 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
               style={[styles.tab, activeTab === 'Make Offer' && styles.activeTab]}
               onPress={() => {
                 setActiveTab('Make Offer');
-                if(!ispressed){
-                  setIspressed(!ispressed);
+                // if(!ispressed){
+                  setIspressed(true);
 
-                }
+                // }
               }}
+              activeOpacity={1}
             >
               <Text style={[styles.tabText, activeTab === 'Make Offer' && styles.activeTabText]}>Make Offer</Text>
             </TouchableOpacity>
@@ -115,7 +141,7 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
 
         {/* Body */}
         <View style={styles.body}>{renderContent()}</View>
-      </View>
+      </Animated.View>
     </Modal>
 
   );
@@ -123,14 +149,16 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
 
 const styles = StyleSheet.create({
   content: {
-   
+   width:"100%",
+   height:"100%"
   },
   modalContainer: {
     position: 'absolute',
     width: '100%',
-    backgroundColor: 'transparent',
+    // backgroundColor: '#ddd',
     borderRadius: 10,
     padding: 10,
+
 
   },
   modalExpanded: {

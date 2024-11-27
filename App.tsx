@@ -49,6 +49,8 @@ import { app } from './Config/Firebaseconfig';
 import Test1 from './ReuseComponent/Test1';
 import Combine from './Navigation/Conversation/Bidding/CombineBidding';
 import Chat_MakeOfferModal from './Navigation/Conversation/Order/Chat_MakeOfferModal';
+import BuyingChats from './Navigation/Conversation/Order/BuyingChats';
+import SellChats from './Navigation/Conversation/Order/SellChats';
 
 const App = () => {
   
@@ -91,6 +93,7 @@ useEffect(() => {
       {/* <Test1/> */}
       {/* <Combine/> */}
       {/* <Chat_MakeOfferModal visible={undefined} closeModal={undefined}/> */}
+      {/* <SellChats/> */}
     </UserAuthProvider>
   );
 }
