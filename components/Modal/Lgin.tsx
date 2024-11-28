@@ -31,9 +31,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-// import { db } from "../../Config/Firebaseconfig";
 
-import { db } from "../../Config/Firebaseconfig";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import uuid from "react-native-uuid";
@@ -43,6 +41,7 @@ import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import { firebaseSignIn } from "./Search/firebasefunctions";
 import { handlePushNotifications } from "../../utils/NotificaitonFunction";
 import { BASE_URL } from "../../ReuseComponent/Env";
+import { userCreatefirebaserealtime } from "./Search/FirebaseChatFunctions";
 // web: "763429625259-ut8pfj2edgmiks42epfj9e4nla8nj706.apps.googleusercontent.com",
 // ios: "763429625259-4k2snc1nfjbdf6erh67htbgvrccpbr3v.apps.googleusercontent.com",
 // android: "763429625259-vt479t47a8p6r39g6k45fd02jicrc6n9.apps.googleusercontent.com",
@@ -222,6 +221,7 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
             f_id: user.firebase_uid,
             f_name: user.name,
           }));
+          await userCreatefirebaserealtime(user.firebase_uid,user.email,user.mobile,user.name);
 
           // Attempt to store the user's data in AsyncStorage
           try {
@@ -305,7 +305,7 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
 
   const handleLogin1 = async () => {
     console.log("hit handleLogin1", email, password);
-    await firebaseSignIn(email, password, handleLogin)
+    await firebaseSignIn(email, password, handleLogin);
   }
  
 
@@ -359,8 +359,7 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
             console.log("User ID:", userId);
             console.log("JSON.stringify(responseData):", JSON.stringify(responseData));
   
-            // Update state and dispatch actions
-            // dispatch(setLoginData(responseData));
+       
             setState(prevState => ({
               ...prevState,
               userCred: JSON.stringify(responseData),
@@ -370,7 +369,8 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
               f_id: userData.firebase_uid,
               f_name: userData.name,
             }))
-  
+            await userCreatefirebaserealtime(userData.firebase_uid,userData.email,userData.mobile,userData.name);
+
             // Save additional data to AsyncStorage
             await AsyncStorage.setItem("UserCred", JSON.stringify(responseData));
             await AsyncStorage.setItem("UserIdapp", userData.id);
@@ -381,7 +381,8 @@ const Lgin = ({ navigation, handleIsshowLogin, visible, setVisible }: LoginProps
             await AsyncStorage.setItem("fname", userData.name || '');
   
             console.log("Data set successfully");
-  
+            // await userCreatefirebaserealtime(userData.firebase_uid,userData.email,userData.mobile,userData.username);
+
             // Navigation to the next screen
             if (navigation) {
               navigation.navigate("Tab1", { screen: "T1Screen1" });

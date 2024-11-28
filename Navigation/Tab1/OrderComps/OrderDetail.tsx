@@ -1,17 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Image, Text, TouchableOpacity, TouchableHighlight, useWindowDimensions } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, StyleSheet, Dimensions, Image, Text, TouchableOpacity, TouchableHighlight, useWindowDimensions, Alert } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import ImageSlider from 'react-native-image-slider';
 import { IMG_URL } from '../../../ReuseComponent/Env';
+import Chat_MakeOfferModal from '../../Conversation/Order/Chat_MakeOfferModal';
+import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
+import LoginModal from '../../../components/Credential/LoginModal';
 
 
 const { width } = Dimensions.get('window');
 
-const OrderDetail = ({ item }) => {
+const OrderDetail = ({ item ,navigation}) => {
+  const [,,,,GChatstate,setGChatstate] = useContext(AuthContext);
   const imgurl = IMG_URL;
   const [images, setImages] = useState([]);
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
+  const [ischatmakeoffermodalVisible, setIschatmakeoffermodalVisible] = useState(false);
+  const [isloginModalVisible, setIsloginModalVisible] = useState(false);
   const [routes] = useState([
     { key: 'first', title: 'PRODUCT' },
     { key: 'second', title: 'CUSTOMER' },
@@ -125,12 +131,63 @@ const OrderDetail = ({ item }) => {
       <View style={styles.buttonContainer}>
         {item[0]?.booking_id ? (
           <>
-            <TouchableOpacity onPress={() => {}} style={styles.buttonbuy}>
-              <Text style={styles.buttonTextBuy}>Buy</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}} style={styles.buttonchat}>
+            <TouchableOpacity onPress={() => {
+             Alert.alert(
+              "Beware of Fraud", // Title of the alert
+              "Don't share your personal information like ATM number, OTP, and don't make any money transactions.", // Message
+              [{text:"cancel",onPress:()=>console.log("cancel is pressed"),style:"cancel"},{
+                text:"OK",
+                onPress:()=>{
+                  if(Object.keys(GChatstate.productdetails).length>0 && Object.keys(GChatstate.userdetails).length>0){
+                    setIschatmakeoffermodalVisible(!ischatmakeoffermodalVisible)
+                  }else{
+                    Alert.alert("You are not logged in ","Login please.",[
+                      {text:"cancel",
+                        style:"cancel",
+                        onPress:()=>{console.log("cancel pressed")}
+                      },{
+                        text:"Ok",
+                        onPress:()=>{console.log("Ok pressed");
+                          setIsloginModalVisible(!isloginModalVisible);
+
+                        }
+                      }
+                    ])
+                  }
+                }
+              }],{cancelable:false})
+              
+            }} style={styles.buttonchat}>
               <Text style={styles.buttonTextChat}>Chat</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => {
+              Alert.alert("Contact to Seller","Your contact details will be shared to the seller.",
+                [{text:"cancel",onPress:()=>console.log("cancel is pressed"),style:"cancel"},{
+                text:"OK",
+                onPress:()=>{
+                  if(Object.keys(GChatstate.productdetails).length>0 && Object.keys(GChatstate.userdetails).length>0){
+                    setIschatmakeoffermodalVisible(!ischatmakeoffermodalVisible)
+                  }else{
+                    Alert.alert("You are not logged in ","Login please.",[
+                      {text:"cancel",
+                        style:"cancel",
+                        onPress:()=>{console.log("cancel pressed")}
+                      },{
+                        text:"Ok",
+                        onPress:()=>{console.log("Ok pressed");
+                          setIsloginModalVisible(!isloginModalVisible);
+
+                        }
+                      }
+                    ])
+                  }
+                }
+              }],{cancelable:false})
+              
+            }} style={styles.buttonbuy}>
+              <Text style={styles.buttonTextBuy}>Buy</Text>
+            </TouchableOpacity>
+          
           </>
         ) : (
           <TouchableOpacity onPress={() => {}} style={styles.buttonbuy}>
@@ -138,7 +195,9 @@ const OrderDetail = ({ item }) => {
           </TouchableOpacity>
         )}
       </View>
-    </View>
+      <Chat_MakeOfferModal visible={ischatmakeoffermodalVisible} closeModal={()=>{setIschatmakeoffermodalVisible(!ischatmakeoffermodalVisible)}}/>
+      <LoginModal navigation={navigation} visible={isloginModalVisible} setVisible={setIsloginModalVisible} />
+      </View>
   );
 };
 

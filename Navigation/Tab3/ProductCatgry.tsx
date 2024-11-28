@@ -42,17 +42,7 @@ const CloseIcon = ({ onPress }) => (
 const ProductCatgry = ({ navigation, visible }) => {
 
   const [items, setItems] = useState<Item[]>(defaultItems);
-  // const [reset1, setReset1] = useState(() => {
-  //   return () => {
-  //     console.log("Default function for reset1");
-  //   };
-  // });
 
-  // const [reset2, setReset2] = useState(() => {
-  //   return () => {
-  //     console.log("Default function for reset2");
-  //   };
-  // });
   const getCatagory = async () => {
     const url = `${BASE_URL}/product_api.php?action=select`;
 
@@ -82,26 +72,7 @@ const ProductCatgry = ({ navigation, visible }) => {
 
     navigation.navigate("Tab1", { screen: "T1Screen1" });
 
-    // Alert.alert(
-    //     'Confirmation',
-    //     'Are you sure you want to discard this Ad ?',
-    //     [
-    //       {
-    //         text: 'Cancel',
-    //         style: 'cancel',
-    //       },
-    //       {
-    //         text: 'OK',
-    //         onPress: () => {
-    //           // If user confirms, navigate to the Main screen
-    //           navigation.navigate("Tab1",{screen:"T1Screen1"});
-
-    //         },
-    //       },
-    //     ]
-    //   );
-
-
+   
 
   };
 

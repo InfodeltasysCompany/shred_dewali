@@ -32,45 +32,7 @@ const firebaseSignup = async (email, password, handleMe = (num) => console.log(`
 
 
 
-// const handleGoogleLogin = async (handleMe = (num) => console.log(`This is default callback ${num}`)) => {
-//      try {
-//        // Wait for the signInWithPopup to resolve and get the user data
-//        const data = await signInWithPopup(auth, provider);
-   
-//        // Set state or perform actions with the user data
-//        setValue(data.user.email);
-//        console.log("Google sign-in data:", data);
-//        setFirebaseuid(data.user.uid);
-//        console.log("Firebase UID is:", data.user.uid);
-   
-//        // Pass the user object to the callback
-//        await handleMe(data.user); // Passing data.user as the argument
-   
-//      } catch (error) {
-//        // Handle any errors that occur during the sign-in process
-//        console.error('Error during Google sign-in:', error);
-//      }
-//    };
-   
 
-// const handleGoogleLogin = (handleMe = (num) => console.log(`This is default callback ${num}`)) => {
-//      signInWithPopup(auth, provider)
-//        .then((data) => {
-//          // Set state or perform actions with the user data
-//          setValue(data.user.email);
-//          console.log("Google sign-in data:", data);
-//          setFirebaseuid(data.user.uid);
-//          console.log("Firebase UID is:", data.user.uid);
-   
-//          // Pass the user object to the callback
-//          handleMe(data.user); // Passing data.user as the argument
-//        })
-//        .catch((error) => {
-//          // Handle any errors that occur during the sign-in process
-//          console.error('Error during Google sign-in:', error);
-//        });
-//    };
-   
    GoogleSignin.configure({
      // Your configuration here
      androidClientId:"254504701779-vp42q40e3bvl60pvjag9ioku9lungl7r.apps.googleusercontent.com",
@@ -109,16 +71,7 @@ const firebaseSignIn = (email, password, callMe = (a,b) => console.log("Default 
 
                if (user.emailVerified) {
                     console.log('User is signed in and email is verified:', user.uid);
-                    // setState(prevState => ({ ...prevState, userCred: responseData,
-                    //      gUserCred:JSON.stringify(responseData),
-                    //      userIdApp:userId,
-                    //      f_email:responseData["0"].email,
-                    //      // f_mobile:null,
-                    //      // f_id:null,
-                    //      f_name:responseData["0"].name,
-                    //      // f_password:null 
-                    //      f_id:responseData["0"].firebase_uid,
-                    //    }));
+                   
                     callMe(email,password);
                     Alert.alert('User SignIn Successfully!');
                }
@@ -129,8 +82,7 @@ const firebaseSignIn = (email, password, callMe = (a,b) => console.log("Default 
                }
           })
           .catch((error) => {
-               // setError(error.message);
-              //  console.error('SignIn error:', error);
+               
                ToastAndroid.show(error, ToastAndroid.SHORT);
 
           });

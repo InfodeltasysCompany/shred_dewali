@@ -1,25 +1,19 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { useContext } from 'react'
+import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider'
 
 const AllBiddings = () => {
+  const [state,,,,GChatstate] = useContext(AuthContext)
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>AllBiddings</Text>
-    </View>
+    <ScrollView>
+      <Text> userData= ==  {JSON.stringify(GChatstate.userdetails)}</Text>
+      <Text>hiii..</Text>
+      <Text>{JSON.stringify(state.userCred)}</Text>
+    <Text>productData==={JSON.stringify(GChatstate.productdetails)}</Text>
+    </ScrollView>
   )
 }
 
 export default AllBiddings
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1, // Ensures it takes all the available space
-      justifyContent: 'center', // Vertically centers content
-      alignItems: 'center', // Horizontally centers content
-      padding: 20, // Optional padding for spacing around
-    },
-    text: {
-      fontSize: 20, // Adjusts font size for visibility
-      color: '#333', // Text color
-    },
-  });
+const styles = StyleSheet.create({})

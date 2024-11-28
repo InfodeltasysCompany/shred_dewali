@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, TouchableOpacity, Image, StyleSheet, Modal, Text } from "react-native";
 import OrderDetailSkeleton1 from "./OrderDetailSkeleton"; // Updated import
 import { BASE_URL } from "../../../ReuseComponent/Env"; // Ensure BASE_URL is correct
 import OrderDetail from "./OrderDetail";
+import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
 
 // Close button component
 export const CloseIcon = ({ onPress }) => (
@@ -15,7 +16,9 @@ export const CloseIcon = ({ onPress }) => (
 );
 
 // Modal for displaying order details
-const OrderDetailModal = ({ closeModal, visible, bookingId, filename }) => {
+const OrderDetailModal = ({ closeModal, visible, bookingId, filename ,navigation}) => {
+  const [,,,,GChatstate, setGChatstate] =useContext(AuthContext);
+
   const [imagename, setImagename] = useState(""); // Store the filename for the image
   const [detaildata, setDetailData] = useState(null); // Store fetched order details
   const [loading, setLoading] = useState(true); // Track loading state
@@ -43,6 +46,11 @@ const OrderDetailModal = ({ closeModal, visible, bookingId, filename }) => {
         if (details && Object.keys(details).length > 0) {
           setDetailData(details); // Set fetched details if data exists
           // console.log("Fetched details:", details);
+          setGChatstate(prestate=>({
+            ...prestate,
+            productdetails:details,
+          }))
+          //hello boss
         } else {
           setDetailData(null); // No data found
         }
@@ -76,7 +84,7 @@ const OrderDetailModal = ({ closeModal, visible, bookingId, filename }) => {
           </View>
         ) : detaildata ? (
           <View style={styles.orderDetail}>
-            <OrderDetail item={detaildata} />
+            <OrderDetail item={detaildata} navigation={navigation} />
           </View>
         ) : (
           <View style={styles.skeletonContainer}>

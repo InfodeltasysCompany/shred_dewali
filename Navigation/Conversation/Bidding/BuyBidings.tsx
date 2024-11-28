@@ -1,10 +1,29 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import React, { useContext } from 'react';
+import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
 
 const BuyBidings = () => {
+  const [state,,,,GChatstate,setGChatstate] = useContext(AuthContext)
+
+  const handlepressuser = ()=>{
+setGChatstate(prevstate=>({
+ ...prevstate,
+  userdetails:{"name":"vinit","age":30}
+}))
+  }
+  const handlepressproduct=()=>{
+    setGChatstate(prevstate=>({
+      ...prevstate,
+      productdetails:{"catogary":"brass","title":"it is not good..."}
+
+    }))
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.text}>BuyBidings</Text>
+      <Button title='setuser data' onPress={handlepressuser}/>
+      <Button title='setuser product' onPress={handlepressproduct}/>
+
     </View>
   );
 };

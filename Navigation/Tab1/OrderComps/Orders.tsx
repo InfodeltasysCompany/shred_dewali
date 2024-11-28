@@ -6,7 +6,7 @@ import { EvilIcons, FontAwesome } from '@expo/vector-icons';
 import OrderDetailModal from './OrderDetailModal';
 import { BASE_URL, IMG_URL } from '../../../ReuseComponent/Env';
 
-const Orders = () => {
+const Orders = ({navigation}) => {
     const [state, setState] = useContext(AuthContext);
     const { userIdApp } = state;
 
@@ -87,8 +87,7 @@ const Orders = () => {
                 closeModal={handleCloseOrderDetail}
                 visible={isOrderDetailModalVisible}
                 bookingId={booking_id}
-                filename={imagename}
-            />
+                filename={imagename} navigation={navigation}            />
         </View>
     );
 };

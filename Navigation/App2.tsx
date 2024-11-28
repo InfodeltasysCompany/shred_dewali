@@ -387,25 +387,7 @@ const App2 = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen name="Onboarding" component={ONBoarding} /> */}
 
-        {/* {isOnBoardEnable ? (
-          <> 
-        <Stack.Screen name="Main" component={MainTabsComponents} />
-        <Stack.Screen name='LoginModal' component={LoginModal} options={{
-          headerTitle: 'Scrap Cart',
-          headerTitleAlign: 'center',
-          headerShown: false
-        }} />
-        <Stack.Screen name='ProductCatgry' component={ProductCatgry} options={{
-          headerTitle: 'Product Catogory',
-          headerTitleAlign: 'center',
-          headerShown: false
-        }} />
-          </>
-        ) : ( 
-           <Stack.Screen name="Onboarding" component={ONBoarding} /> 
-        )}  */}
         {!isOnBoardEnable && (
           <Stack.Screen name="Onboarding" component={ONBoarding} />
 

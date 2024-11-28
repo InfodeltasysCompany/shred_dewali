@@ -766,16 +766,13 @@ useEffect(() => {
                   </TouchableOpacity>
                 </View>
               </View>
-              {/* </ScrollView> */}
             </View>
           </View>
         </ScrollView>
         <View></View>
       </View>
     </View>
-    // <>
-    // <ProductCat/>
-    // </>
+
   );
 }
 

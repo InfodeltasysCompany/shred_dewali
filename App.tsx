@@ -9,25 +9,25 @@ import * as Device from 'expo-device';
 import { CommonActions, NavigationContainer, RouteProp, useFocusEffect } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import T1Screen1 from './Navigation/Tab1/T1Screen1'
-import T2Screen1 from './Navigation/Tab2/T2Screen1';
-import T3Screen1 from './Navigation/Tab3/T3Screen1'
-import T4Screen1 from './Navigation/Tab4/T4Screen1'
+// import T1Screen1 from './Navigation/Tab1/T1Screen1'
+// import T2Screen1 from './Navigation/Tab2/T2Screen1';
+// import T3Screen1 from './Navigation/Tab3/T3Screen1'
+// import T4Screen1 from './Navigation/Tab4/T4Screen1'
 // import T1Screen2 from './Navigation/Tab1/T1Screen2'
 // import T1Screen3 from './Navigation/Tab1/T1Screen3'
-import T2Screen3 from './Navigation/Tab2/T2Screen3'
-import T2Screen2 from './Navigation/Tab2/T2Screen2'
-import T3Screen2 from './Navigation/Tab3/T3Screen2'
-import T3Screen3 from './Navigation/Tab3/T3Screen3'
-import T4Screen2 from './Navigation/Tab4/T4Screen_myorder_chooseBuySell'
+// import T2Screen3 from './Navigation/Tab2/T2Screen3'
+// import T2Screen2 from './Navigation/Tab2/T2Screen2'
+// import T3Screen2 from './Navigation/Tab3/T3Screen2'
+// import T3Screen3 from './Navigation/Tab3/T3Screen3'
+// import T4Screen2 from './Navigation/Tab4/T4Screen_myorder_chooseBuySell'
 // import T1Screen1modal1 from './Navigation/Tab1/T1Screen1modal1';
-import Login from './components/Credential/Login';
-import Signup from './components/Credential/Signup';
-import shoppingCart from './components/ShoppingCart';
-import ShoppingCart from './components/ShoppingCart';
-import OpenCamAndGalT3S1 from './Navigation/Tab3/T3Sreen4';
-import T2Screen3AddAddress2 from './Navigation/Tab2/T2Screen3AddAddress2';
-import T2Screen2AddAddress from './Navigation/Tab2/T2Screen2AddAddress';
+// import Login from './components/Credential/Login';
+// import Signup from './components/Credential/Signup';
+// import shoppingCart from './components/ShoppingCart';
+// import ShoppingCart from './components/ShoppingCart';
+// import OpenCamAndGalT3S1 from './Navigation/Tab3/T3Sreen4';
+// import T2Screen3AddAddress2 from './Navigation/Tab2/T2Screen3AddAddress2';
+// import T2Screen2AddAddress from './Navigation/Tab2/T2Screen2AddAddress';
 import * as Permissions from 'expo-permissions';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 // import BuyingChats from './Navigation/Tab5_buy/BuyingChats';
@@ -44,13 +44,16 @@ import App2 from './Navigation/App2';
 import { handlePushNotifications } from './utils/NotificaitonFunction';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import OrderDetailModal from './Navigation/Tab1/OrderComps/OrderDetailModal';
-import { app } from './Config/Firebaseconfig';
-import Test1 from './ReuseComponent/Test1';
-import Combine from './Navigation/Conversation/Bidding/CombineBidding';
-import Chat_MakeOfferModal from './Navigation/Conversation/Order/Chat_MakeOfferModal';
-import BuyingChats from './Navigation/Conversation/Order/BuyingChats';
+// import OrderDetailModal from './Navigation/Tab1/OrderComps/OrderDetailModal';
+// import { app } from './Config/Firebaseconfig';
+// import Test1 from './ReuseComponent/Test1';
+// import Combine from './Navigation/Conversation/Bidding/CombineBidding';
+// import Chat_MakeOfferModal from './Navigation/Conversation/Order/Chat_MakeOfferModal';
+// import BuyingChats from './Navigation/Conversation/Order/BuyingChats';
 import SellChats from './Navigation/Conversation/Order/SellChats';
+import SellBiddings from './Navigation/Conversation/Bidding/SellBiddings';
+import CombineChat from './Navigation/Conversation/Order/CombineChat';
+import CombineBidding from './Navigation/Conversation/Bidding/CombineBidding';
 
 const App = () => {
   
@@ -94,6 +97,8 @@ useEffect(() => {
       {/* <Combine/> */}
       {/* <Chat_MakeOfferModal visible={undefined} closeModal={undefined}/> */}
       {/* <SellChats/> */}
+      {/* <SellBiddings/> */}
+      {/* <CombineBidding/> */}
     </UserAuthProvider>
   );
 }

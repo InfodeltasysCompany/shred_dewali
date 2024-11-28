@@ -1,9 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert ,ToastAndroid} from "react-native";
-import { db } from "../../Config/Firebaseconfig";
-import * as Network from 'expo-network';
-
+import { Alert, ToastAndroid } from "react-native";
+import { db } from "../../Config/Firebaseconfig"; // Ensure this is correctly configured
+import * as Network from "expo-network";
 
 // Create the AuthContext
 const AuthContext = createContext();
@@ -14,6 +13,31 @@ const handleLoginModalVisible = (userIdApp) => userIdApp === null;
 // Auth Provider component
 const UserAuthProvider = (props) => {
   const [isReviewVisible, setIsReviewVisible] = useState(false);
+  const [networkStatus, setNetworkStatus] = useState("online"); // Can be 'online', 'offline', 'weak'
+  const [GChatState, setGChatState] = useState({
+    productdetails: {},
+    userdetails: {},
+  });
+  const [GCreateOrderAuctionState, setCreateOrderAuctionState] = useState({
+    // userId:""
+    // firebase_uid:""
+    // catagory:"",
+    // catagoryId:"",
+    // subcatagory:"",
+    // minimum setprice,
+    // title:"",
+    // description:"",
+    // enterPrice:"",
+    // enterweight:"",
+    // images:{},
+    // address:{},
+    // date:"",
+    // isAuction:false,
+    // startDate:"",
+    // endDate:""
+     
+
+  });
   const [state, setState] = useState({
     gUserCred: null,
     userCred: null,
@@ -25,26 +49,23 @@ const UserAuthProvider = (props) => {
     f_password: "",
     isLoginModalVisible: false,
   });
-  const [networkStatus, setNetworkStatus] = useState('online'); // Can be 'online', 'offline', 'weak'
 
   // Function to check network connectivity
   const checkNetworkStatus = async () => {
     try {
       const networkState = await Network.getNetworkStateAsync();
-      
+
       if (!networkState.isConnected) {
-        setNetworkStatus('offline');
-        ToastAndroid.show(`No internet connection`, ToastAndroid.SHORT);
-
-      } else if (networkState.isConnected && networkState.isInternetReachable === false) {
-        setNetworkStatus('weak');
-        ToastAndroid.show('Weak internet connection', ToastAndroid.SHORT);
-
+        setNetworkStatus("offline");
+        ToastAndroid.show("No internet connection", ToastAndroid.SHORT);
+      } else if (networkState.isConnected && !networkState.isInternetReachable) {
+        setNetworkStatus("weak");
+        ToastAndroid.show("Weak internet connection", ToastAndroid.SHORT);
       } else {
-        setNetworkStatus('online');
+        setNetworkStatus("online");
       }
     } catch (error) {
-      console.error('Error checking network status:', error);
+      console.error("Error checking network status:", error);
     }
   };
 
@@ -56,34 +77,46 @@ const UserAuthProvider = (props) => {
     // Clean up interval when the component unmounts
     return () => clearInterval(interval);
   }, []);
+
   // Fetch user data from AsyncStorage on component mount
   useEffect(() => {
     const getLocalUserData = async () => {
       try {
-        const data = await AsyncStorage.getItem("@user");
-        const data1 = await AsyncStorage.getItem("UserCred");
-        const appUserId = await AsyncStorage.getItem("UserIdapp");
-        const fireMail = await AsyncStorage.getItem("femail");
-        const fireMobile = await AsyncStorage.getItem("fmobile");
-        const fireId = await AsyncStorage.getItem("fid");
-        const fireName = await AsyncStorage.getItem("fname");
-        const firePassword = await AsyncStorage.getItem("fpassword");
-        const fName = await AsyncStorage.getItem("flname");
+        const userData = await Promise.all([
+          AsyncStorage.getItem("@user"),
+          AsyncStorage.getItem("UserCred"),
+          AsyncStorage.getItem("UserIdapp"),
+          AsyncStorage.getItem("femail"),
+          AsyncStorage.getItem("fmobile"),
+          AsyncStorage.getItem("fid"),
+          AsyncStorage.getItem("fname"),
+          AsyncStorage.getItem("fpassword"),
+        ]);
 
-        const userCred = JSON.parse(data1);
-        const gUserCred = JSON.parse(data);
+        const [
+          gUserCredRaw,
+          userCredRaw,
+          userIdApp,
+          fireEmail,
+          fireMobile,
+          fireId,
+          fireName,
+          firePassword,
+        ] = userData;
 
-        setState(prevState => ({
+        const gUserCred = JSON.parse(gUserCredRaw);
+        const userCred = JSON.parse(userCredRaw);
+
+        setState((prevState) => ({
           ...prevState,
           gUserCred,
           userCred,
-          userIdApp: appUserId ||userCred?.[0]?.id,
-          f_email: fireMail,
+          userIdApp: userIdApp || userCred?.[0]?.id,
+          f_email: fireEmail,
           f_id: fireId || userCred?.[0]?.firebase_uid,
           f_name: fireName || userCred?.[0]?.name,
           f_mobile: fireMobile || userCred?.[0]?.mobile,
           f_password: firePassword || userCred?.[0]?.password,
-          f_name: userCred?.[0]?.name || fName,
         }));
       } catch (error) {
         console.error("Error retrieving user data:", error);
@@ -93,8 +126,27 @@ const UserAuthProvider = (props) => {
     getLocalUserData();
   }, []);
 
+  // Update GChatState whenever state.userCred changes
+  useEffect(() => {
+    const userDetails = Array.isArray(state.userCred) ? state.userCred[0] : state.userCred?.[0];
+    setGChatState((prevState) => ({
+      ...prevState,
+      userdetails: userDetails || {},
+    }));
+  }, [state.userCred]);
+
   return (
-    <AuthContext.Provider value={[state, setState, isReviewVisible,networkStatus]}>
+    <AuthContext.Provider
+      value={[
+        state,
+        setState,
+        isReviewVisible,
+        networkStatus,
+        GChatState,
+        setGChatState,
+        GCreateOrderAuctionState, setCreateOrderAuctionState,
+      ]}
+    >
       {props.children}
     </AuthContext.Provider>
   );
@@ -109,21 +161,22 @@ const handleLogout = async () => {
       [
         {
           text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
+          onPress: () => console.log("Logout cancelled"),
           style: "cancel",
         },
         {
           text: "OK",
           onPress: async () => {
-            await AsyncStorage.removeItem("UserCred");
-            await AsyncStorage.removeItem("UserIdapp");
-            await AsyncStorage.removeItem("femail");
-            await AsyncStorage.removeItem("fid");
-            await AsyncStorage.removeItem("fmobile");
-            await AsyncStorage.removeItem("fname");
-            await AsyncStorage.removeItem("@user");
-            await AsyncStorage.removeItem("fpassword");
-            // navigation.navigate("Tab1", { screen: "T1Screen1" }); // Uncomment and adjust if needed
+            await AsyncStorage.multiRemove([
+              "UserCred",
+              "UserIdapp",
+              "femail",
+              "fid",
+              "fmobile",
+              "fname",
+              "@user",
+              "fpassword",
+            ]);
           },
         },
       ],

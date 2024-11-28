@@ -19,16 +19,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 
-// import 'expo-dev-client'
-// import { useDispatch } from "react-redux";
-// import { setLoginData } from "../../redux/actions/loginAction";
 import { getDocs, query, where } from "firebase/firestore";
-import { db } from "../../Config/Firebaseconfig";
 import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 import { getAuth, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import { firebaseSignup } from "./Search/firebasefunctions";
 import { handlePushNotifications } from "../../utils/NotificaitonFunction";
 import { BASE_URL } from "../../ReuseComponent/Env";
+import { userCreatefirebaserealtime } from "./Search/FirebaseChatFunctions";
 
 type SignProps = {
   navigation: NavigationProp<any>;
@@ -189,6 +186,8 @@ const Sign_up = ({ navigation, handleIsshowLogin }: SignProps) => {
             f_id: user.firebase_uid,
             f_name: user.name,
           }));
+
+          await userCreatefirebaserealtime(user.firebase_uid,user.email,user.mobile,user.name);
 
           // Attempt to store the user's data in AsyncStorage
           try {

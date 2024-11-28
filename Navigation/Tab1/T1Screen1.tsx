@@ -331,7 +331,7 @@ const T1Screen1 = ({ navigation }) => {
             </View>
             <View style={styles.container5}>
               <View style={styles.card1}>
-                <Orders />
+                <Orders navigation={navigation} />
               </View>
             </View>
             {/* /////////////////////////////////////// auction data bind ////////////////////////////////////////////////////////////////// */}
