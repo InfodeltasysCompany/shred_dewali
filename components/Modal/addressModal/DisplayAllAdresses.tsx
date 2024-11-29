@@ -8,7 +8,7 @@ import OptionsMenu from "react-native-options-menu";
 import HandleAddAddress from './HandleAddAddress';
 import EditAddress from './EditAddress';
 import LoginModal from '../../Credential/LoginModal';
-import { useFocusEffect } from '@react-navigation/native';
+// import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BASE_URL } from '../../../ReuseComponent/Env';
 

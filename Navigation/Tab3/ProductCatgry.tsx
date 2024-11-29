@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, ScrollView, Alert } from "react-native";
 import ProductSubCatgry from "./ProductSubCatgry";
 import { AntDesign } from "@expo/vector-icons";
 import { BASE_URL } from "../../ReuseComponent/Env";
+import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 
 // Define the type for the items
 interface Item {
@@ -40,7 +41,9 @@ const CloseIcon = ({ onPress }) => (
 );
 
 const ProductCatgry = ({ navigation, visible }) => {
-
+  const [state, setState,,,,,GCreateOrderAuctionState, setCreateOrderAuctionState] = useContext(AuthContext);
+  const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
+  
   const [items, setItems] = useState<Item[]>(defaultItems);
 
   const getCatagory = async () => {
@@ -79,7 +82,19 @@ const ProductCatgry = ({ navigation, visible }) => {
 
   const [issubcatmodalVisible, setIssubcatmodalVisible] = useState(false);
   const [subCatID, setsubCatID] = useState('');
-  const checkModalAndProductId = (id: string) => {
+  const checkModalAndProductId = (item:any) => {
+ 
+  // console.log(item);
+  if(item.p_id){
+    setCreateOrderAuctionState({
+      catagory:item.label,
+      catagoryId:item.p_id,
+      catagoryImgSource:item.source,
+    });
+  }
+  
+    let id :string = item.p_id;
+
     if (subCatID == '') {
       setsubCatID(id);
     } else {
@@ -106,7 +121,7 @@ const ProductCatgry = ({ navigation, visible }) => {
           <ScrollView>
             <View style={styles.container}>
               {items.map((item, index) => (
-                <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => checkModalAndProductId(item.p_id)}>
+                <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => checkModalAndProductId(item)}>
                   <Image source={item.source} style={styles.icon} />
                   <Text style={styles.text}>{item.label}</Text>
                 </TouchableOpacity>

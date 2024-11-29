@@ -10,7 +10,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { BASE_URL } from "../../ReuseComponent/Env";
 
 const ProductImageAdd = ({ closeModal, visible, navigation, formfilledpost, setformfilledPost }) => {
-  const [state, setState] = useContext(AuthContext);
+  const [state, setState, , , , , GCreateOrderAuctionState, setCreateOrderAuctionState] = useContext(AuthContext);
   const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password } = state;
   const [images, setImages] = useState([]);
   const width = Dimensions.get('window').width;
@@ -96,6 +96,36 @@ const closePreviewModal=()=>{
 } 
   const handleNext = async() => {
     if (userIdApp && (address !== null) && images.length) {
+                  /*
+             const [GCreateOrderAuctionState, setCreateOrderAuctionState] = useState({
+                //userId: "",
+                firebase_uid: "",
+                //category: "",
+                //categoryId: "",
+                //catagoryImgSourch:"",
+                //subcategory: "",
+               // minimumPresetPrice: "",
+                //title: "",
+                //description: "",
+                //enterPrice: "",
+                //enterWeight: "",
+                //images: [],
+                //address: {},
+                date: "",
+               // isAuction: false,
+                startDate: "",
+                endDate: "",
+              });
+            */
+           
+            
+      setCreateOrderAuctionState(prevstate=>({
+        ...prevstate,
+        userId:userIdApp,
+        images,
+        address,
+        isAuction:isAuctionEnabled,
+      }))
       if (isAuctionEnabled) {
         //call Insert Auction Cart api. 
         // Alert.alert("Auction is created happily.")
@@ -370,6 +400,10 @@ const closePreviewModal=()=>{
       setIsAddressModalvisible(!isAddressModalvisible);
     } else {
       setisloginModalVisible(!isloginModalVisible);
+      setCreateOrderAuctionState(prevstate=>({
+        ...prevstate,
+        firebase_uid:f_id,
+      }))
     }
   }
   const getAddress = (address) => {

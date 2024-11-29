@@ -19,25 +19,26 @@ const UserAuthProvider = (props) => {
     userdetails: {},
   });
   const [GCreateOrderAuctionState, setCreateOrderAuctionState] = useState({
-    // userId:""
-    // firebase_uid:""
-    // catagory:"",
-    // catagoryId:"",
-    // subcatagory:"",
-    // minimum setprice,
-    // title:"",
-    // description:"",
-    // enterPrice:"",
-    // enterweight:"",
-    // images:{},
-    // address:{},
-    // date:"",
-    // isAuction:false,
-    // startDate:"",
-    // endDate:""
-     
-
+    userId: "",
+    firebase_uid: "",
+    category: "",
+    categoryId: "",
+    catagoryImgSource:"",
+    subcategory: "",
+    minimumPresetPrice: "",
+    title: "",
+    description: "",
+    enterPrice: "",
+    enterWeight: "",
+    images: [],
+    address: {},
+    date: "",
+    isAuction: false,
+    startDate: "",
+    endDate: "",
   });
+  
+  // 
   const [state, setState] = useState({
     gUserCred: null,
     userCred: null,
@@ -144,7 +145,7 @@ const UserAuthProvider = (props) => {
         networkStatus,
         GChatState,
         setGChatState,
-        GCreateOrderAuctionState, setCreateOrderAuctionState,
+        GCreateOrderAuctionState, setCreateOrderAuctionState
       ]}
     >
       {props.children}

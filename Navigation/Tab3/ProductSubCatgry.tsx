@@ -1,11 +1,12 @@
 import { AntDesign } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal } from "react-native";
 import { TextInput } from "react-native-paper";
 import ProductImageAdd from "./ProductImageAdd";
 import { BASE_URL } from "../../ReuseComponent/Env";
+import { AuthContext } from "../../redux/ContextApi/UserAuthProvider";
 
 export const CloseIcon = ({ onPress }) => (
     <TouchableOpacity onPress={onPress} style={styles.closeButton}>
@@ -19,10 +20,13 @@ export const CloseIcon = ({ onPress }) => (
 
 
 const ProductSubCatgry = ({ closeModal, visible, p_id, navigation }) => {
+    const [state, setState, , , , , GCreateOrderAuctionState, setCreateOrderAuctionState] = useContext(AuthContext);
+    const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
+
     const [data, setData] = useState([]);
     const [submetalType, setSubmetaltype] = useState<string>('Sub Metal Type');
     const [selectedSubMetal, setSelectedSubMetal] = useState('');
-    const [selectedSubMetalPrice, setselectedSubMetalPrice] = useState('');
+    const [selectedSubMetalPrice, setselectedSubMetalPrice] = useState<string>("108");
     const [isDropdownenabled, setisDropdownenabled] = useState(false);
     const [textTitle, settextTitle] = useState('');
     const [textDescription, setTextDescription] = useState('');
@@ -58,7 +62,11 @@ const ProductSubCatgry = ({ closeModal, visible, p_id, navigation }) => {
                 } else {
                     setSelectedSubMetal(responseData[0]?.p_type_name ?? 'Unknown')
                     setselectedSubMetalPrice(responseData[0]?.price ?? 'Unknown')
+                    setCreateOrderAuctionState(prestate => ({
+                        ...prestate,
+                        minimumPresetPrice: responseData[0]?.price,
 
+                    }))
                 }
 
             } else {
@@ -147,7 +155,41 @@ const ProductSubCatgry = ({ closeModal, visible, p_id, navigation }) => {
                 textWeight,
                 textPrice,
                 p_id,
+
             })
+            /*
+             const [GCreateOrderAuctionState, setCreateOrderAuctionState] = useState({
+                userId: "",
+                firebase_uid: "",
+                //category: "",
+                //categoryId: "",
+                //catagoryImgSourch:"",
+                //subcategory: "",
+               // minimumPresetPrice: "",
+                //title: "",
+                //description: "",
+                //enterPrice: "",
+                //enterWeight: "",
+                images: [],
+                address: {},
+                date: "",
+                isAuction: false,
+                startDate: "",
+                endDate: "",
+              });
+            */
+           
+              setCreateOrderAuctionState(prestate => ({
+                ...prestate,
+                subcategory: selectedSubMetal,
+                title: textTitle,
+                description: textDescription,
+                enterPrice: textPrice,
+                enterWeight: textWeight,
+                minimumPresetPrice: selectedSubMetalPrice,
+
+            }))
+            
             setIsImageAddmodalVisible(!isImageAddmodalVisible);
         } else {
             handleErrors();
@@ -158,6 +200,11 @@ const ProductSubCatgry = ({ closeModal, visible, p_id, navigation }) => {
 
         const selectedItem = data.find((item) => item.p_id === itemValue);
         setselectedSubMetalPrice(selectedItem.price);
+        setCreateOrderAuctionState(prestate => ({
+            ...prestate,
+            minimumPresetPrice: selectedItem.price,
+
+        }))
 
     }
     ////////////////////////////
@@ -279,9 +326,9 @@ const ProductSubCatgry = ({ closeModal, visible, p_id, navigation }) => {
                             <Text style={{ color: 'white', fontSize: 27, fontWeight: '600' }}>Reset</Text>
                         </TouchableOpacity> */}
                         <TouchableOpacity style={{ backgroundColor: '#00457E', height: 60, width: '90%', alignSelf: 'center', borderRadius: 8, marginTop: 25, alignItems: 'center', justifyContent: 'center' }} onPress={handleNext}>
-                            <Text 
-                            
-                            style={{ color: 'white', fontSize: 27, fontWeight: '600' }}>Next</Text>
+                            <Text
+
+                                style={{ color: 'white', fontSize: 27, fontWeight: '600' }}>Next</Text>
                         </TouchableOpacity>
                     </View>
 

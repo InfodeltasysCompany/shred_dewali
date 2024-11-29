@@ -15,12 +15,12 @@ import {
   where,
 } from "firebase/firestore";
 import { BASE_URL, IMG_URL } from "../../ReuseComponent/Env";
+import {  OrderCreateFirebaseRealtime } from "../../components/Modal/Search/FirebaseChatFunctions";
 
 const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isAuctionEnabled, navigation, newformdata }) => {
   const imgurl = IMG_URL;
-  const [state, setState] = useContext(AuthContext);
+  const [state, setState,,,,,GCreateOrderAuctionState, setCreateOrderAuctionState] = useContext(AuthContext);
   const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
-
   const [dataforPreview, setDataforPreview] = useState([]);
   const width = Dimensions.get('window').width;
   const height = width * 0.5;
@@ -189,6 +189,29 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
 
   const
     handlePublishYourAdBtn = async () => {
+                        /*
+             const [GCreateOrderAuctionState, setCreateOrderAuctionState] = useState({
+                //userId: "",
+                firebase_uid: "",
+                //category: "",
+                //categoryId: "",
+                //catagoryImgSourch:"",
+                //subcategory: "",
+               // minimumPresetPrice: "",
+                //title: "",
+                //description: "",
+                //enterPrice: "",
+                //enterWeight: "",
+                //images: [],
+                //address: {},
+                //date: "",
+               // isAuction: false,
+                //startDate: "",
+                //endDate: "",
+              });
+            */
+           
+       
       if (isSubmitting) {
         return; // Prevent multiple submissions
       }
@@ -203,6 +226,12 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
         userIdApp !== ""
       ) {
         try {
+          setCreateOrderAuctionState(prevstate=>({
+            ...prevstate,
+            startDate,
+            endDate,
+            date:chooseDate,
+          }))
           const formData = new FormData();
           formData.append("user_id", userIdApp);
           formData.append("approx_price", newformdata.textPrice.toString());
@@ -272,8 +301,10 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
 
           console.log("formdata for ");
           let apiUrl = isAuctionEnabled
-            ? `${BASE_URL}/auctionOrder_api.php?action=insert`
-            : `${BASE_URL}/orders_api.php?action=insert`;
+            ? `${"BASE_URL"}/auctionOrder_api.php?action=insert`
+            : `${"BASE_URL"}/orders_api.php?action=insert`;
+
+            await OrderCreateFirebaseRealtime(state,GCreateOrderAuctionState,setCreateOrderAuctionState);
 
           const response = await fetch(apiUrl, {
             method: "POST",
