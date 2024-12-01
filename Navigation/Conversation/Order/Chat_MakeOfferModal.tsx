@@ -1,10 +1,23 @@
 import { AntDesign } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Pressable, Image, Animated } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Pressable, Image, Animated, FlatList } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Chat from './Chat';
 import MakeOffer from './MakeOffer';
+import { realtimeDb } from '../../../Config/Firebaseconfig';
+import { onValue, ref } from 'firebase/database';
+import SendMsg from './SendMsg';
+import RecieveMsg from './RecieveMsg';
 
+interface Message {
+  id: string;
+  content: string;
+  status: string;
+  timestamp: number;
+  productID: string;
+  senderID: string;
+  receiverID: string;
+}
 
 
 const Chat_MakeOfferModal = ({ visible, closeModal }) => {
@@ -27,6 +40,66 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
     useNativeDriver:true,
   }).start();
  },[activeTab])
+ const [messages, setMessages] = useState([]);
+const  conversationID ="";
+const userID ="" 
+//  useEffect(() => {
+//   const messagesRef = ref(realtimeDb, `conversations/${conversationID}/messages`);
+
+//   const unsubscribe = onValue(messagesRef, (snapshot) => {
+//     if (snapshot.exists()) {
+//       const messagesData = snapshot.val();
+//       const formattedMessages = Object.values(messagesData).sort(
+//         (a, b) => a.timestamp - b.timestamp // Sort messages by timestamp
+//       );
+//       setMessages(formattedMessages);
+//     } else {
+//       setMessages([]); // Handle no messages
+//     }
+//   });
+
+//   return () => unsubscribe();
+// }, [conversationID]);
+
+useEffect(() => {
+  const messagesRef = ref(realtimeDb, `conversations/${conversationID}/messages`);
+
+  const unsubscribe = onValue(messagesRef, (snapshot) => {
+    if (snapshot.exists()) {
+      const messagesData = snapshot.val();
+
+      // Transform the data into an array of `Message` with validation
+      const formattedMessages: Message[] = Object.entries(messagesData).map(
+        ([key, value]) => {
+          const message = value as Message; // Type assertion for TypeScript
+          return {
+            id: key, // Use the Firebase key as the message ID if needed
+            content: message.content || "", // Fallback in case of missing properties
+            status: message.status || "unread",
+            timestamp: message.timestamp || 0,
+            productID: message.productID || "",
+            senderID: message.senderID || "",
+            receiverID: message.receiverID || "",
+          };
+        }
+      ).sort((a, b) => a.timestamp - b.timestamp); // Sort by timestamp
+
+      setMessages(formattedMessages);
+    } else {
+      setMessages([]); // Handle no messages
+    }
+  });
+
+  return () => unsubscribe();
+}, [conversationID]);
+
+const renderMessage = ({ item }) => {
+  return item.senderID === userID ? (
+    <SendMsg text={item.content} />
+  ) : (
+    <RecieveMsg text={item.content} />
+  );
+};
   const translateY = tabanim.interpolate({
     inputRange: [0, 1],
     outputRange: [300, 620], // Adjust the range based on your layout
@@ -97,7 +170,15 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
 
       <Animated.View style={[styles.modalContainer, { transform: [{ translateY }] }]}>
         {/* Header */}
-
+            {/* messages */}
+            <View style={styles.container}>
+      <FlatList
+        data={messages}
+        renderItem={renderMessage}
+        keyExtractor={(item) => item.id}
+        style={styles.chatContainer}
+      />
+    </View>
         {/* Tabs and Toggle */}
         <View style={{ alignItems: 'center', position: "relative", bottom: 2 }}>
           <TouchableOpacity style={styles.opentab} onPress={() => {setIspressed(!ispressed)}} activeOpacity={1}>
@@ -148,6 +229,13 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+  chatContainer: {
+    padding: 10,
+  },
   content: {
    width:"100%",
    height:"100%"

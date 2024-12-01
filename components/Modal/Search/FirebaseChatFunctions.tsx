@@ -1,11 +1,11 @@
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { Alert, ToastAndroid } from "react-native";
-import { ref, set, get, getDatabase, orderByChild, equalTo, DatabaseReference } from "firebase/database"; // Added `get` for checking existence
+import { ref, set, get, getDatabase, orderByChild, equalTo, DatabaseReference, Query,query } from "firebase/database"; // Added `get` for checking existence
 import { auth, realtimeDb } from "../../../Config/Firebaseconfig"; // Import `auth` and `realtimeDb` from your config
 import { useContext } from "react";
 import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
 import { v4 as uuidv4 } from "uuid";
-import { query } from "firebase/firestore";
+// import { query } from "firebase/firestore";
 
 
 export const userCreatefirebaserealtime = async (firebase_uid, email, phone, username) => {
@@ -211,82 +211,58 @@ export const sendMessage = async (conversationID, text, productID, senderID, rec
     return null;
   }
 };
-// Define types for messages and conversations
-interface Message {
-  id: string;
-  content: string;
-  status: string;
-  timestamp: number;
-  productID: string;
-  senderID: string;
-  receiverID: string;
-}
 
-interface ConversationData {
-  productID: string;
-  sellerDetails: any; // Improve the structure of seller details
-  buyerDetails: any;  // Similarly, improve the buyer details structure
-  messages: { [key: string]: Message };
-  latestMessageTimestamp: number;
-}
 
-// Function to fetch all conversations based on user role
-// export const getAllMyConversations = async (firebase_uid: string, role: "all" | "buy" | "sell" = "all"): Promise<ConversationData[]> => {
-//   try {
-//     console.log(`Fetching ${role} conversations for user:`, firebase_uid);
+export const getAllMyConversations = async (
+  firebase_uid: string,
+  role: "all" | "buy" | "sell" = "all"
+): Promise<any[]> => {
+  try {
+    const conversationsRef = ref(realtimeDb, "conversations");
+    let buyerConversations: any[] = [];
+    let sellerConversations: any[] = [];
 
-//     // Reference to the conversations node in Realtime Database
-//     const conversationsRef: DatabaseReference = ref(realtimeDb, "conversations");
+    if (role === "buy" || role === "all") {
+      const buyerQuery = query(
+        conversationsRef,
+        orderByChild("buyerID"),
+        equalTo(firebase_uid)
+      );
+      const buyerSnapshot = await get(buyerQuery);
+      if (buyerSnapshot.exists()) {
+        buyerConversations = Object.entries(buyerSnapshot.val());
+      }
+    }
 
-//     let buyerConversations: [string, ConversationData][] = [];
-//     let sellerConversations: [string, ConversationData][] = [];
+    if (role === "sell" || role === "all") {
+      const sellerQuery = query(
+        conversationsRef,
+        orderByChild("sellerID"),
+        equalTo(firebase_uid)
+      );
+      const sellerSnapshot = await get(sellerQuery);
+      if (sellerSnapshot.exists()) {
+        sellerConversations = Object.entries(sellerSnapshot.val());
+      }
+    }
 
-//     // Fetch buyer conversations if role is "buy" or "all"
-//     if (role === "buy" || role === "all") {
-//       const buyerQuery = query(conversationsRef, orderByChild("buyerID"), equalTo(firebase_uid));
-//       const buyerSnapshot = await get(buyerQuery);
+    const allConversations = [...buyerConversations, ...sellerConversations]
+      .map(([conversationID, conversationData]: any) => ({
+        conversationID,
+        ...conversationData,
+        latestMessageTimestamp: Object.values(conversationData.messages || {}).reduce(
+          (latest: number, message: any) =>
+            Math.max(latest, message.timestamp || 0),
+          0
+        ),
+      }))
+      .sort(
+        (a, b) => b.latestMessageTimestamp - a.latestMessageTimestamp
+      );
 
-//       if (buyerSnapshot.exists()) {
-//         buyerConversations = Object.entries(buyerSnapshot.val());
-//       }
-//     }
-
-//     // Fetch seller conversations if role is "sell" or "all"
-//     if (role === "sell" || role === "all") {
-//       const sellerQuery = query(conversationsRef, orderByChild("sellerID"), equalTo(firebase_uid));
-//       const sellerSnapshot = await get(sellerQuery);
-
-//       if (sellerSnapshot.exists()) {
-//         sellerConversations = Object.entries(sellerSnapshot.val());
-//       }
-//     }
-
-//     // Combine buyer and seller conversations
-//     const allConversations = [...buyerConversations, ...sellerConversations].map(
-//       ([conversationID, conversationData]) => {
-//         // Get the latest message timestamp by processing the messages
-//         const messages = conversationData.messages || {};
-//         const latestMessageTimestamp = Object.values(messages).reduce(
-//           (latest: number, message: Message) => Math.max(latest, message.timestamp || 0),
-//           0
-//         );
-
-//         return {
-//           conversationID,
-//           ...conversationData,
-//           latestMessageTimestamp,
-//         };
-//       }
-//     );
-
-//     // Sort conversations by latest message timestamp in descending order
-//     const sortedConversations = allConversations.sort((a, b) => b.latestMessageTimestamp - a.latestMessageTimestamp);
-
-//     console.log(`Sorted ${role} Conversations:`, sortedConversations);
-
-//     return sortedConversations;
-//   } catch (error) {
-//     console.error(`Error fetching ${role} conversations:`, error);
-//     return [];
-//   }
-// };
+    return allConversations;
+  } catch (error) {
+    console.error("Error fetching conversations:", error);
+    return [];
+  }
+};
