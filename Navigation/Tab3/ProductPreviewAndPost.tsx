@@ -19,7 +19,7 @@ import {  OrderCreateFirebaseRealtime } from "../../components/Modal/Search/Fire
 
 const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isAuctionEnabled, navigation, newformdata }) => {
   const imgurl = IMG_URL;
-  const [state, setState,,,,,GCreateOrderAuctionState, setCreateOrderAuctionState] = useContext(AuthContext);
+  const [state, setState,,,GChatstate,,GCreateOrderAuctionState, setCreateOrderAuctionState] = useContext(AuthContext);
   const { gUserCred, userCred, userIdApp, f_email, f_mobile, f_id, f_name, f_password, isloginModalVisible } = state;
   const [dataforPreview, setDataforPreview] = useState([]);
   const width = Dimensions.get('window').width;
@@ -232,6 +232,8 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
             endDate,
             date:chooseDate,
           }))
+          let firebse_prodId = await OrderCreateFirebaseRealtime(state,GCreateOrderAuctionState,setCreateOrderAuctionState,GChatstate);
+          console.log("firebase_prodId is :",firebse_prodId);
           const formData = new FormData();
           formData.append("user_id", userIdApp);
           formData.append("approx_price", newformdata.textPrice.toString());
@@ -297,6 +299,7 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
           formData.append("approx_weight", dataforPreview[dataforPreview.length - 1].total_weight);
           formData.append("prod_id", dataforPreview[dataforPreview.length - 1].prod_id);
           formData.append("approx_price", newformdata.textPrice.toString());
+          formData.append("firebse_prodID",firebse_prodId);
           formData.append("bid_id",currentDateTime1.toString());
 
           console.log("formdata for ");
@@ -304,7 +307,6 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
             ? `${"BASE_URL"}/auctionOrder_api.php?action=insert`
             : `${"BASE_URL"}/orders_api.php?action=insert`;
 
-            await OrderCreateFirebaseRealtime(state,GCreateOrderAuctionState,setCreateOrderAuctionState);
 
           const response = await fetch(apiUrl, {
             method: "POST",

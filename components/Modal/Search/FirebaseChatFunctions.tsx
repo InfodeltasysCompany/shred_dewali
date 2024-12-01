@@ -1,9 +1,12 @@
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { Alert, ToastAndroid } from "react-native";
-import { ref, set, get, getDatabase } from "firebase/database"; // Added `get` for checking existence
+import { ref, set, get, getDatabase, orderByChild, equalTo, DatabaseReference } from "firebase/database"; // Added `get` for checking existence
 import { auth, realtimeDb } from "../../../Config/Firebaseconfig"; // Import `auth` and `realtimeDb` from your config
 import { useContext } from "react";
 import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
+import { v4 as uuidv4 } from "uuid";
+import { query } from "firebase/firestore";
+
 
 export const userCreatefirebaserealtime = async (firebase_uid, email, phone, username) => {
   if (firebase_uid && email && phone && username) {
@@ -42,14 +45,13 @@ export const userCreatefirebaserealtime = async (firebase_uid, email, phone, use
 
 };
 // Helper function to generate a unique product ID
-const generateProductId = () => `product_${Math.random().toString(36).substr(2, 9)}`;
+const generateProductId = () => `product_${uuidv4()}`;
 
 export const OrderCreateFirebaseRealtime = async (
   state,
   GCreateOrderAuctionState,
-  setCreateOrderAuctionState
+  setCreateOrderAuctionState,GChatstate
 ) => {
-  // Define the empty state
   const emptyState = {
     userId: "",
     firebase_uid: "",
@@ -74,34 +76,217 @@ export const OrderCreateFirebaseRealtime = async (
   try {
     console.log("OrderCreateFirebaseRealtime called");
 
-    // Check if the current state is not empty
-    if (JSON.stringify(GCreateOrderAuctionState) !== JSON.stringify(emptyState)) {
+    const isEmptyState = (obj) => {
+      return Object.keys(obj).every(
+        (key) => JSON.stringify(obj[key]) === JSON.stringify(emptyState[key])
+      );
+    };
+
+    if (!isEmptyState(GCreateOrderAuctionState)) {
       console.log("Creating a new order in Firebase...");
 
-      // Generate new data
       const newOrder = {
         productId: generateProductId(),
-        description: GCreateOrderAuctionState.description,
-        firebase_pid: GCreateOrderAuctionState.firebase_uid,
-        image: GCreateOrderAuctionState.images,
-        price: GCreateOrderAuctionState.enterPrice,
-        title: GCreateOrderAuctionState.title,
-        userId: state.userIdApp,
+        description: GCreateOrderAuctionState.description || "No description provided",
+        firebase_pid: GChatstate.userdetails.firebase_uid || "default_uid",
+        image: GCreateOrderAuctionState.images || [],
+        price: GCreateOrderAuctionState.enterPrice || 0,
+        title: GCreateOrderAuctionState.title || "Untitled",
+        userId: state.userIdApp || "anonymous",
+        weight:GCreateOrderAuctionState.enterWeight||"anonymous",
       };
 
-      // Update local state
+      // Validate newOrder before saving
+      const hasUndefined = Object.values(newOrder).some((value) => value === undefined);
+      if (hasUndefined) {
+        console.error("Invalid data: newOrder contains undefined values:", newOrder);
+        return;
+      }
+
       setCreateOrderAuctionState(newOrder);
 
-      // Save data to Firebase Realtime Database
-      const orderRef = ref(realtimeDb, `product/${newOrder.productId}`); // Define a path for the new order
-      await set(orderRef, newOrder); // Save the new order to the database
+      const orderRef = ref(realtimeDb, `product/${newOrder.productId}`);
+      await set(orderRef, newOrder);
+      return newOrder.productId;
       console.log("Order saved to Firebase Realtime Database:", newOrder);
     } else {
       console.log("Resetting to empty state...");
-      // Reset the state to the empty state
       setCreateOrderAuctionState(emptyState);
+      return null;
     }
   } catch (error) {
     console.error("Error saving order to Firebase:", error);
   }
 };
+// Utility to generate a unique and compact ID
+const generateCompactId = (prefix) => `${prefix}_${uuidv4().split("-")[0]}`;
+
+// Create a conversation in Firebase
+export const CreateConversationSeller = async (firebase_prodId, buyerID, sellerID) => {
+  try {
+    console.log("CreateConversationSeller called");
+
+    // Fetch product details
+    const productRef = ref(realtimeDb, `products/${firebase_prodId}`);
+    const productSnapshot = await get(productRef);
+
+    if (!productSnapshot.exists()) {
+      console.error("Product details not found for ID:", firebase_prodId);
+      return null;
+    }
+    const productDetails = productSnapshot.val();
+
+    // Fetch seller details
+    const sellerRef = ref(realtimeDb, `users/${sellerID}`);
+    const sellerSnapshot = await get(sellerRef);
+
+    if (!sellerSnapshot.exists()) {
+      console.error("Seller details not found for ID:", sellerID);
+      return null;
+    }
+    const sellerDetails = sellerSnapshot.val();
+
+    // Fetch buyer details
+    const buyerRef = ref(realtimeDb, `users/${buyerID}`);
+    const buyerSnapshot = await get(buyerRef);
+
+    if (!buyerSnapshot.exists()) {
+      console.error("Buyer details not found for ID:", buyerID);
+      return null;
+    }
+    const buyerDetails = buyerSnapshot.val();
+
+    // Generate a unique ID for the conversation
+    const conversationID = `${firebase_prodId}_${buyerID}_${sellerID}`;
+
+    // Structure the conversation data
+    const newConversation = {
+      productID: productDetails,
+      sellerDetails,
+      buyerDetails,
+      messages: {}, // Initialize with an empty object for messages
+    };
+
+    // Save the new conversation to Firebase Realtime Database
+    const conversationRef = ref(realtimeDb, `conversations/${conversationID}`);
+    await set(conversationRef, newConversation);
+
+    console.log("Conversation created successfully:", newConversation);
+
+    return conversationID; // Return the conversation ID
+  } catch (error) {
+    console.error("Error creating conversation in Firebase:", error);
+    return null;
+  }
+};
+
+// Send a message in an existing conversation
+export const sendMessage = async (conversationID, text, productID, senderID, receiverID) => {
+  try {
+    console.log("sendMessage called");
+
+    // Generate a unique message ID
+    const messageID = generateCompactId("message");
+
+    // Structure the message data
+    const newMessage = {
+      id: messageID,
+      content: text,
+      status: "unread", // Default status
+      timestamp: Date.now(), // Current timestamp
+      productID,
+      senderID,
+      receiverID,
+    };
+
+    // Update the messages field in the conversation
+    const messageRef = ref(realtimeDb, `conversations/${conversationID}/messages/${messageID}`);
+    await set(messageRef, newMessage);
+
+    console.log("Message sent successfully:", newMessage);
+
+    return messageID; // Return the message ID
+  } catch (error) {
+    console.error("Error sending message in Firebase:", error);
+    return null;
+  }
+};
+// Define types for messages and conversations
+interface Message {
+  id: string;
+  content: string;
+  status: string;
+  timestamp: number;
+  productID: string;
+  senderID: string;
+  receiverID: string;
+}
+
+interface ConversationData {
+  productID: string;
+  sellerDetails: any; // Improve the structure of seller details
+  buyerDetails: any;  // Similarly, improve the buyer details structure
+  messages: { [key: string]: Message };
+  latestMessageTimestamp: number;
+}
+
+// Function to fetch all conversations based on user role
+// export const getAllMyConversations = async (firebase_uid: string, role: "all" | "buy" | "sell" = "all"): Promise<ConversationData[]> => {
+//   try {
+//     console.log(`Fetching ${role} conversations for user:`, firebase_uid);
+
+//     // Reference to the conversations node in Realtime Database
+//     const conversationsRef: DatabaseReference = ref(realtimeDb, "conversations");
+
+//     let buyerConversations: [string, ConversationData][] = [];
+//     let sellerConversations: [string, ConversationData][] = [];
+
+//     // Fetch buyer conversations if role is "buy" or "all"
+//     if (role === "buy" || role === "all") {
+//       const buyerQuery = query(conversationsRef, orderByChild("buyerID"), equalTo(firebase_uid));
+//       const buyerSnapshot = await get(buyerQuery);
+
+//       if (buyerSnapshot.exists()) {
+//         buyerConversations = Object.entries(buyerSnapshot.val());
+//       }
+//     }
+
+//     // Fetch seller conversations if role is "sell" or "all"
+//     if (role === "sell" || role === "all") {
+//       const sellerQuery = query(conversationsRef, orderByChild("sellerID"), equalTo(firebase_uid));
+//       const sellerSnapshot = await get(sellerQuery);
+
+//       if (sellerSnapshot.exists()) {
+//         sellerConversations = Object.entries(sellerSnapshot.val());
+//       }
+//     }
+
+//     // Combine buyer and seller conversations
+//     const allConversations = [...buyerConversations, ...sellerConversations].map(
+//       ([conversationID, conversationData]) => {
+//         // Get the latest message timestamp by processing the messages
+//         const messages = conversationData.messages || {};
+//         const latestMessageTimestamp = Object.values(messages).reduce(
+//           (latest: number, message: Message) => Math.max(latest, message.timestamp || 0),
+//           0
+//         );
+
+//         return {
+//           conversationID,
+//           ...conversationData,
+//           latestMessageTimestamp,
+//         };
+//       }
+//     );
+
+//     // Sort conversations by latest message timestamp in descending order
+//     const sortedConversations = allConversations.sort((a, b) => b.latestMessageTimestamp - a.latestMessageTimestamp);
+
+//     console.log(`Sorted ${role} Conversations:`, sortedConversations);
+
+//     return sortedConversations;
+//   } catch (error) {
+//     console.error(`Error fetching ${role} conversations:`, error);
+//     return [];
+//   }
+// };

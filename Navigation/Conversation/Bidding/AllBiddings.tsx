@@ -6,7 +6,7 @@ const AllBiddings = () => {
   const [state,,,,GChatstate] = useContext(AuthContext)
   return (
     <ScrollView>
-      <Text> userData= ==  {JSON.stringify(GChatstate.userdetails)}</Text>
+      <Text> userData= ==  {JSON.stringify(GChatstate.userdetails.firebase_uid)}</Text>
       <Text>hiii..</Text>
       <Text>{JSON.stringify(state.userCred)}</Text>
     <Text>productData==={JSON.stringify(GChatstate.productdetails)}</Text>
