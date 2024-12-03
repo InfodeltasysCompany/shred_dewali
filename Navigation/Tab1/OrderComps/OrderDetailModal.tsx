@@ -42,7 +42,7 @@ const OrderDetailModal = ({ closeModal, visible, bookingId, filename ,navigation
 
       if (response.ok) {
         const details = await response.json();
-
+        // setGChatstate({});
         if (details && Object.keys(details).length > 0) {
           setDetailData(details); // Set fetched details if data exists
           // console.log("Fetched details:", details);

@@ -5,6 +5,7 @@ const RecieveMsg = ({ text }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.message}>{text}</Text>
+      {/* <Text style={styles.message}>hello</Text> */}
     </View>
   );
 };

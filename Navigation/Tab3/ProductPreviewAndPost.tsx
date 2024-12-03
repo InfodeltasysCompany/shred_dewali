@@ -187,170 +187,139 @@ const ProductPreviewAndPost = ({ setisVisible, visible, address, setaddress, isA
   ///////////////////////////
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const
-    handlePublishYourAdBtn = async () => {
-                        /*
-             const [GCreateOrderAuctionState, setCreateOrderAuctionState] = useState({
-                //userId: "",
-                firebase_uid: "",
-                //category: "",
-                //categoryId: "",
-                //catagoryImgSourch:"",
-                //subcategory: "",
-               // minimumPresetPrice: "",
-                //title: "",
-                //description: "",
-                //enterPrice: "",
-                //enterWeight: "",
-                //images: [],
-                //address: {},
-                //date: "",
-               // isAuction: false,
-                //startDate: "",
-                //endDate: "",
-              });
-            */
-           
-       
-      if (isSubmitting) {
-        return; // Prevent multiple submissions
-      }
-
-      setIsSubmitting(true);
-      if (
-        (
-          (startDate !== "Start Date" && endDate !== "End Date" && endDate >= startDate) || chooseDate !== "Choose Date"
-        ) &&
-        address !== null &&
-        dataforPreview[dataforPreview.length - 1] !== null &&
-        userIdApp !== ""
-      ) {
-        try {
-          setCreateOrderAuctionState(prevstate=>({
-            ...prevstate,
-            startDate,
-            endDate,
-            date:chooseDate,
-          }))
-          let firebse_prodId = await OrderCreateFirebaseRealtime(state,GCreateOrderAuctionState,setCreateOrderAuctionState,GChatstate);
-          console.log("firebase_prodId is :",firebse_prodId);
-          const formData = new FormData();
-          formData.append("user_id", userIdApp);
-          formData.append("approx_price", newformdata.textPrice.toString());
-
-
-          const filenames = dataforPreview[dataforPreview.length - 1].filename
-            .split(",")
-            .map((filename) => filename.trim());
-
-          const currentDate = new Date();
-          const year = currentDate.getFullYear();
-          const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
-          const day = currentDate.getDate().toString().padStart(2, "0");
-          const hours = currentDate.getHours().toString().padStart(2, "0");
-          const minutes = currentDate.getMinutes().toString().padStart(2, "0");
-          const seconds = currentDate.getSeconds().toString().padStart(2, "0");
-          const currentDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-          const imageURIs = filenames.map(filename => `${BASE_URL}/uploads/${filename}`);
-
-          for (const uri of imageURIs) {
-            try {
-              const response = await fetch(uri);
-              if (!response.ok) {
-                throw new Error(`Failed to fetch image: ${uri}`);
-              }
-              const blob = await response.blob();
-
-              const uniqueFilename = generateUniqueFilename(uri);
-              const filename = `${currentDateTime}-${uniqueFilename}.jpg`;
-
-              const image = {
-                uri: uri,
-                name: filename,
-                type: "image/jpeg",
-              };
-
-              formData.append("file[]", image as any);
-            } catch (error) {
-              console.error("Error fetching image:", error);
-            }
-          }
-
-          function generateUniqueFilename(imageUri) {
-            const extension = imageUri.split(".").pop();
-            const uuid = generateUUID();
-            return `${uuid}.${extension}`;
-          }
-
-          function generateUUID() {
-            return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-              /[xy]/g,
-              function (c) {
-                var r = (Math.random() * 16) | 0,
-                  v = c == "x" ? r : (r & 0x3) | 0x8;
-                return v.toString(16);
-              }
-            );
-          }
-          const currentDateTime1 = new Date();
-
-          formData.append("addr_id", address.addr_id);
-          formData.append("approx_weight", dataforPreview[dataforPreview.length - 1].total_weight);
-          formData.append("prod_id", dataforPreview[dataforPreview.length - 1].prod_id);
-          formData.append("approx_price", newformdata.textPrice.toString());
-          formData.append("firebse_prodID",firebse_prodId);
-          formData.append("bid_id",currentDateTime1.toString());
-
-          console.log("formdata for ");
-          let apiUrl = isAuctionEnabled
-            ? `${"BASE_URL"}/auctionOrder_api.php?action=insert`
-            : `${"BASE_URL"}/orders_api.php?action=insert`;
-
-
-          const response = await fetch(apiUrl, {
-            method: "POST",
-            body: formData,
-          });
-
-          if (response.ok) {
-            console.log("Auction created successfully!");
-            let toast = ""
-            if (isAuctionEnabled) {
-              toast = "Auction Created successfully"
-            } else {
-              toast = "Order Placed succesfully"
-            }
-            ToastAndroid.showWithGravity(
-              toast,
-              ToastAndroid.SHORT,
-              ToastAndroid.CENTER
-            );
-            //////////////////
-            createBiddingGroup(f_id,newformdata.textTitle,newformdata.textPrice,currentDateTime1.toString());
-            /////////////////
-            navigation.navigate("Main");
-          } else {
-            console.error("Failed to create auction.");
-          }
-
-          const data = await response.json();
-          console.log("response:", data);
-        } catch (error) {
-          console.error("Error:", error);
-        } finally {
-          setIsSubmitting(false);
-        }
-      } else {
-        // Alert.alert("Please fill all the necessary fields.");
-        ToastAndroid.showWithGravity(
-          "Please fill all the necessary fields.",
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER
+  const handlePublishYourAdBtn = async () => {
+    if (isSubmitting) {
+      return; // Prevent multiple submissions
+    }
+  
+    setIsSubmitting(true);
+  
+    if (
+      ((startDate !== "Start Date" && endDate !== "End Date" && endDate >= startDate) || chooseDate !== "Choose Date") &&
+      address !== null &&
+      dataforPreview[dataforPreview.length - 1] !== null &&
+      userIdApp !== ""
+    ) {
+      try {
+        setCreateOrderAuctionState((prevstate) => ({
+          ...prevstate,
+          startDate,
+          endDate,
+          date: chooseDate,
+        }));
+  
+        let firebaseProdId = await OrderCreateFirebaseRealtime(
+          state,
+          GCreateOrderAuctionState,
+          setCreateOrderAuctionState,
+          GChatstate
         );
+        console.log("firebase_prodId is:", firebaseProdId);
+  
+        const formData = new FormData();
+        formData.append("user_id", userIdApp);
+        formData.append("approx_price", newformdata.textPrice.toString());
+        formData.append("firebase_prodID", firebaseProdId);
+  
+        const filenames = dataforPreview[dataforPreview.length - 1].filename
+          .split(",")
+          .map((filename) => filename.trim());
+  
+        const currentDateTime = new Date()
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+  
+        const imageURIs = filenames.map((filename) => `${BASE_URL}/uploads/${filename}`);
+  
+        for (const uri of imageURIs) {
+          try {
+            const response = await fetch(uri);
+            if (!response.ok) {
+              throw new Error(`Failed to fetch image: ${uri}`);
+            }
+            const blob = await response.blob();
+  
+            const uniqueFilename = generateUniqueFilename(uri);
+            const filename = `${currentDateTime}-${uniqueFilename}.jpg`;
+  
+            const image = {
+              uri: uri,
+              name: filename,
+              type: "image/jpeg",
+            };
+  
+            formData.append("file[]", image);
+          } catch (error) {
+            
+            console.error("Error fetching image:", error);
+          }
+        }
+  
+        function generateUniqueFilename(imageUri) {
+          const extension = imageUri.split(".").pop();
+          const uuid = generateUUID();
+          return `${uuid}.${extension}`;
+        }
+  
+        function generateUUID() {
+          return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+            const r = (Math.random() * 16) | 0;
+            const v = c === "x" ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+          });
+        }
+  
+        const currentDateTime1 = new Date().toISOString();
+  
+        formData.append("addr_id", address.addr_id);
+        formData.append("approx_weight", dataforPreview[dataforPreview.length - 1].total_weight);
+        formData.append("prod_id", dataforPreview[dataforPreview.length - 1].prod_id);
+        formData.append("bid_id", currentDateTime1);
+  
+        const apiUrl = isAuctionEnabled
+          ? `${BASE_URL}/auctionOrder_api.php?action=insert`
+          : `${BASE_URL}/orders_api.php?action=insert`;
+  
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          body: formData,
+        });
+  
+        if (response.ok) {
+          console.log("Auction created successfully!");
+          const toast = isAuctionEnabled ? "Auction Created successfully" : "Order Placed successfully";
+          ToastAndroid.showWithGravity(toast, ToastAndroid.SHORT, ToastAndroid.CENTER);
+  
+          createBiddingGroup(
+            firebaseProdId,
+            newformdata.textTitle,
+            newformdata.textPrice,
+            currentDateTime1
+          );
+  
+          navigation.navigate("Main");
+        } else {
+          console.error("Failed to create auction.");
+        }
+  
+        const data = await response.json();
+        console.log("response:", data);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
         setIsSubmitting(false);
       }
-    };
+    } else {
+      ToastAndroid.showWithGravity(
+        "Please fill all the necessary fields.",
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER
+      );
+      setIsSubmitting(false);
+    }
+  };
+  
 
     // const createBiddingGroup = async (userId, groupName, startingPrice,bid_id) => {
     //   const firestore = getFirestore();

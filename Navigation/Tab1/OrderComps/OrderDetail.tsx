@@ -6,12 +6,13 @@ import { IMG_URL } from '../../../ReuseComponent/Env';
 import Chat_MakeOfferModal from '../../Conversation/Order/Chat_MakeOfferModal';
 import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
 import LoginModal from '../../../components/Credential/LoginModal';
+import { CreateConversationSeller } from '../../../components/Modal/Search/FirebaseChatFunctions';
 
 
 const { width } = Dimensions.get('window');
 
-const OrderDetail = ({ item ,navigation}) => {
-  const [,,,,GChatstate,setGChatstate] = useContext(AuthContext);
+const OrderDetail = ({ item, navigation }) => {
+  const [state, , , , GChatstate, setGChatstate] = useContext(AuthContext);
   const imgurl = IMG_URL;
   const [images, setImages] = useState([]);
   const layout = useWindowDimensions();
@@ -31,10 +32,10 @@ const OrderDetail = ({ item ,navigation}) => {
         .map(filename => imgurl + filename.trim())
         .filter(url => url); // Filter out empty or null URLs
       setImages(imageUrls);
-    } 
+    }
   }, [item, imgurl]);
-  
-  
+
+
 
   // const handleBuyPressOnMOdal = async (bookingId: any, getOrderResponse: any) => {
 
@@ -57,7 +58,7 @@ const OrderDetail = ({ item ,navigation}) => {
   //     if (response.ok) {
   //       const aceptData = await response.json();
   //       // setacceptData(aceptData);
-       
+
   //     } else {
   //       console.error("Accept API request failed:", response.statusText);
   //     }
@@ -131,73 +132,136 @@ const OrderDetail = ({ item ,navigation}) => {
       <View style={styles.buttonContainer}>
         {item[0]?.booking_id ? (
           <>
-            <TouchableOpacity onPress={() => {
-             Alert.alert(
-              "Beware of Fraud", // Title of the alert
-              "Don't share your personal information like ATM number, OTP, and don't make any money transactions.", // Message
-              [{text:"cancel",onPress:()=>console.log("cancel is pressed"),style:"cancel"},{
-                text:"OK",
-                onPress:()=>{
-                  if(Object.keys(GChatstate.productdetails).length>0 && Object.keys(GChatstate.userdetails).length>0){
-                    setIschatmakeoffermodalVisible(!ischatmakeoffermodalVisible)
-                  }else{
-                    Alert.alert("You are not logged in ","Login please.",[
-                      {text:"cancel",
-                        style:"cancel",
-                        onPress:()=>{console.log("cancel pressed")}
-                      },{
-                        text:"Ok",
-                        onPress:()=>{console.log("Ok pressed");
-                          setIsloginModalVisible(!isloginModalVisible);
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert(
+                  "Beware of Fraud", // Title of the alert
+                  "Don't share your personal information like ATM number, OTP, and don't make any money transactions.", // Message
+                  [
+                    {
+                      text: "Cancel",
+                      onPress: () => console.log("Cancel is pressed"),
+                      style: "cancel",
+                    },
+                    {
+                      text: "OK",
+                      onPress: async () => {
+                        // Check if required data exists in GChatstate
+                        if (
+                          GChatstate.productdetails &&
+                          Object.keys(GChatstate.productdetails).length > 0 &&
+                          GChatstate.userdetails &&
+                          Object.keys(GChatstate.userdetails).length > 0
+                        ) {
+                          try {
+                            console.log("OK pressed");
+                            // console.log("Product details:", GChatstate.productdetails);
 
+                            // Create a conversation using provided details
+                            const currentConversationData = await CreateConversationSeller(
+                              GChatstate.productdetails['0'].firebase_prodID,
+                              state.f_id,
+                              GChatstate.productdetails['0'].firebase_uid
+                            );
+
+                            if (currentConversationData) {
+                              // console.log("Conversation created:", currentConversationData);
+                              console.log(
+                                `Product ID: ${GChatstate.productdetails['0'].firebase_prodID}, Buyer ID: ${state.f_id}, Seller ID: ${GChatstate.productdetails['0'].firebase_uid}`
+                              );
+
+                              // Update state with the new conversation data
+                              setGChatstate((prevstate) => ({
+                                ...prevstate,
+                                currentConversationData,
+                              }));
+                              setIschatmakeoffermodalVisible(true);
+                            } else {
+                              console.error("Failed to fetch conversation data");
+                              Alert.alert(
+                                "Error",
+                                "Failed to create a conversation. Please try again."
+                              );
+                            }
+                          } catch (error) {
+                            console.error("Error during conversation creation:", error);
+                            Alert.alert(
+                              "Error",
+                              "An unexpected error occurred. Please try again later."
+                            );
+                          }
+                        } else {
+                          // Alert if not logged in
+                          Alert.alert("You are not logged in", "Login please.", [
+                            {
+                              text: "Cancel",
+                              style: "cancel",
+                              onPress: () => {
+                                console.log("Cancel pressed");
+                              },
+                            },
+                            {
+                              text: "Ok",
+                              onPress: () => {
+                                setIsloginModalVisible(!isloginModalVisible);
+                              },
+                            },
+                          ]);
                         }
-                      }
-                    ])
-                  }
-                }
-              }],{cancelable:false})
-              
-            }} style={styles.buttonchat}>
+                      },
+                    },
+                  ],
+                  { cancelable: false } // Ensure the alert cannot be dismissed by tapping outside
+                );
+              }}
+              style={styles.buttonchat}
+            >
               <Text style={styles.buttonTextChat}>Chat</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {
-              Alert.alert("Contact to Seller","Your contact details will be shared to the seller.",
-                [{text:"cancel",onPress:()=>console.log("cancel is pressed"),style:"cancel"},{
-                text:"OK",
-                onPress:()=>{
-                  if(Object.keys(GChatstate.productdetails).length>0 && Object.keys(GChatstate.userdetails).length>0){
-                    setIschatmakeoffermodalVisible(!ischatmakeoffermodalVisible)
-                  }else{
-                    Alert.alert("You are not logged in ","Login please.",[
-                      {text:"cancel",
-                        style:"cancel",
-                        onPress:()=>{console.log("cancel pressed")}
-                      },{
-                        text:"Ok",
-                        onPress:()=>{console.log("Ok pressed");
-                          setIsloginModalVisible(!isloginModalVisible);
 
+
+
+
+            <TouchableOpacity onPress={() => {
+              Alert.alert("Contact to Seller", "Your contact details will be shared to the seller.",
+                [{ text: "cancel", onPress: () => console.log("cancel is pressed"), style: "cancel" }, {
+                  text: "OK",
+                  onPress: () => {
+                    if (Object.keys(GChatstate.productdetails).length > 0 && Object.keys(GChatstate.userdetails).length > 0) {
+                      setIschatmakeoffermodalVisible(!ischatmakeoffermodalVisible)
+                    } else {
+                      Alert.alert("You are not logged in ", "Login please.", [
+                        {
+                          text: "cancel",
+                          style: "cancel",
+                          onPress: () => { console.log("cancel pressed") }
+                        }, {
+                          text: "Ok",
+                          onPress: () => {
+                            console.log("Ok pressed");
+                            setIsloginModalVisible(!isloginModalVisible);
+
+                          }
                         }
-                      }
-                    ])
+                      ])
+                    }
                   }
-                }
-              }],{cancelable:false})
-              
+                }], { cancelable: false })
+
             }} style={styles.buttonbuy}>
               <Text style={styles.buttonTextBuy}>Buy</Text>
             </TouchableOpacity>
-          
+
           </>
         ) : (
-          <TouchableOpacity onPress={() => {}} style={styles.buttonbuy}>
+          <TouchableOpacity onPress={() => { }} style={styles.buttonbuy}>
             <Text style={styles.buttonTextBuy}>Start Bidding</Text>
           </TouchableOpacity>
         )}
       </View>
-      <Chat_MakeOfferModal visible={ischatmakeoffermodalVisible} closeModal={()=>{setIschatmakeoffermodalVisible(!ischatmakeoffermodalVisible)}}/>
+      <Chat_MakeOfferModal visible={ischatmakeoffermodalVisible} closeModal={() => { setIschatmakeoffermodalVisible(!ischatmakeoffermodalVisible) }} />
       <LoginModal navigation={navigation} visible={isloginModalVisible} setVisible={setIsloginModalVisible} />
-      </View>
+    </View>
   );
 };
 

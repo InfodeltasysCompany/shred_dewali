@@ -1,4 +1,222 @@
-import React, { useState } from 'react';
+// import React, { useContext, useState } from 'react';
+// import {
+//   FlatList,
+//   StyleSheet,
+//   Text,
+//   View,
+//   TouchableOpacity,
+//   TextInput,
+// } from 'react-native';
+// import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
+// import { generatePriceDetails } from '../../../utils/Functions';
+
+// const MakeOffer = () => {
+//   const [state, , , , GChatstate, setGChatstate] = useContext(AuthContext);
+
+//   // Set initial states
+//   const [customOffer, setCustomOffer] = useState('');
+//   const [labelState, setLabelState] = useState('Very Good Offer');
+//   const [labelColorState, setLabelColorState] = useState('green');
+//   const [price, setPrice] = useState('100');
+
+//   const offerData = generatePriceDetails(100);
+
+//   // Handle sending the offer
+//   const handleSendOffer = () => {
+//     const offerAmount = customOffer || price;
+//     console.log('Offer submitted:', offerAmount);
+//     // Handle API submission logic here
+//   };
+
+//   // Update feedback based on price input
+//   const handlePriceChange = (text) => {
+//     const inputPrice = parseFloat(text) || 0; // Ensure numeric value
+//     setPrice(text);
+//     setCustomOffer('');
+    
+//     if (inputPrice >= offerData[0].price) {
+//       setLabelState('Very Good Offer');
+//       setLabelColorState('green');
+//     } else if (inputPrice < offerData[offerData.length - 1].price) {
+//       setLabelState('Price Not Accepted');
+//       setLabelColorState('red');
+//     } else {
+//       setLabelState('Good Offer');
+//       setLabelColorState('orange');
+//     }
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       {/* Preset Offer Buttons */}
+//       <View style={styles.offerListView}>
+//         <FlatList
+//           data={offerData}
+//           horizontal
+//           keyExtractor={(item) => item.id.toString()}
+//           renderItem={({ item }) => (
+//             <TouchableOpacity
+//               style={[
+//                 styles.offerButton,
+//                 item.price >= 1000 ? styles.greenOfferButton : styles.redOfferButton,
+//               ]}
+//               onPress={() => {
+//                 setCustomOffer('');
+//                 setLabelState(item.label);
+//                 setPrice(item.price.toString());
+//                 setLabelColorState(item.color || 'green');
+//               }}
+//             >
+//               <Text
+//                 style={[
+//                   styles.offerText,
+//                   // item.price >= 1000 ? styles.greenOfferText : styles.redOfferText,
+//                 ]}
+//               >
+//                 ₹ {item.price}
+//               </Text>
+//             </TouchableOpacity>
+//           )}
+//         />
+//       </View>
+
+//       {/* Custom Offer Input */}
+//       <TextInput
+//         style={styles.customOfferInput}
+//         keyboardType="numeric"
+//         value={price}
+//         onChangeText={handlePriceChange}
+//       />
+
+//       {/* Offer Feedback */}
+//       <View style={{flexDirection:"row",}}>
+//       <Text
+//         style={[
+//           styles.feedbackText,
+//           { backgroundColor: labelColorState },
+//         ]}
+//       >
+//         {labelState}
+//       </Text>
+
+//       {/* Send Button */}
+//       <TouchableOpacity
+//   style={[
+//     styles.sendButton,
+//     labelColorState === "red"
+//       ? { backgroundColor: "#ddd", }
+//       : { backgroundColor: "#007bff" }
+//   ]}
+//   onPress={labelColorState === "red" ? null : handleSendOffer} // Disable press when red
+//   disabled={labelColorState === "red"} // Disable button when red
+// >
+//   <Text
+//     style={[
+//       styles.sendButtonText,
+//       labelColorState === "red"
+//         ? { color: "#fff" }
+//         : { color: "#fff" }
+//     ]}
+//   >
+//     Send
+//   </Text>
+// </TouchableOpacity>
+
+      
+      
+//       </View>
+      
+//     </View>
+//   );
+// };
+
+// export default MakeOffer;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     padding: 20,
+//   },
+//   offerListView: {
+//     flexDirection: 'row',
+//     justifyContent: 'center',
+//     marginBottom: 20,
+//   },
+//   offerButton: {
+//     borderWidth: 1,
+//     borderColor: '#ccc',
+//     borderRadius: 20,
+//     paddingVertical: 10,
+//     paddingHorizontal: 15,
+//     marginHorizontal: 5,
+//   },
+//   greenOfferButton: {
+//     // backgroundColor: '#28A745',
+//     borderColor: '#28A700',
+//     backgroundColor:"black"
+//   },
+//   redOfferButton: {
+//     // backgroundColor: '#E74C3C',
+//     backgroundColor:"#ddd",
+//     borderColor: '#28A700',
+//     color:"black"
+//   },
+//   offerText: {
+//     fontSize: 16,
+//     color:"#007bff"
+//   },
+//   // greenOfferText: {
+//   //   color: '#fff',
+//   // },
+//   // redOfferText: {
+//   //   color: '#fff',
+//   // },
+//   customOfferInput: {
+//     borderColor: '#ccc',
+//     borderRadius: 5,
+//     padding: 10,
+//     fontSize: 36,
+//     marginBottom: 20,
+//     fontWeight: '700',
+//     textAlign: 'center',
+//     backgroundColor:"#80bdff"
+//   },
+//   feedbackText: {
+//     textAlign: 'center',
+//     color: 'white',
+//     fontSize: 22,
+//     marginBottom: 20,
+//     height: 80,
+//     width:"60%",
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     borderBottomLeftRadius: 30,
+//     borderBottomRightRadius: 30,
+//     borderTopRightRadius: 30,
+//     padding:8,
+//     // paddingTop: 20,
+//     fontWeight: '800',
+//   },
+//   sendButton: {
+//     // backgroundColor: '#ddd',
+//     paddingVertical: 12,
+//     borderRadius: 25,
+//     alignItems: 'center',
+//     justifyContent:"center",
+//     height:80,
+//     width:"35%",
+//     marginLeft:10,
+    
+//   },
+//   sendButtonText: {
+//     // color: '#fff',
+//     fontSize: 26,
+//     // fontWeight: 'bold',
+//     fontWeight:"900"
+//   },
+// });
+import React, { useContext, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -6,17 +224,44 @@ import {
   View,
   TouchableOpacity,
   TextInput,
-} from 'react-native';
+} from "react-native";
+import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
+import { generatePriceDetails } from "../../../utils/Functions";
 
 const MakeOffer = () => {
-  const [offers] = useState([1000, 950, 900, 850, 800]);
-  const [selectedOffer, setSelectedOffer] = useState(1000);
-  const [customOffer, setCustomOffer] = useState('1000');
+  const [state, , , , GChatstate, setGChatstate] = useContext(AuthContext);
 
+  // Set initial states
+  const [customOffer, setCustomOffer] = useState("");
+  const [labelState, setLabelState] = useState("Very Good Offer");
+  const [labelColorState, setLabelColorState] = useState("green");
+  const [price, setPrice] = useState("100");
+
+  const offerData = generatePriceDetails(100);
+
+  // Handle sending the offer
   const handleSendOffer = () => {
-    const offerAmount = customOffer || selectedOffer;
-    console.log('Offer submitted:', offerAmount);
+    const offerAmount = customOffer || price;
+    console.log("Offer submitted:", offerAmount);
     // Handle API submission logic here
+  };
+
+  // Update feedback based on price input
+  const handlePriceChange = (text) => {
+    const inputPrice = parseFloat(text) || 0; // Ensure numeric value
+    setPrice(text);
+    setCustomOffer("");
+
+    if (inputPrice >= offerData[0].price) {
+      setLabelState("Very Good Offer");
+      setLabelColorState("green");
+    } else if (inputPrice < offerData[offerData.length - 1].price) {
+      setLabelState("Price Not Accepted");
+      setLabelColorState("red");
+    } else {
+      setLabelState("Good Offer");
+      setLabelColorState("orange");
+    }
   };
 
   return (
@@ -24,28 +269,26 @@ const MakeOffer = () => {
       {/* Preset Offer Buttons */}
       <View style={styles.offerListView}>
         <FlatList
-          data={offers}
+          data={offerData}
           horizontal
-          keyExtractor={(item) => item.toString()}
+          showsHorizontalScrollIndicator={false} // Disable horizontal scrollbar
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={[
                 styles.offerButton,
-                selectedOffer === item && styles.selectedOfferButton,
+                item.price >= 1000
+                  ? styles.greenOfferButton
+                  : styles.redOfferButton,
               ]}
               onPress={() => {
-                setSelectedOffer(item);
-                setCustomOffer('');
+                setCustomOffer("");
+                setLabelState(item.label);
+                setPrice(item.price.toString());
+                setLabelColorState(item.color || "green");
               }}
             >
-              <Text
-                style={[
-                  styles.offerText,
-                  selectedOffer === item && styles.selectedOfferText,
-                ]}
-              >
-                ₹ {item}
-              </Text>
+              <Text style={styles.offerText}>₹ {item.price}</Text>
             </TouchableOpacity>
           )}
         />
@@ -54,22 +297,45 @@ const MakeOffer = () => {
       {/* Custom Offer Input */}
       <TextInput
         style={styles.customOfferInput}
-        // placeholder="Enter your offer amount"
         keyboardType="numeric"
-        value={customOffer}
-        onChangeText={(text) => {
-          setCustomOffer(text);
-          setSelectedOffer(null);
-        }}
+        value={price}
+        onChangeText={handlePriceChange}
+        placeholder="Enter Offer Price"
       />
 
-      {/* Offer Feedback */}
-      <Text style={styles.feedbackText}>Very good offer! High chances of seller's reply.</Text>
+      {/* Offer Feedback and Send Button */}
+      <View style={styles.feedbackContainer}>
+        <Text
+          style={[
+            styles.feedbackText,
+            { backgroundColor: labelColorState },
+          ]}
+        >
+          {labelState}
+        </Text>
 
-      {/* Send Button */}
-      <TouchableOpacity style={styles.sendButton} onPress={handleSendOffer}>
-        <Text style={styles.sendButtonText}>Send</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.sendButton,
+            labelColorState === "red"
+              ? { backgroundColor: "#ddd" }
+              : { backgroundColor: "#007bff" },
+          ]}
+          onPress={labelColorState === "red" ? null : handleSendOffer}
+          disabled={labelColorState === "red"}
+        >
+          <Text
+            style={[
+              styles.sendButtonText,
+              labelColorState === "red"
+                ? { color: "gray" }
+                : { color: "white" },
+            ]}
+          >
+            Send
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -79,67 +345,74 @@ export default MakeOffer;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
+    padding: 20,
   },
   offerListView: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 20,
   },
   offerButton: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,
     marginHorizontal: 5,
-    backgroundColor: '#f0f0f0',
   },
-  selectedOfferButton: {
-    backgroundColor: '#00b894',
-    borderColor: '#00b894',
+  greenOfferButton: {
+    borderColor: "#28A700",
+    backgroundColor: "black",
+  },
+  redOfferButton: {
+    backgroundColor: "#ddd",
+    borderColor: "#28A700",
   },
   offerText: {
     fontSize: 16,
-    color: '#333',
-  },
-  selectedOfferText: {
-    color: '#fff',
+    color: "#007bff",
   },
   customOfferInput: {
-    // borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
     fontSize: 36,
     marginBottom: 20,
-    fontWeight:"700",
-    alignItems:"center",justifyContent:"center"
-
+    fontWeight: "700",
+    textAlign: "center",
+    backgroundColor: "#80bdff",
+  },
+  feedbackContainer: {
+    flexDirection: "row",
+    padding:15,
   },
   feedbackText: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 24,
+    textAlign: "center",
+    color: "white",
+    fontSize: 22,
     marginBottom: 20,
-    backgroundColor:"#28A745",
-    height:80,
-    justifyContent:"center",
-    alignItems:"center",
-    borderBottomLeftRadius:30,
-    borderBottomRightRadius:30,
-    borderTopRightRadius:30,
+    height: 80,
+    width: "60%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    borderTopRightRadius: 30,
+    padding: 8,
+    fontWeight: "800",
   },
   sendButton: {
-    backgroundColor: '#007bff',
     paddingVertical: 12,
     borderRadius: 25,
-    alignItems: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    height: 80,
+    width: "35%",
+    marginLeft: 10,
   },
   sendButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 26,
+    fontWeight: "900",
   },
 });

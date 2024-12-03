@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { Alert, ToastAndroid } from "react-native";
-import { ref, set, get, getDatabase, orderByChild, equalTo, DatabaseReference, Query,query } from "firebase/database"; // Added `get` for checking existence
+import { ref, set, get, getDatabase, orderByChild, equalTo, DatabaseReference, Query,query,onValue } from "firebase/database"; // Added `get` for checking existence
 import { auth, realtimeDb } from "../../../Config/Firebaseconfig"; // Import `auth` and `realtimeDb` from your config
 import { useContext } from "react";
 import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
@@ -121,17 +121,86 @@ export const OrderCreateFirebaseRealtime = async (
 // Utility to generate a unique and compact ID
 const generateCompactId = (prefix) => `${prefix}_${uuidv4().split("-")[0]}`;
 
-// Create a conversation in Firebase
+// // Create a conversation in Firebase
+// export const CreateConversationSeller = async (firebase_prodId, buyerID, sellerID) => {
+//   try {
+//     console.log("CreateConversationSeller called");
+
+//     // Fetch product details
+//     const productRef = ref(realtimeDb, `products/${firebase_prodId}`);
+//     const productSnapshot = await get(productRef);
+
+//     if (!productSnapshot.exists()) {
+//       console.error("Product details not found for ID:", firebase_prodId);
+//       return null;
+//     }
+//     const productDetails = productSnapshot.val();
+
+//     // Fetch seller details
+//     const sellerRef = ref(realtimeDb, `users/${sellerID}`);
+//     const sellerSnapshot = await get(sellerRef);
+
+//     if (!sellerSnapshot.exists()) {
+//       console.error("Seller details not found for ID:", sellerID);
+//       return null;
+//     }
+//     const sellerDetails = sellerSnapshot.val();
+
+//     // Fetch buyer details
+//     const buyerRef = ref(realtimeDb, `users/${buyerID}`);
+//     const buyerSnapshot = await get(buyerRef);
+
+//     if (!buyerSnapshot.exists()) {
+//       console.error("Buyer details not found for ID:", buyerID);
+//       return null;
+//     }
+//     const buyerDetails = buyerSnapshot.val();
+
+//     // Generate a unique ID for the conversation
+//     const conversationID = `${firebase_prodId}_${buyerID}_${sellerID}`;
+
+//     // Structure the conversation data
+//     const newConversation = {
+//       productID: productDetails,
+//       sellerDetails,
+//       buyerDetails,
+//       messages: {}, // Initialize with an empty object for messages
+//     };
+
+//     // Save the new conversation to Firebase Realtime Database
+//     const conversationRef = ref(realtimeDb, `conversations/${conversationID}`);
+//     await set(conversationRef, newConversation);
+
+//     console.log("Conversation created successfully:", newConversation);
+
+//     return conversationID; // Return the conversation ID
+//   } catch (error) {
+//     console.error("Error creating conversation in Firebase:", error);
+//     return null;
+//   }
+// };
+
 export const CreateConversationSeller = async (firebase_prodId, buyerID, sellerID) => {
+  const conversationID = `${firebase_prodId}_${buyerID}_${sellerID}`;
+  const conversationRef = ref(realtimeDb, `conversations/${conversationID}`);
+
   try {
-    console.log("CreateConversationSeller called");
+    // Check if the conversation already exists
+    const conversationSnapshot = await get(conversationRef);
+
+    if (conversationSnapshot.exists()) {
+      console.log(`Conversation already exists for ID: ${conversationID}`);
+      return conversationSnapshot.val(); // Return the existing conversation
+    }
+
+    console.log("Creating a new conversation...");
 
     // Fetch product details
-    const productRef = ref(realtimeDb, `products/${firebase_prodId}`);
+    const productRef = ref(realtimeDb, `product/${firebase_prodId}`);
     const productSnapshot = await get(productRef);
 
     if (!productSnapshot.exists()) {
-      console.error("Product details not found for ID:", firebase_prodId);
+      // console.error("Product details not found for ID:", firebase_prodId);
       return null;
     }
     const productDetails = productSnapshot.val();
@@ -141,7 +210,7 @@ export const CreateConversationSeller = async (firebase_prodId, buyerID, sellerI
     const sellerSnapshot = await get(sellerRef);
 
     if (!sellerSnapshot.exists()) {
-      console.error("Seller details not found for ID:", sellerID);
+      // console.error("Seller details not found for ID:", sellerID);
       return null;
     }
     const sellerDetails = sellerSnapshot.val();
@@ -151,13 +220,10 @@ export const CreateConversationSeller = async (firebase_prodId, buyerID, sellerI
     const buyerSnapshot = await get(buyerRef);
 
     if (!buyerSnapshot.exists()) {
-      console.error("Buyer details not found for ID:", buyerID);
+      // console.error("Buyer details not found for ID:", buyerID);
       return null;
     }
     const buyerDetails = buyerSnapshot.val();
-
-    // Generate a unique ID for the conversation
-    const conversationID = `${firebase_prodId}_${buyerID}_${sellerID}`;
 
     // Structure the conversation data
     const newConversation = {
@@ -168,17 +234,17 @@ export const CreateConversationSeller = async (firebase_prodId, buyerID, sellerI
     };
 
     // Save the new conversation to Firebase Realtime Database
-    const conversationRef = ref(realtimeDb, `conversations/${conversationID}`);
     await set(conversationRef, newConversation);
+    // console.log("New conversation created successfully:", newConversation);
 
-    console.log("Conversation created successfully:", newConversation);
-
-    return conversationID; // Return the conversation ID
+    return newConversation; // Return the newly created conversation
   } catch (error) {
     console.error("Error creating conversation in Firebase:", error);
     return null;
   }
 };
+
+
 
 // Send a message in an existing conversation
 export const sendMessage = async (conversationID, text, productID, senderID, receiverID) => {
@@ -213,56 +279,45 @@ export const sendMessage = async (conversationID, text, productID, senderID, rec
 };
 
 
-export const getAllMyConversations = async (
-  firebase_uid: string,
-  role: "all" | "buy" | "sell" = "all"
-): Promise<any[]> => {
-  try {
-    const conversationsRef = ref(realtimeDb, "conversations");
-    let buyerConversations: any[] = [];
-    let sellerConversations: any[] = [];
+// export const listenToMyConversations = async (
+//   firebase_uid,
+//   onConversationsUpdate
+// ) => {
+//   console.log("Fetching conversations...");
 
-    if (role === "buy" || role === "all") {
-      const buyerQuery = query(
-        conversationsRef,
-        orderByChild("buyerID"),
-        equalTo(firebase_uid)
-      );
-      const buyerSnapshot = await get(buyerQuery);
-      if (buyerSnapshot.exists()) {
-        buyerConversations = Object.entries(buyerSnapshot.val());
-      }
-    }
+//   const conversationsRef = ref(realtimeDb, "conversations");
 
-    if (role === "sell" || role === "all") {
-      const sellerQuery = query(
-        conversationsRef,
-        orderByChild("sellerID"),
-        equalTo(firebase_uid)
-      );
-      const sellerSnapshot = await get(sellerQuery);
-      if (sellerSnapshot.exists()) {
-        sellerConversations = Object.entries(sellerSnapshot.val());
-      }
-    }
+//   const queryAll = query(
+//     conversationsRef,
+//     orderByChild("buyerID"), // Testing with buyerID
+//     equalTo(firebase_uid)
+//   );
 
-    const allConversations = [...buyerConversations, ...sellerConversations]
-      .map(([conversationID, conversationData]: any) => ({
-        conversationID,
-        ...conversationData,
-        latestMessageTimestamp: Object.values(conversationData.messages || {}).reduce(
-          (latest: number, message: any) =>
-            Math.max(latest, message.timestamp || 0),
-          0
-        ),
-      }))
-      .sort(
-        (a, b) => b.latestMessageTimestamp - a.latestMessageTimestamp
-      );
+//   try {
+//     const snapshot = await get(queryAll); // Fetch snapshot
+//     console.log("Snapshot exists:", snapshot.exists());
 
-    return allConversations;
-  } catch (error) {
-    console.error("Error fetching conversations:", error);
-    return [];
-  }
-};
+//     if (snapshot.exists()) {
+//       const data = snapshot.val();
+//       console.log("Conversations data:", data);
+
+//       const conversations = Object.entries(data).map(([id, details]) => ({
+//         id,
+//         ...details,
+//       }));
+
+//       // Invoke the callback with the conversations
+//       onConversationsUpdate(conversations);
+//     } else {
+//       console.log("No conversations found.");
+//       onConversationsUpdate([]);
+//     }
+//   } catch (error) {
+//     console.error("Error fetching conversations:", error);
+//   }
+// };
+
+
+
+
+

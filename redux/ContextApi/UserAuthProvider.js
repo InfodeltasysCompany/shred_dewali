@@ -17,6 +17,8 @@ const UserAuthProvider = (props) => {
   const [GChatState, setGChatState] = useState({
     productdetails: {},
     userdetails: {},
+    currentConversationData:{},
+    // chatCurrentData:{},
   });
   const [GCreateOrderAuctionState, setCreateOrderAuctionState] = useState({
     userId: "",

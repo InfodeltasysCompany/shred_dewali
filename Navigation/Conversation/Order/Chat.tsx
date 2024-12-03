@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import { sendMessage } from '../../../components/Modal/Search/FirebaseChatFunctions';
+import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
 
 const Chat = () => {
+  const [state, , , , GChatstate, setGChatstate] = useContext(AuthContext);
   const [message, setMessage] = useState('');
   const [suggestedMessages] = useState([
     'Is the product still available?',
@@ -10,11 +13,48 @@ const Chat = () => {
     'How much is the shipping?',
     'Can I see more pictures?',
   ]);
+  /*
+  
+   const [GChatState, setGChatState] = useState({
+    productdetails: {},
+    userdetails: {},
+    currentConversationData:{},
+    // chatCurrentData:{},
+  });
+  */ 
 
   const handleSend = () => {
     if (message.trim()) {
       console.log('Sending message:', message);
       setMessage('');
+      console.log("current conversationdata:=",GChatstate.currentConversationData);
+// Log and validate the current conversation data
+console.log("current conversationdata:=", GChatstate.currentConversationData);
+
+if (
+  GChatstate.currentConversationData &&
+  GChatstate.currentConversationData.productID &&
+  GChatstate.currentConversationData.productID.firebase_pid
+) {
+  // Extract necessary values
+  const { productID } = GChatstate.currentConversationData;
+  const { firebase_pid } = productID;
+
+  // Construct the conversation ID
+  const conversationID = `${productID.productId}_${state.f_id}_${firebase_pid}`;
+
+  // Call the sendMessage function
+  sendMessage(
+    conversationID,
+    message, // Text message to send
+    productID.productId,
+    state.f_id, // Sender ID
+    firebase_pid // Receiver ID
+  );
+} else {
+  console.error("Invalid conversation data or productID is missing.");
+}
+      
     }
   };
 
