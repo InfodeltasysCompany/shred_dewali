@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, setPersistence } from 'firebase/auth';
+import { getAuth, setPersistence, onAuthStateChanged } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getReactNativePersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
@@ -38,5 +38,27 @@ const firestoreDb = getFirestore(app);
 // Initialize Realtime Database
 const realtimeDb = getDatabase(app);
 
-// Export the initialized services
-export { app, auth, firestoreDb, realtimeDb };
+// Function to check the current user
+const checkCurrentUser = () => {
+  const currentUser = auth.currentUser;
+
+  if (currentUser) {
+    console.log('Currently logged in user:', currentUser);
+    return currentUser; // You can return the current user or handle the logic as needed
+  } else {
+    console.log('No user is logged in');
+    return null; // No user is logged in
+  }
+};
+
+// Optionally, you can listen for authentication state changes to detect login/logout events
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log('User is logged in:', user);
+  } else {
+    console.log('User is logged out');
+  }
+});
+
+// Export the initialized services and check function
+export { app, auth, firestoreDb, realtimeDb, checkCurrentUser };
