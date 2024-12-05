@@ -54,6 +54,7 @@ import SellChats from './Navigation/Conversation/Order/SellChats';
 import SellBiddings from './Navigation/Conversation/Bidding/SellBiddings';
 import CombineChat from './Navigation/Conversation/Order/CombineChat';
 import CombineBidding from './Navigation/Conversation/Bidding/CombineBidding';
+import BuyingChats from './Navigation/Conversation/Order/BuyingChats';
 
 const App = () => {
   
@@ -90,7 +91,7 @@ useEffect(() => {
   return (
     <UserAuthProvider>
       {/* <Provider store={store}> */}
-        <App2 />
+        {/* <App2 /> */}
         {/* <OrderDetailModal/> */}
       {/* </Provider> */}
       {/* <Test1/> */}
@@ -99,6 +100,7 @@ useEffect(() => {
       {/* <SellChats/> */}
       {/* <SellBiddings/> */}
       {/* <CombineBidding/> */}
+      <BuyingChats/>
     </UserAuthProvider>
   );
 }
