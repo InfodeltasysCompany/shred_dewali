@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const SendMsg = ({ text }) => {
+const SendMsg = ({ item }) => {
+  console.log(item);
   return (
     <View style={styles.container}>
-      <Text style={styles.message}>{text}</Text>
-      {/* <Text style={styles.message}>hello</Text> */}
+      <Text style={styles.message}>{item?.content}</Text>
     </View>
   );
 };

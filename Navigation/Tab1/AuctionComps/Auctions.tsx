@@ -39,8 +39,9 @@ const Auctions = () => {
             const url = `${BASE_URL}/auctionOrder_api.php?action=select&country=${country}&city=${city}&userId=${userId}`
             console.log("url", url);
             const data = await getApiResponse(url);
-            console.log("Fetched Auction Data:", data);
-            settOrderData(data);
+            const filteredAuctions = data.filter((item) => item.user_id && item.user_id !== userIdApp);
+            // console.log("Fetched Auction Data:", data);
+            settOrderData(filteredAuctions);
         } catch (error) {
             console.log("Error fetching order data:", error);
         }
@@ -49,7 +50,10 @@ const Auctions = () => {
     useEffect(() => {
         getOrderResponse(); // Call the function to load orders on component mount
     }, []); // Avoid unnecessary re-fetching. Only run once on mount.
-
+    useEffect(() => {
+        getOrderResponse(); // Call the function to load orders on component mount
+    }, [userIdApp]); // Avoid unnecessary re-fetching. Only run once on mount.
+    
     return (
         <View style={styles.container}>
             <View style={styles.card1}>

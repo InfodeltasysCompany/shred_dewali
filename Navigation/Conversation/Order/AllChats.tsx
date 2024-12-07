@@ -1,153 +1,64 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
-import { get, ref } from 'firebase/database';  // Import Firebase functions
-import { realtimeDb } from '../../../Config/Firebaseconfig';  // Import your Firebase config
 import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
-
-interface Message {
-  sender: string;
-  text: string;
-  status: string;
-  timestamp: number;
-}
-
-interface Conversation {
-  conversationId: string;
-  sellerDetails: any;
-  productDetails: any;
-  buyerDetails: any;
-  messages: { [key: string]: Message } | null; 
-}
+import { onValue, ref } from 'firebase/database';
+import { realtimeDb } from '../../../Config/Firebaseconfig';
+import Chat_MakeOfferModal from './Chat_MakeOfferModal';
 
 const AllChats = () => {
-  const [state, , , , GChatstate, setGChatstate] = useContext(AuthContext);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const userId = state.f_id;
+  const [state, , , , GChatstate,setGChatstate] = useContext(AuthContext); // Destructure only necessary values
+  const [chats, setChats] = useState([]);
+  const [ischatmakeoffermodalVisible, setIschatmakeoffermodalVisible] = useState(false);
 
   useEffect(() => {
-    const fetchConversations = async () => {
-      console.log("firebase_fid", userId);
-      try {
-        const conversationsRef = ref(realtimeDb, `conversations/${userId}`);
-        const conversationsSnapshot = await get(conversationsRef);
-
-        console.log("Conversations Snapshot:", conversationsSnapshot.val());  // Log the raw snapshot
-
-        if (!conversationsSnapshot.exists()) {
-          console.error("No conversations found for this user.");
-          setError("No conversations found.");
-          setLoading(false);
+    const GetAllChats = () => {
+      console.log("firebase_uid:",state?.f_id);
+      const chatsRef = ref(realtimeDb, `conversations/chats/${state?.f_id}`);
+      onValue(chatsRef, (snapshot) => {
+        if (!snapshot.exists()) {
+          console.log('No chats found.');
+          setChats([]); // Clear chats if none found
           return;
         }
 
-        const conversationsData = conversationsSnapshot.val();
-        const conversationList: Conversation[] = [];
-
-        // Loop through the products for this user
-        for (let productId in conversationsData) {
-          const productData = conversationsData[productId];
-
-          // Loop through the conversation IDs for each product
-          for (let conversationId in productData) {
-            const conversation = productData[conversationId];
-
-            // Log details for debugging
-            console.log("Product ID:", productId);
-            console.log("Conversation ID:", conversationId);
-            console.log("Seller Details:", conversation.sellerDetails);
-            console.log("Buyer Details:", conversation.buyerDetails);
-            console.log("Product Details:", conversation.prodDetails); 
-            console.log("Messages:", conversation.messages);
-
-            const sellerDetails = conversation.sellerDetails || {};
-            const productDetails = conversation.prodDetails || {};
-            const buyerDetails = conversation.buyerDetails || {};
-            const messages = conversation.messages || {};  
-
-            conversationList.push({
-              conversationId,
-              sellerDetails,
-              productDetails,
-              buyerDetails,
-              messages,
-            });
+        // Filter out conversations with `null` messageId
+        const filteredChats = [];
+        snapshot.forEach((childSnapshot) => {
+          const chat = childSnapshot.val();
+          if (chat?.messageId) {
+            filteredChats.push({ key: childSnapshot.key, ...chat }); // Add key for easier rendering
           }
-        }
-
-        setConversations(conversationList);
-        setLoading(false);
-      } catch (err: any) {
-        console.error("Error fetching conversation data:", err);
-        setError(`Failed to load conversation data: ${err.message || err}`);
-        setLoading(false);
-      }
+        });
+        setChats(filteredChats); // Update state with filtered chats
+      });
     };
 
-    fetchConversations();
-  }, [userId]);
-
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
+    GetAllChats();
+  }, [state?.f_id, GChatstate]); // Add proper dependencies
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>All Chats</Text>
-
-      {conversations.length > 0 ? (
-        <FlatList
-          data={conversations}
-          keyExtractor={(item) => item.conversationId}
-          renderItem={({ item }) => (
-            <View style={styles.chatItem}>
-              <Text style={styles.chatTitle}>Product: {item.productDetails.title}</Text>
-              <Text>Description: {item.productDetails.description}</Text>
-              <Text>Price: {item.productDetails.price}</Text>
-              <Text>Weight: {item.productDetails.weight}</Text>
-
-              <Text style={styles.chatTitle}>Seller:</Text>
-              <Text>Email: {item.sellerDetails.email}</Text>
-              <Text>Phone: {item.sellerDetails.phone_number}</Text>
-              <Text>Username: {item.sellerDetails.username}</Text>
-              <Text>Verified: {item.sellerDetails.verify}</Text>
-
-              <Text style={styles.chatTitle}>Buyer:</Text>
-              <Text>Email: {item.buyerDetails.email}</Text>
-              <Text>Phone: {item.buyerDetails.phone_number}</Text>
-              <Text>Username: {item?item.buyerDetails.username:"no details"}</Text>
-              <Text>Verified: {item?item.buyerDetails.verify:"no details"}</Text>
-
-              <FlatList
-                data={Object.values(item.messages)}  
-                keyExtractor={(message, index) => index.toString()}
-                renderItem={({ item }: { item: Message }) => (
-                  <View style={styles.message}>
-                    <Text>{item?item.sender:"no details"}</Text>
-                    <Text>Status: {item?item.status:"no details"}</Text>
-                    <Text>Timestamp: {new Date(item?item.timestamp:"no details").toLocaleString()}</Text>
-                  </View>
-                )}
-              />
-            </View>
-          )}
-        />
+      {chats.length > 0 ? (
+        chats.map((chat) => (
+          <TouchableOpacity key={chat.key} style={styles.chatItem} onPress={()=>{console.log("chat is :",chat);
+            setGChatstate(
+              (prevstate) => ({
+              ...prevstate,
+              currentConversationData:chat,
+            })
+            
+          );
+            setIschatmakeoffermodalVisible(true);
+          }}>
+            <Text style={styles.chatText}>Message: {chat.lastMessage}</Text>
+            <Text style={styles.chatText}>Sender: {chat.lastSender}</Text>
+          </TouchableOpacity>
+        ))
       ) : (
-        <Text>No conversations found.</Text>
+        <Text style={styles.noChats}>No chats available</Text>
       )}
+      <Chat_MakeOfferModal visible={ischatmakeoffermodalVisible} closeModal={()=>setIschatmakeoffermodalVisible(!ischatmakeoffermodalVisible)}/>
     </View>
   );
 };
@@ -158,33 +69,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
   },
   header: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
-    textAlign: 'center',
   },
   chatItem: {
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: 12,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
     borderRadius: 8,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
   },
-  chatTitle: {
-    fontWeight: 'bold',
-    marginBottom: 8,
+  chatText: {
+    fontSize: 16,
   },
-  message: {
-    marginBottom: 8,
-  },
-  errorText: {
-    color: 'red',
+  noChats: {
+    fontSize: 16,
+    color: '#999',
     textAlign: 'center',
+    marginTop: 16,
   },
 });

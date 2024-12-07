@@ -3,7 +3,7 @@
 
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { Alert, ToastAndroid } from "react-native";
-import { ref, set, get, getDatabase, orderByChild, equalTo, DatabaseReference, Query, query, onValue } from "firebase/database"; 
+import { ref, set, get, getDatabase, orderByChild, equalTo, DatabaseReference, Query, query, onValue, update } from "firebase/database"; 
 import { auth, realtimeDb } from "../../../Config/Firebaseconfig"; 
 import { useContext } from "react";
 import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
@@ -87,7 +87,7 @@ export const OrderCreateFirebaseRealtime = async (
       const newOrder = {
         productId: generateProductId(),
         description: GCreateOrderAuctionState.description || "No description provided",
-        firebase_pid: GChatstate.userdetails.firebase_uid || "default_uid",
+        firebase_pid: state.f_id || "default_uid",
         image: GCreateOrderAuctionState.images || [],
         price: GCreateOrderAuctionState.enterPrice || 0,
         title: GCreateOrderAuctionState.title || "Untitled",
@@ -119,103 +119,259 @@ export const OrderCreateFirebaseRealtime = async (
 
 // Helper function to generate a unique and compact ID
 const generateCompactId = (prefix) => `${prefix}_${uuidv4().split("-")[0]}`;
-// Function to create a new conversation
-export const CreateConversationSeller = async (firebase_prodId, buyerID, sellerID) => { 
-  const conversationID = `${firebase_prodId}_seller_${sellerID}_buyer_${buyerID}`;
-  const productRef = ref(realtimeDb, `product/${firebase_prodId}`);
+
+
+export const CreateConversationSeller = async (productId, buyerID, sellerID) => {
+  if (!productId || !buyerID || !sellerID) {
+    console.error("Missing required parameters:", { productId, buyerID, sellerID });
+    return null;
+  }
+
+  const conversationID = `${productId}_seller_${sellerID}_buyer_${buyerID}`;
+  const productRef = ref(realtimeDb, `product/${productId}`);
+  console.log("buyerId:", buyerID);
+  console.log("sellerId:", sellerID);
+  console.log("productId:", productId);
 
   try {
-    console.log("Checking for product details at path:", `product/${firebase_prodId}`);
-
     // Fetch product details
     const productSnapshot = await get(productRef);
     if (!productSnapshot.exists()) {
-      console.error("Product details not found for ID:", firebase_prodId);
+      console.error("Product details not found for ID:", productId);
       return null;
     }
-
     const productDetails = productSnapshot.val();
     console.log("Product details found:", productDetails);
 
-    // Check if the conversation already exists under the product node
-    const conversationRef = ref(realtimeDb, `conversations/${sellerID}/${firebase_prodId}/${conversationID}`);
+    // Check if the conversation already exists
+    const conversationRef = ref(realtimeDb, `conversations/chats/${buyerID}/${conversationID}`);
     const conversationSnapshot = await get(conversationRef);
     if (conversationSnapshot.exists()) {
       console.log(`Conversation already exists for ID: ${conversationID}`);
-      return conversationSnapshot.val(); // Return the existing conversation
+      return conversationSnapshot.val();
     }
 
     console.log("Creating a new conversation...");
 
-    // Fetch seller details
-    const sellerRef = ref(realtimeDb, `users/${sellerID}`);
-    const sellerSnapshot = await get(sellerRef);
+    // Fetch seller and buyer details
+    const [sellerSnapshot, buyerSnapshot] = await Promise.all([
+      get(ref(realtimeDb, `users/${sellerID}`)),
+      get(ref(realtimeDb, `users/${buyerID}`)),
+    ]);
+
     if (!sellerSnapshot.exists()) {
       console.error("Seller details not found for ID:", sellerID);
       return null;
     }
-    const sellerDetails = sellerSnapshot.val();
 
-    // Fetch buyer details
-    const buyerRef = ref(realtimeDb, `users/${buyerID}`);
-    const buyerSnapshot = await get(buyerRef);
     if (!buyerSnapshot.exists()) {
       console.error("Buyer details not found for ID:", buyerID);
       return null;
     }
+
+    const sellerDetails = sellerSnapshot.val();
     const buyerDetails = buyerSnapshot.val();
 
-    // Structure the conversation data
+    // Prepare conversation data
     const newConversation = {
-      sellerDetails,   // Seller details inside conversation
-      prodDetails: productDetails, // Product details inside conversation
-      buyerDetails,    // Buyer details inside conversation
-      messages: {},    // Initialize with an empty object for messages
+      conversationId: conversationID,
+      productId: productDetails,
+      buyerId: buyerDetails,
+      sellerId: sellerDetails,
+      lastSender: null,
+      lastMessage: null,
+      lastMessageTime: null,
+      messageId: null,
+      status: null,
     };
 
-    // Save the conversation data under the seller's product node
-    await set(conversationRef, newConversation);
-    console.log("New conversation created successfully:", newConversation);
+    // Save the conversation under the buyer and seller nodes
+    if(buyerID !== sellerID){
+      await Promise.all([
+        set(ref(realtimeDb, `conversations/chats/${buyerID}/${conversationID}`), newConversation),
+        set(ref(realtimeDb, `conversations/chats/${sellerID}/${conversationID}`), newConversation),
+      ]);
+    }
+    
 
-    return newConversation; // Return the newly created conversation
+    console.log("New conversation created successfully:", newConversation);
+    return newConversation;
   } catch (error) {
     console.error("Error creating conversation in Firebase:", error);
     return null;
   }
 };
 
-// Function to send a message in the conversation
-export const sendMessage = async (firebase_prodId, buyerID, sellerID, text, senderID) => {
+
+
+
+
+
+export const sendMessage = async (productId, buyerID, sellerID, text, senderID) => { 
   // Validate parameters to ensure none of them are undefined or invalid
-  if (!firebase_prodId || !buyerID || !sellerID || !text || !senderID) {
+  if (!productId || !buyerID || !sellerID || !text || !senderID) {
     console.error("Error: Missing required parameters.");
     return null; // Return early if any required parameter is missing
   }
 
-  const conversationID = `${firebase_prodId}_seller_${sellerID}_buyer_${buyerID}`;
+  const conversationID = `${productId}_seller_${sellerID}_buyer_${buyerID}`;
   const messageID = `${Date.now()}`; // Create a unique ID based on timestamp
 
   try {
     console.log("Sending message to conversation:", conversationID);
 
     // Reference to the conversation messages in Firebase
-    const messageRef = ref(realtimeDb, `conversations/${sellerID}/${firebase_prodId}/${conversationID}/messages/${messageID}`);
+    const createMessageRef = ref(realtimeDb, `conversations/messages/${conversationID}/${messageID}`);
+    
+    // Reference to the root conversation data
+    const sellerUpdateRef = ref(realtimeDb, `conversations/chats/${sellerID}/${conversationID}`);
+    const buyerUpdateRef = ref(realtimeDb, `conversations/chats/${buyerID}/${conversationID}`);
 
+    
     // Structure the new message
     const newMessage = {
+      messageId: messageID,
       sender: senderID,
       text: text,
       timestamp: Date.now(), // Use current timestamp
       status: "unread", // Default status
     };
 
-    // Save the new message to Firebase
-    await set(messageRef, newMessage);
+    // Structure the new conversation data (to update last message details)
+    const updatedConversationData = {
+      lastSender: senderID,
+      lastMessage: text,
+      lastMessageTime: newMessage.timestamp,
+      messageId: messageID,
+      status: "unread", // Default status for root
+    };
+
+    // Save the new message to the conversation's messages node
+    await set(createMessageRef, newMessage);
     console.log("Message sent successfully:", newMessage);
+
+    // Update the conversation's root-level data for both seller and buyer
+    await update(buyerUpdateRef, {
+      [`lastSender`]: senderID,
+      [`lastMessage`]: text,
+      [`lastMessageTime`]: newMessage.timestamp,
+      [`messageId`]: messageID,
+      [`status`]: "unread", // Set status for the buyer
+     
+    });
+    await update(sellerUpdateRef,{
+      [`lastSender`]: senderID,
+      [`lastMessage`]: text,
+      [`lastMessageTime`]: newMessage.timestamp,
+      [`messageId`]: messageID,
+      [`status`]: "unread", // Set status for the seller
+    })
+
+    console.log("Conversation updated successfully.");
 
     return messageID; // Return the message ID
   } catch (error) {
     console.error("Error sending message:", error);
     return null; // Return null in case of error
+  }
+};
+
+
+const getAllChats = async (userID) => {
+  if (!userID) {
+    console.error("Error: Missing required parameters.");
+    return null;
+  }
+
+  const userChatsRef = ref(realtimeDb, `conversation/chats/${userID}`);
+  const chatsQuery = query(userChatsRef, orderByChild("messageId"));
+
+  try {
+    const snapshot = await get(chatsQuery);
+    if (!snapshot.exists()) {
+      console.log("No chats found.");
+      return {};
+    }
+
+    // Filter out conversations with `null` messageId
+    const filteredChats = {};
+    snapshot.forEach((childSnapshot) => {
+      const chat = childSnapshot.val();
+      if (chat.messageId) {
+        filteredChats[childSnapshot.key] = chat;
+      }
+    });
+
+    console.log("Filtered Chats:", filteredChats);
+    return filteredChats;
+  } catch (error) {
+    console.error("Error fetching chats:", error);
+    return null;
+  }
+};
+
+const getAllSeller = async (userID) => {
+  if (!userID) {
+    console.error("Error: Missing required parameters.");
+    return null;
+  }
+
+  const userChatsRef = ref(realtimeDb, `conversation/chats/${userID}`);
+  const chatsQuery = query(userChatsRef, orderByChild("messageId"));
+
+  try {
+    const snapshot = await get(chatsQuery);
+    if (!snapshot.exists()) {
+      console.log("No chats found.");
+      return {};
+    }
+
+    // Filter out conversations with `null` messageId
+    const filteredChats = {};
+    snapshot.forEach((childSnapshot) => {
+      const chat = childSnapshot.val();
+      if (chat.messageId && chat.productId.productId === userID) {
+        filteredChats[childSnapshot.key] = chat;
+      }
+    });
+
+    console.log("Filtered Chats:", filteredChats);
+    return filteredChats;
+  } catch (error) {
+    console.error("Error fetching chats:", error);
+    return null;
+  }
+};
+
+const getAllBuyer = async (userID) => {
+  if (!userID) {
+    console.error("Error: Missing required parameters.");
+    return null;
+  }
+
+  const userChatsRef = ref(realtimeDb, `conversation/chats/${userID}`);
+  const chatsQuery = query(userChatsRef, orderByChild("messageId"));
+
+  try {
+    const snapshot = await get(chatsQuery);
+    if (!snapshot.exists()) {
+      console.log("No chats found.");
+      return {};
+    }
+
+    // Filter out conversations with `null` messageId
+    const filteredChats = {};
+    snapshot.forEach((childSnapshot) => {
+      const chat = childSnapshot.val();
+      if (chat.messageId && chat.productId.productId !== userID) {
+        filteredChats[childSnapshot.key] = chat;
+      }
+    });
+
+    console.log("Filtered Chats:", filteredChats);
+    return filteredChats;
+  } catch (error) {
+    console.error("Error fetching chats:", error);
+    return null;
   }
 };

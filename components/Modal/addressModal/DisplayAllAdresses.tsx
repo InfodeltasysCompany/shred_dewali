@@ -47,7 +47,7 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
         const address = await getCurrentLocation();
         setcurrentLocation(address);
         // addrseter(address)
-        console.log("address=>", address)
+        // console.log("address=>", address)
     }
     const handleEdit = (address) => {
         setADDEDITModalAddress(address)
@@ -113,7 +113,7 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
           // Update local storage with the updated addresses array
           await AsyncStorage.setItem('addresses', JSON.stringify(addresses));
       
-          console.log('Addresses updated successfully:', addresses);
+        //   console.log('Addresses updated successfully:', addresses);
         } catch (error) {
           console.error('Error updating addresses:', error);
         }
@@ -125,7 +125,7 @@ const DisplayAllAddresses = ({ navigation, visible, onClose, addrseter }) => {
         : `${BASE_URL}/address_api.php?action=AddrByUserId&user_id=`;
             const myaddress = await fetchApiData(url);
         setMysavedAddresses(myaddress)
-        console.log("mysavedaddress=<", myaddress);
+        // console.log("mysavedaddress=<", myaddress);
         console.log("useridapp=<", userIdApp)
     };
     const [checkedAddressId, setCheckedAddressId] = useState<string>('');

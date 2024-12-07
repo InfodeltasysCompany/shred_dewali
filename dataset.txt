@@ -1,0 +1,195 @@
+/////////////////////////////////////////////////////
+{
+  "conversation": {
+    "chats": {
+      "user1": {
+        "conversationId1": {
+          "conversationId": "conversationId1",
+          "productId": {},
+          "buyerId": {},
+          "sellerId": {},
+          "lastSender": "user2",
+          "lastMessage": "Can I get a discount?",
+          "lastMessageTime": "2024-12-05T12:05:00Z",
+          "messageId": "message1",
+          "status": "unread"
+        }
+      },
+      "user2": {
+        "conversationId1": {
+          "conversationId": "conversationId1",
+          "productId": {},
+          "buyerId": {},
+          "sellerId": {},
+          "lastSender": "user2",
+          "lastMessage": "Can I get a discount?",
+          "lastMessageTime": "2024-12-05T12:05:00Z",
+          "messageId": "message1",
+          "status": "unread"
+        }
+      }
+    },
+    "messages": {
+      "chat1": {
+        "message1": {
+          "messageId": "message1",
+          "senderId": "user2",
+          "text": "Can I get a discount?",
+          "timestamp": "2024-12-05T12:05:00Z",
+          "status": "unread"
+        }
+      }
+    }
+  }
+}
+
+
+""
+///get database
+"
+
+import { getDatabase, ref, get, child } from "firebase/database";
+
+// Initialize Firebase Database
+const db = getDatabase();
+
+// Function to get data from the database
+const getData = async () => {
+  const dbRef = ref(db); // Reference the root of the database or a specific path
+
+  try {
+    const snapshot = await get(child(dbRef, "path/to/your/node")); // Example: 'users/userID'
+    if (snapshot.exists()) {
+      console.log("Data retrieved:", snapshot.val());
+    } else {
+      console.log("No data available at this path.");
+    }
+  } catch (error) {
+    console.error("Error getting data:", error);
+  }
+};
+
+getData();
+
+"
+/// set database 
+"
+
+const updateData = async () => {
+  const nodeRef = ref(db, "path/to/your/node");
+
+  try {
+    const snapshot = await get(nodeRef);
+    if (snapshot.exists()) {
+      const existingData = snapshot.val();
+      console.log("Existing data:", existingData);
+
+      // Modify the data
+      const updatedData = { ...existingData, age: 35 };
+
+      // Set updated data
+      await set(nodeRef, updatedData);
+      console.log("Data updated successfully!");
+    } else {
+      console.log("No data available to update.");
+    }
+  } catch (error) {
+    console.error("Error updating data:", error);
+  }
+};
+
+updateData();
+
+"
+///rules 
+"
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  }
+}
+
+"
+///real time listener "if you need real time updates "
+
+"
+
+import { onValue } from "firebase/database";
+
+const listenForUpdates = () => {
+  const nodeRef = ref(db, "path/to/your/node");
+
+  onValue(nodeRef, (snapshot) => {
+    if (snapshot.exists()) {
+      console.log("Data updated:", snapshot.val());
+    } else {
+      console.log("No data available.");
+    }
+  });
+};
+
+listenForUpdates();
+
+"
+
+/// update database
+"
+import { getDatabase, ref, update } from "firebase/database";
+
+// Example function to update a node
+const updateNode = async () => {
+  const db = getDatabase();
+
+  // Node reference
+  const nodeRef = ref(db, "path/to/your/node");
+
+  // Data to update
+  const updates = {
+    status: "active",
+    lastUpdated: new Date().toISOString(),
+  };
+
+  try {
+    await update(nodeRef, updates);
+    console.log("Node updated successfully");
+  } catch (error) {
+    console.error("Error updating node:", error);
+  }
+};
+
+"
+
+
+const getAllChats = async (userID) => {
+  if (!userID) {
+    console.error("Error: Missing required parameters.");
+    return null;
+  }
+
+  const userChatsRef = ref(realtimeDb, `conversation/chats/${userID}`);
+  const chatsQuery = query(userChatsRef, orderByChild("messageId"));
+
+  try {
+    const snapshot = await get(chatsQuery);
+    if (!snapshot.exists()) {
+      console.log("No chats found.");
+      return {};
+    }
+
+    // Filter out conversations with `null` messageId
+    const filteredChats = {};
+    snapshot.forEach((childSnapshot) => {
+      const chat = childSnapshot.val();
+      if (chat.productId.) {
+        filteredChats[childSnapshot.key] = chat;
+      }
+    });
+
+    console.log("Filtered Chats:", filteredChats);
+    return filteredChats;
+  } catch (error) {
+    console.error("Error fetching chats:", error);
+    return null;
+  }
+};

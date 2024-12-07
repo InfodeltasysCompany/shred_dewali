@@ -91,7 +91,7 @@ useEffect(() => {
   return (
     <UserAuthProvider>
       {/* <Provider store={store}> */}
-        {/* <App2 /> */}
+        <App2 />
         {/* <OrderDetailModal/> */}
       {/* </Provider> */}
       {/* <Test1/> */}
@@ -100,7 +100,6 @@ useEffect(() => {
       {/* <SellChats/> */}
       {/* <SellBiddings/> */}
       {/* <CombineBidding/> */}
-      <BuyingChats/>
     </UserAuthProvider>
   );
 }

@@ -44,59 +44,56 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
     }).start();
   }, [activeTab])
   const [messages, setMessages] = useState([]);
-    // Extract necessary values
-// Extract necessary values
-
-
-const [userID, setuserID] = useState('');
-
-useEffect(() => {
-  if (GChatstate) {
-    const { currentConversationData } = GChatstate;
-    const { productID } = currentConversationData || {};
-    const { firebase_pid } = productID || {};
-
-    const conversationID = `${productID?.productId}_${state.f_id}_${firebase_pid}`;
-    const userID = state.f_id;
-    setuserID(userID);
-    const messagesRef = ref(realtimeDb, `conversations/${conversationID}/messages`);
-
-    const unsubscribe = onValue(messagesRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const messagesData = snapshot.val();
-        const formattedMessages: Message[] = Object.entries(messagesData).map(([key, value]) => {
-          const message = value as Message;
-          return {
-            id: key,
-            content: message.content || '',
-            status: message.status || 'unread',
-            timestamp: message.timestamp || 0,
-            productID: message.productID || '',
-            senderID: message.senderID || '',
-            receiverID: message.receiverID || '',
-          };
-        }).sort((a, b) => a.timestamp - b.timestamp);
-
-        setMessages(formattedMessages);
-      } else {
-        setMessages([]); // Handle no messages
-      }
-    });
-
-    return () => unsubscribe();
-  }
-}, [GChatstate, state.f_id]);
-
+  const [userID, setUserID] = useState('');
+  
+  useEffect(() => {
+    // Check if GChatstate exists and is valid
+    if (GChatstate) {
+      const { currentConversationData } = GChatstate;
+      const userID = state.f_id;
+      setUserID(userID);
+  
+      // Get the reference to the conversation messages
+      const messagesRef = ref(realtimeDb, `conversations/messages/${currentConversationData?.conversationId}`);
+  
+      // Subscribe to the messages in Firebase Realtime Database
+      const unsubscribe = onValue(messagesRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const messagesData = snapshot.val();
+          console.log("messagesData:", messagesData);
+  
+          // Format the messages
+          const formattedMessages = Object.entries(messagesData)
+            .map(([key, item]: [string, any]) => ({
+              content: item.text || '',
+              status: item.status || 'unread',
+              timestamp: item.timestamp || 0,
+              senderID: item.senderID || '',
+            }))
+            .sort((a, b) => a.timestamp - b.timestamp);
+  
+          setMessages(formattedMessages);
+        } else {
+          setMessages([]); // No messages
+        }
+      });
+  
+      // Cleanup listener on unmount
+      return () => unsubscribe();
+    }
+  }, [GChatstate, state.f_id]);
+  
   const renderMessage = ({ item }) => {
-    return item.senderID === userID ? (
-      <SendMsg text={item.content} />
+    return item.sender !== userID ? (
+      <SendMsg item={item} />
     ) : (
-      <RecieveMsg text={item.content} />
+      <RecieveMsg item={item} />
     );
   };
+  
   const translateY = tabanim.interpolate({
     inputRange: [0, 1],
-    outputRange: [300, 620], // Adjust the range based on your layout
+    outputRange: [380, 600], // Adjust the range based on your layout
   })
   const renderContent = () => {
     switch (activeTab) {
@@ -133,10 +130,10 @@ useEffect(() => {
           </TouchableOpacity>
           <View style={styles.nameAndTime}>
             <Text style={styles.profileName}>
-              {GChatstate?.currentConversationData?.sellerDetails?.username || "No details"}
+              {GChatstate?.currentConversationData?.sellerId?.username || "No details"}
             </Text>
 
-            <Text style={styles.chatTime}>{GChatstate?.currentConversationData?.productID?.title || "No details"}</Text>
+            <Text style={styles.chatTime}>{GChatstate?.currentConversationData?.productId?.title || "No details"}</Text>
           </View>
         </View>
 
@@ -144,7 +141,7 @@ useEffect(() => {
         <View style={styles.actions}>
           <TouchableOpacity
             onPress={() => {
-              const phoneNumber = GChatstate?.currentConversationData?.sellerDetails?.phone_number;
+              const phoneNumber = GChatstate?.currentConversationData?.sellerId?.phone_number;
 
               if (phoneNumber) {
                 const url = `tel:${phoneNumber}`;
@@ -172,9 +169,9 @@ useEffect(() => {
           </TouchableOpacity>
 
 
-          <TouchableOpacity onPress={() => console.log('Menu Button Pressed')}>
+          {/* <TouchableOpacity onPress={() => console.log('Menu Button Pressed')}>
             <AntDesign name="ellipsis1" size={24} color="#00457E" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -183,12 +180,12 @@ useEffect(() => {
         {/* Header */}
         {/* messages */}
         <View style={styles.container}>
-          <FlatList
-            data={messages}
-            renderItem={renderMessage}
-            keyExtractor={(item) => item.id}
-            style={styles.chatContainer}
-          />
+        <FlatList
+  data={messages}
+  renderItem={renderMessage}
+  keyExtractor={(item, index) => item.timestamp.toString() || index.toString()}
+/>
+
         
         </View>
         {/* Tabs and Toggle */}
@@ -351,6 +348,7 @@ const styles = StyleSheet.create({
   },
   nameAndTime: {
     flexDirection: 'column',
+    marginLeft:15
   },
   profileName: {
     fontSize: 16,

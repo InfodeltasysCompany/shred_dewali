@@ -22,7 +22,7 @@ const Orders = ({navigation}) => {
     };
 
     const handleDetailPress = async (bookingId: number, filename: string) => {
-        console.log("pressed..");
+        // console.log("pressed..");
         setIsOrderDetailModalVisible(true);  // Set explicitly to true
         setImagename(filename);
         setbookingId(bookingId);
@@ -37,16 +37,21 @@ const Orders = ({navigation}) => {
             const url = `${BASE_URL}/orders_api.php?action=select&country=${country}&city=${city}&userId=${userId}`;
             console.log("url", url);
             const data = await getApiResponse(url);
-            console.log("Fetched Order Data:", data);
-            settOrderData(data);
+            // console.log("Fetched Order Data:", data);
+            const filterdata = data.filter((item) => item.user_id !== userIdApp);
+
+            settOrderData(filterdata);
         } catch (error) {
             console.log("Error fetching order data:", error);
         }
     };
-
     useEffect(() => {
         getOrderResponse(); // Call the function to load orders on component mount
     }, []); // Avoid unnecessary re-fetching. Only run once on mount.
+
+    useEffect(() => {
+        getOrderResponse(); // Call the function to load orders on component mount
+    }, [userIdApp]); // Avoid unnecessary re-fetching. Only run once on mount.
 
     return (
         <View style={styles.container}>

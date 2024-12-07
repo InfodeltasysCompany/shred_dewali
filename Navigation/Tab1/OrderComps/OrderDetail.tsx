@@ -7,6 +7,7 @@ import Chat_MakeOfferModal from '../../Conversation/Order/Chat_MakeOfferModal';
 import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
 import LoginModal from '../../../components/Credential/LoginModal';
 import { CreateConversationSeller } from '../../../components/Modal/Search/FirebaseChatFunctions';
+import BuyButtonAnimated from '../../../ReuseComponent/BuyButtonAnimated';
 
 
 const { width } = Dimensions.get('window');
@@ -19,6 +20,7 @@ const OrderDetail = ({ item, navigation }) => {
   const [index, setIndex] = useState(0);
   const [ischatmakeoffermodalVisible, setIschatmakeoffermodalVisible] = useState(false);
   const [isloginModalVisible, setIsloginModalVisible] = useState(false);
+  const [isanimatedbuttondisplay, setIsanimatedbuttondisplay] = useState(false);
   const [routes] = useState([
     { key: 'first', title: 'PRODUCT' },
     { key: 'second', title: 'CUSTOMER' },
@@ -36,37 +38,7 @@ const OrderDetail = ({ item, navigation }) => {
   }, [item, imgurl]);
 
 
-
-  // const handleBuyPressOnMOdal = async (bookingId: any, getOrderResponse: any) => {
-
-  //   try {
-  //     const formdata = new FormData();
-  //     formdata.append("booking_id", bookingId);
-  //     formdata.append("user_id", userIdApp);
-
-  //     const response = await fetch(
-  //       `${BASE_URL}/orders_api.php?action=accept`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-type": "multipart/form-data",
-  //         },
-  //         body: formdata,
-  //       }
-  //     );
-
-  //     if (response.ok) {
-  //       const aceptData = await response.json();
-  //       // setacceptData(aceptData);
-
-  //     } else {
-  //       console.error("Accept API request failed:", response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
-  const renderTabBar = props => (
+const renderTabBar = props => (
     <TabBar
       {...props}
       indicatorStyle={{ backgroundColor: 'white' }}
@@ -132,6 +104,7 @@ const OrderDetail = ({ item, navigation }) => {
       <View style={styles.buttonContainer}>
         {item[0]?.booking_id ? (
           <>
+          {isanimatedbuttondisplay?
             <TouchableOpacity
               onPress={() => {
                 Alert.alert(
@@ -147,29 +120,37 @@ const OrderDetail = ({ item, navigation }) => {
                       text: "OK",
                       onPress: async () => {
                         // Check if required data exists in GChatstate
+                        setIsanimatedbuttondisplay(!isanimatedbuttondisplay);
                         if (
-                          GChatstate.productdetails &&
+                          GChatstate?.productdetails &&
                           Object.keys(GChatstate.productdetails).length > 0 &&
-                          GChatstate.userdetails &&
+                          GChatstate?.userdetails &&
                           Object.keys(GChatstate.userdetails).length > 0
                         ) {
                           try {
                             console.log("OK pressed");
-                            // console.log("Product details:", GChatstate.productdetails);
-
-                            // Create a conversation using provided details
+                            console.log("Product details:", GChatstate.productdetails);
+                            console.log("state:",state);
+                            const firebase_pid = GChatstate?.productdetails['0'].firebase_uid; // Extract firebase_uid
+                            if (!firebase_pid) {
+                              console.error("Firebase PID is undefined");
+                              Alert.alert("Error", "Invalid product details. Please try again.");
+                              return;
+                            }
+                      
+                            // Create conversation
                             const currentConversationData = await CreateConversationSeller(
-                              GChatstate.productdetails['0'].firebase_prodID,
-                              state.f_id,
-                              GChatstate.productdetails['0'].firebase_uid
+                              GChatstate?.productdetails['0'].firebase_prodID,
+                              state?.f_id,
+                              firebase_pid
                             );
-
+                      
                             if (currentConversationData) {
-                              // console.log("Conversation created:", currentConversationData);
+                              console.log("Conversation created successfully.");
                               console.log(
-                                `Product ID: ${GChatstate.productdetails['0'].firebase_prodID}, Buyer ID: ${state.f_id}, Seller ID: ${GChatstate.productdetails['0'].firebase_uid}`
+                                `Product ID: ${GChatstate.productdetails['0'].firebase_prodID}, Buyer ID: ${state.f_id}, Seller ID: ${firebase_pid}`
                               );
-
+                      
                               // Update state with the new conversation data
                               setGChatstate((prevstate) => ({
                                 ...prevstate,
@@ -191,8 +172,8 @@ const OrderDetail = ({ item, navigation }) => {
                             );
                           }
                         } else {
-                          // Alert if not logged in
-                          Alert.alert("You are not logged in", "Login please.", [
+                          // Alert if required data is missing
+                          Alert.alert("You are not logged in", "Please log in to proceed.", [
                             {
                               text: "Cancel",
                               style: "cancel",
@@ -203,12 +184,13 @@ const OrderDetail = ({ item, navigation }) => {
                             {
                               text: "Ok",
                               onPress: () => {
-                                setIsloginModalVisible(!isloginModalVisible);
+                                setIsloginModalVisible((prev) => !prev); // Toggle login modal
                               },
                             },
                           ]);
                         }
                       },
+                      
                     },
                   ],
                   { cancelable: false } // Ensure the alert cannot be dismissed by tapping outside
@@ -218,7 +200,9 @@ const OrderDetail = ({ item, navigation }) => {
             >
               <Text style={styles.buttonTextChat}>Chat</Text>
             </TouchableOpacity>
-
+            :
+            <BuyButtonAnimated onClick={()=>console.log("animated button called")}/>
+            }
 
 
 
