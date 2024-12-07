@@ -15,7 +15,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#E5E5E5",
     padding: 10,
     marginVertical: 5,
-    borderRadius: 10,
+    // borderRadius: 10,
+    borderTopRightRadius:15,
+    borderBottomLeftRadius:15,
+    borderBottomRightRadius:15,
     maxWidth: "80%",
   },
   message: {

@@ -68,7 +68,7 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
               content: item.text || '',
               status: item.status || 'unread',
               timestamp: item.timestamp || 0,
-              senderID: item.senderID || '',
+              senderID: item.sender || '',
             }))
             .sort((a, b) => a.timestamp - b.timestamp);
   
@@ -82,9 +82,23 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
       return () => unsubscribe();
     }
   }, [GChatstate, state.f_id]);
-  
+  const refineData =(GChatstate)=>{
+    const {f_id} =state;
+    const {buyerId,sellerId} = GChatstate.currentConversationData;
+    // console.log("buyerId:",buyerId);
+    // console.log("sellerId:",sellerId);
+    if(buyerId.firebase_uid === f_id){
+      return sellerId;
+    }else{
+      return buyerId;
+    }
+  }
+  refineData(GChatstate)
   const renderMessage = ({ item }) => {
-    return item.sender !== userID ? (
+    const {f_id} = state;
+    console.log("fid:",f_id);
+    console.log("item.sender:",item);
+    return item.senderID !== f_id ? (
       <SendMsg item={item} />
     ) : (
       <RecieveMsg item={item} />
@@ -104,6 +118,14 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
         return <Chat />;
     }
   };
+  const flatListRef = useRef(null);
+
+  useEffect(() => {
+      if (messages.length > 0) {
+          // Auto-scroll to the top when new messages are added
+          flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
+      }
+  }, [messages]); // Dependency on `messages` so it triggers when the list changes
 
 
   return (
@@ -130,10 +152,13 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
           </TouchableOpacity>
           <View style={styles.nameAndTime}>
             <Text style={styles.profileName}>
-              {GChatstate?.currentConversationData?.sellerId?.username || "No details"}
+              {/* {GChatstate?.currentConversationData?.sellerId?.username || "No details"} */}
+              {refineData(GChatstate).username || "No Details"}
             </Text>
 
-            <Text style={styles.chatTime}>{GChatstate?.currentConversationData?.productId?.title || "No details"}</Text>
+            <Text style={styles.chatTime}>
+              {GChatstate?.currentConversationData?.productId?.title || "No details"}
+              </Text>
           </View>
         </View>
 
@@ -141,8 +166,8 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
         <View style={styles.actions}>
           <TouchableOpacity
             onPress={() => {
-              const phoneNumber = GChatstate?.currentConversationData?.sellerId?.phone_number;
-
+              // const phoneNumber = GChatstate?.currentConversationData?.sellerId?.phone_number;
+              const phoneNumber = refineData(GChatstate).phone_number;
               if (phoneNumber) {
                 const url = `tel:${phoneNumber}`;
                 Linking.openURL(url).catch((err) => console.error("Failed to open dialer:", err));
@@ -181,10 +206,12 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
         {/* messages */}
         <View style={styles.container}>
         <FlatList
-  data={messages}
-  renderItem={renderMessage}
-  keyExtractor={(item, index) => item.timestamp.toString() || index.toString()}
-/>
+            ref={flatListRef} // Attach FlatList reference
+            data={messages}
+            renderItem={renderMessage}
+            keyExtractor={(item, index) => item.timestamp?.toString() || index.toString()}
+            inverted={true} // Optional: to show the newest message at the bottom
+        />
 
         
         </View>
