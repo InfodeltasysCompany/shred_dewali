@@ -1,11 +1,19 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Animated, StyleSheet, Text, View } from 'react-native'
+import React, { useRef } from 'react'
 
 const SellBiddings = () => {
+  const anixy = useRef(new Animated.ValueXY({x:0,y:0})).current;
+  const checkanim = ()=>{
+    Animated.timing(anixy,{
+      toValue:5,
+      useNativeDriver:true,
+    }).start();
+
+  }
   return (
-    <View>
-      <Text>SellBiddings</Text>
-    </View>
+    <Animated.View style={{transform:[{scaleY:5}]}}>
+      <Text style={{}}>SellBiddings</Text>
+    </Animated.View>
   )
 }
 

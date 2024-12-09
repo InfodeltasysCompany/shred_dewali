@@ -104,105 +104,98 @@ const renderTabBar = props => (
       <View style={styles.buttonContainer}>
         {item[0]?.booking_id ? (
           <>
-          {!isanimatedbuttondisplay?
-            <TouchableOpacity
-              onPress={() => {
-                Alert.alert(
-                  "Beware of Fraud", // Title of the alert
-                  "Don't share your personal information like ATM number, OTP, and don't make any money transactions.", // Message
-                  [
-                    {
-                      text: "Cancel",
-                      onPress: () => console.log("Cancel is pressed"),
-                      style: "cancel",
-                    },
-                    {
-                      text: "OK",
-                      onPress: async () => {
-                        // Check if required data exists in GChatstate
-                        setIsanimatedbuttondisplay(!isanimatedbuttondisplay);
-                        if (
-                          GChatstate?.productdetails &&
-                          Object.keys(GChatstate.productdetails).length > 0 &&
-                          GChatstate?.userdetails &&
-                          Object.keys(GChatstate.userdetails).length > 0
-                        ) {
-                          try {
-                            console.log("OK pressed");
-                            console.log("Product details:", GChatstate.productdetails);
-                            console.log("state:",state);
-                            const firebase_pid = GChatstate?.productdetails['0'].firebase_uid; // Extract firebase_uid
-                            if (!firebase_pid) {
-                              console.error("Firebase PID is undefined");
-                              Alert.alert("Error", "Invalid product details. Please try again.");
-                              return;
-                            }
-                      
-                            // Create conversation
-                            const currentConversationData = await CreateConversationSeller(
-                              GChatstate?.productdetails['0'].firebase_prodID,
-                              state?.f_id,
-                              firebase_pid
+          
+            <BuyButtonAnimated onClick={() => {
+              Alert.alert(
+                "Beware of Fraud", // Title of the alert
+                "Don't share your personal information like ATM number, OTP, and don't make any money transactions.", // Message
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel is pressed"),
+                    style: "cancel",
+                  },
+                  {
+                    text: "OK",
+                    onPress: async () => {
+                      // Check if required data exists in GChatstate
+                      setIsanimatedbuttondisplay(!isanimatedbuttondisplay);
+                      if (
+                        GChatstate?.productdetails &&
+                        Object.keys(GChatstate.productdetails).length > 0 &&
+                        GChatstate?.userdetails &&
+                        Object.keys(GChatstate.userdetails).length > 0
+                      ) {
+                        try {
+                          console.log("OK pressed");
+                          console.log("Product details:", GChatstate.productdetails);
+                          console.log("state:",state);
+                          const firebase_pid = GChatstate?.productdetails['0'].firebase_uid; // Extract firebase_uid
+                          if (!firebase_pid) {
+                            console.error("Firebase PID is undefined");
+                            Alert.alert("Error", "Invalid product details. Please try again.");
+                            return;
+                          }
+                    
+                          // Create conversation
+                          const currentConversationData = await CreateConversationSeller(
+                            GChatstate?.productdetails['0'].firebase_prodID,
+                            state?.f_id,
+                            firebase_pid
+                          );
+                    
+                          if (currentConversationData) {
+                            console.log("Conversation created successfully.");
+                            console.log(
+                              `Product ID: ${GChatstate.productdetails['0'].firebase_prodID}, Buyer ID: ${state.f_id}, Seller ID: ${firebase_pid}`
                             );
-                      
-                            if (currentConversationData) {
-                              console.log("Conversation created successfully.");
-                              console.log(
-                                `Product ID: ${GChatstate.productdetails['0'].firebase_prodID}, Buyer ID: ${state.f_id}, Seller ID: ${firebase_pid}`
-                              );
-                      
-                              // Update state with the new conversation data
-                              setGChatstate((prevstate) => ({
-                                ...prevstate,
-                                currentConversationData,
-                              }));
-                              setIschatmakeoffermodalVisible(true);
-                            } else {
-                              console.error("Failed to fetch conversation data");
-                              Alert.alert(
-                                "Error",
-                                "Failed to create a conversation. Please try again."
-                              );
-                            }
-                          } catch (error) {
-                            console.error("Error during conversation creation:", error);
+                    
+                            // Update state with the new conversation data
+                            setGChatstate((prevstate) => ({
+                              ...prevstate,
+                              currentConversationData,
+                            }));
+                            setIschatmakeoffermodalVisible(true);
+                          } else {
+                            console.error("Failed to fetch conversation data");
                             Alert.alert(
                               "Error",
-                              "An unexpected error occurred. Please try again later."
+                              "Failed to create a conversation. Please try again."
                             );
                           }
-                        } else {
-                          // Alert if required data is missing
-                          Alert.alert("You are not logged in", "Please log in to proceed.", [
-                            {
-                              text: "Cancel",
-                              style: "cancel",
-                              onPress: () => {
-                                console.log("Cancel pressed");
-                              },
-                            },
-                            {
-                              text: "Ok",
-                              onPress: () => {
-                                setIsloginModalVisible((prev) => !prev); // Toggle login modal
-                              },
-                            },
-                          ]);
+                        } catch (error) {
+                          console.error("Error during conversation creation:", error);
+                          Alert.alert(
+                            "Error",
+                            "An unexpected error occurred. Please try again later."
+                          );
                         }
-                      },
-                      
+                      } else {
+                        // Alert if required data is missing
+                        Alert.alert("You are not logged in", "Please log in to proceed.", [
+                          {
+                            text: "Cancel",
+                            style: "cancel",
+                            onPress: () => {
+                              console.log("Cancel pressed");
+                            },
+                          },
+                          {
+                            text: "Ok",
+                            onPress: () => {
+                              setIsloginModalVisible((prev) => !prev); // Toggle login modal
+                            },
+                          },
+                        ]);
+                      }
                     },
-                  ],
-                  { cancelable: false } // Ensure the alert cannot be dismissed by tapping outside
-                );
-              }}
-              style={styles.buttonchat}
-            >
-              <Text style={styles.buttonTextChat}>Chat</Text>
-            </TouchableOpacity>
-            :
-            <BuyButtonAnimated onClick={()=>console.log("animated button called")}/>
-            }
+                    
+                  },
+                ],
+                { cancelable: false } // Ensure the alert cannot be dismissed by tapping outside
+              );
+            }}/>
+            
 
 
 

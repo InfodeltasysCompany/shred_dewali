@@ -1,14 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  Animated,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { onValue, ref } from 'firebase/database';
+import { Animated, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from '../../../redux/ContextApi/UserAuthProvider';
+import { onValue, ref } from 'firebase/database';
 import { realtimeDb } from '../../../Config/Firebaseconfig';
 import Chat_MakeOfferModal from './Chat_MakeOfferModal';
 
@@ -17,13 +10,15 @@ const AllChats = () => {
   const [chats, setChats] = useState([]);
   const [ischatmakeoffermodalVisible, setIschatmakeoffermodalVisible] = useState(false);
 
-  const [animations, setAnimations] = useState({});
+  const borderAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const GetAllChats = () => {
+      console.log('firebase_uid:', state?.f_id);
       const chatsRef = ref(realtimeDb, `conversations/chats/${state?.f_id}`);
-      onValue(chatsRef, (snapshot) => {
+      const unsubscribe = onValue(chatsRef, (snapshot) => {
         if (!snapshot.exists()) {
+          console.log('No chats found.');
           setChats([]);
           return;
         }
@@ -36,64 +31,65 @@ const AllChats = () => {
           }
         });
         setChats(filteredChats);
-
-        // Initialize animation values
-        const newAnimations = {};
-        filteredChats.forEach((chat) => {
-          newAnimations[chat.key] = new Animated.Value(0);
-        });
-        setAnimations(newAnimations);
       });
+
+      return () => unsubscribe(); // Clean up listener
     };
 
     GetAllChats();
   }, [state?.f_id, GChatstate]);
 
-  const startAnimation = (key) => {
-    const animValue = animations[key];
-    if (!animValue) return;
+  useEffect(() => {
+    const startAnimation = () => {
+      Animated.loop(
+        Animated.timing(borderAnim, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: false,
+        })
+      ).start();
+    };
+    startAnimation();
+  }, [borderAnim]);
 
-    animValue.stopAnimation();
-    animValue.setValue(0);
+  const animatedBorderWidth = borderAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, 3, 0],
+  });
 
-    Animated.loop(
-      Animated.timing(animValue, {
-        toValue: 1,
-        duration: 2000,
-        useNativeDriver: false,
-      })
-    ).start();
-  };
+  const animatedBorderColor = borderAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: ['gray', '#00457E', 'gray'],
+  });
 
+  const refineData = (chat) => {
+    const {buyerId,conversationId,productId,sellerId} = chat;
+   if(buyerId.firebase_uid === state.f_id){
+     return sellerId;
+   }else{
+     return buyerId;
+   }
+ };
   return (
     <View style={styles.container}>
       <Text style={styles.header}>All Chats</Text>
-      {chats.length > 0 ? (
-        chats.map((chat) => {
-          const animatedBorderWidth = animations[chat.key]?.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: [0, 3, 0],
-          });
-
-          const animatedBorderColor = animations[chat.key]?.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: ['gray', '#00457E', 'gray'],
-          });
-
-          return (
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {chats.length > 0 ? (
+          chats.map((chat) => (
             <Animated.View
               key={chat.key}
               style={[
-                styles.chatItem,
+                styles.buttonContainer,
                 {
-                  borderWidth: animatedBorderWidth || 1,
-                  borderColor: animatedBorderColor || 'gray',
+                  borderWidth: animatedBorderWidth,
+                  borderColor: animatedBorderColor,
                 },
               ]}
             >
-              <Pressable
-                onPressIn={() => {
-                  startAnimation(chat.key);
+              <TouchableOpacity
+                style={styles.chatItem}
+                onPress={() => {
+                  console.log('chat is:', chat);
                   setGChatstate((prevstate) => ({
                     ...prevstate,
                     currentConversationData: chat,
@@ -101,19 +97,54 @@ const AllChats = () => {
                   setIschatmakeoffermodalVisible(true);
                 }}
               >
-                <Text style={styles.chatText}>Message: {chat.lastMessage}</Text>
-                <Text style={styles.chatText}>Sender: {chat.lastSender}</Text>
-              </Pressable>
-            </Animated.View>
-          );
-        })
-      ) : (
-        <Text style={styles.noChats}>No chats available</Text>
-      )}
+                <View style={styles.chatHeader}>
+                  <View style={styles.profileContainer}>
+                    <View style={styles.profileImage}>
+                      <Text style={styles.profileInitials}>
+                        {chat?.sellerId?.username?.charAt(0).toUpperCase() || 'U'}
+                      </Text>
+                    </View>
+                  </View>
 
+                  <View style={styles.chatDetails}>
+                    <Text style={styles.username}>
+                      {refineData(chat)?.username || 'Unknown User'}
+                    </Text>
+                    <Text style={styles.chatText} numberOfLines={1}>
+                      {chat?.lastMessage || 'No Details'}
+                    </Text>
+                    <Text style={styles.title}>
+                      {chat?.productId?.title || 'No Title'}
+                    </Text>
+                    <Text style={styles.price}>
+                      {chat?.productId?.price
+                        ? `Price: ₹${chat.productId.price}`
+                        : 'No Price Available'}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.chatFooter}>
+                  <Text style={styles.timestamp}>
+                    {new Date(chat?.lastMessageTime).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    }) || '--:--'}
+                  </Text>
+                  {chat?.status === 'unread' && <View style={styles.unreadIndicator} />}
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
+          ))
+        ) : (
+          <Text style={styles.noChats}>No chats available</Text>
+        )}
+      </ScrollView>
       <Chat_MakeOfferModal
         visible={ischatmakeoffermodalVisible}
-        closeModal={() => setIschatmakeoffermodalVisible(false)}
+        closeModal={() =>
+          setIschatmakeoffermodalVisible(!ischatmakeoffermodalVisible)
+        }
       />
     </View>
   );
@@ -127,6 +158,18 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff',
   },
+  scrollContainer: {
+    paddingBottom: 16, // Add padding for better spacing
+  },
+  buttonContainer: {
+    height: 140,
+    width: '98%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    backgroundColor: 'white',
+    marginVertical: 5,
+  },
   header: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -134,9 +177,7 @@ const styles = StyleSheet.create({
   },
   chatItem: {
     padding: 12,
-    marginBottom: 8,
-    borderRadius: 8,
-    backgroundColor: '#fff',
+    width: '100%',
   },
   chatText: {
     fontSize: 16,
@@ -146,5 +187,58 @@ const styles = StyleSheet.create({
     color: '#999',
     textAlign: 'center',
     marginTop: 16,
+  },
+  chatHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileContainer: {
+    marginRight: 12,
+  },
+  profileImage: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    backgroundColor: '#d9d9d9',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileInitials: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#00457E',
+  },
+  chatDetails: {
+    flex: 1,
+  },
+  username: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  chatFooter: {
+    alignItems: 'flex-end',
+  },
+  timestamp: {
+    fontSize: 12,
+    color: '#999',
+  },
+  unreadIndicator: {
+    // height: 10,
+    // width: 10,
+    // borderRadius: 5,
+    // backgroundColor: '#FF0000',
+  },
+  title: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 4,
+    color: '#00457E',
+  },
+  price: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 2,
+    color: '#008000',
   },
 });
