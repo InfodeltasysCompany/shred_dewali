@@ -49,9 +49,9 @@ const SellChats = () => {
           );
             setIschatmakeoffermodalVisible(true);
           }}>
-            <Text style={styles.chatText}>Message: {chat.lastMessage}</Text>
-            <Text style={styles.chatText}>Sender: {chat.lastSender}</Text>
-          </TouchableOpacity>
+              <Text style={styles.chatText}>Message: {chat?chat.lastMessage:"No Details"}</Text>
+            <Text style={styles.chatText}>Sender: {chat?chat.lastSender:"NO Details"}</Text>
+           </TouchableOpacity>
         ))
       ) : (
         <Text style={styles.noChats}>No chats available</Text>

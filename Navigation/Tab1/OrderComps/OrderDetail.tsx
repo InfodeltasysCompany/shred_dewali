@@ -104,7 +104,7 @@ const renderTabBar = props => (
       <View style={styles.buttonContainer}>
         {item[0]?.booking_id ? (
           <>
-          {isanimatedbuttondisplay?
+          {!isanimatedbuttondisplay?
             <TouchableOpacity
               onPress={() => {
                 Alert.alert(

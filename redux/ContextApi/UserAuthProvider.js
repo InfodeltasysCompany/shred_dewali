@@ -50,6 +50,7 @@ const UserAuthProvider = (props) => {
     f_id: "",
     f_name: "",
     f_password: "",
+    firebase_uid:"",
     isLoginModalVisible: false,
   });
 
@@ -120,6 +121,7 @@ const UserAuthProvider = (props) => {
           f_name: fireName || userCred?.[0]?.name,
           f_mobile: fireMobile || userCred?.[0]?.mobile,
           f_password: firePassword || userCred?.[0]?.password,
+          firebase_uid:fireId || userCred?.[0]?.firebase_uid,
         }));
       } catch (error) {
         console.error("Error retrieving user data:", error);
@@ -178,7 +180,8 @@ const handleLogout = async () => {
               "fmobile",
               "fname",
               "@user",
-              "fpassword",
+              "fpassword",,
+              
             ]);
           },
         },

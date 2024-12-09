@@ -45,66 +45,81 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
   }, [activeTab])
   const [messages, setMessages] = useState([]);
   const [userID, setUserID] = useState('');
-  
+
+
   useEffect(() => {
-    // Check if GChatstate exists and is valid
-    if (GChatstate) {
+    if (!visible || !GChatstate || !state) return;
+
+    // Only execute when visible
+    const { currentConversationData } = GChatstate;
+    const userID = state.f_id;
+    setUserID(userID);
+
+    // Firebase logic here...
+  }, [GChatstate, state, visible]);
+
+  useEffect(() => {
+    if (visible && GChatstate && state) {
       const { currentConversationData } = GChatstate;
       const userID = state.f_id;
       setUserID(userID);
-  
-      // Get the reference to the conversation messages
-      const messagesRef = ref(realtimeDb, `conversations/messages/${currentConversationData?.conversationId}`);
-  
-      // Subscribe to the messages in Firebase Realtime Database
+
+      const messagesRef = ref(
+        realtimeDb,
+        `conversations/messages/${currentConversationData?.conversationId}`
+      );
+
       const unsubscribe = onValue(messagesRef, (snapshot) => {
         if (snapshot.exists()) {
           const messagesData = snapshot.val();
-          console.log("messagesData:", messagesData);
-  
-          // Format the messages
           const formattedMessages = Object.entries(messagesData)
-            .map(([key, item]: [string, any]) => ({
-              content: item.text || '',
-              status: item.status || 'unread',
-              timestamp: item.timestamp || 0,
-              senderID: item.sender || '',
-            }))
+          .map(([key, item]: [string, any]) => ({
+            content: item.text || '',
+            status: item.status || 'unread',
+            timestamp: item.timestamp || 0,
+            senderID: item.sender || '',
+          }))
             .sort((a, b) => a.timestamp - b.timestamp);
-  
+
           setMessages(formattedMessages);
         } else {
-          setMessages([]); // No messages
+          setMessages([]);
         }
       });
-  
-      // Cleanup listener on unmount
+
       return () => unsubscribe();
     }
-  }, [GChatstate, state.f_id]);
-  const refineData =(GChatstate)=>{
-    const {f_id} =state;
-    const {buyerId,sellerId} = GChatstate.currentConversationData;
-    // console.log("buyerId:",buyerId);
-    // console.log("sellerId:",sellerId);
-    if(buyerId.firebase_uid === f_id){
-      return sellerId;
-    }else{
-      return buyerId;
-    }
-  }
-  refineData(GChatstate)
+  }, [GChatstate, state, visible]);
+
+  const refineData = (GChatstate) => {
+    if (!GChatstate || !state) return {};
+    const { f_id } = state;
+    const { buyerId, sellerId } = GChatstate.currentConversationData || {};
+    return buyerId?.firebase_uid === f_id ? sellerId : buyerId;
+  };
+
+  // refineData(GChatstate)
+  // const renderMessage = ({ item }) => {
+  //   const {f_id} = state;
+  //   console.log("fid:",f_id);
+  //   console.log("item.sender:",item);
+  //   return item.senderID !== f_id ? (
+  //     <SendMsg item={item} />
+  //   ) : (
+  //     <RecieveMsg item={item} />
+  //   );
+  // };
   const renderMessage = ({ item }) => {
-    const {f_id} = state;
-    console.log("fid:",f_id);
-    console.log("item.sender:",item);
+    const f_id = state?.f_id;
+    if (!item || !f_id) return null;
+
     return item.senderID !== f_id ? (
       <SendMsg item={item} />
     ) : (
       <RecieveMsg item={item} />
     );
   };
-  
+
   const translateY = tabanim.interpolate({
     inputRange: [0, 1],
     outputRange: [380, 600], // Adjust the range based on your layout
@@ -121,10 +136,10 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
   const flatListRef = useRef(null);
 
   useEffect(() => {
-      if (messages.length > 0) {
-          // Auto-scroll to the top when new messages are added
-          flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
-      }
+    if (messages.length > 0) {
+      // Auto-scroll to the top when new messages are added
+      flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
+    }
   }, [messages]); // Dependency on `messages` so it triggers when the list changes
 
 
@@ -153,12 +168,12 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
           <View style={styles.nameAndTime}>
             <Text style={styles.profileName}>
               {/* {GChatstate?.currentConversationData?.sellerId?.username || "No details"} */}
-              {refineData(GChatstate).username || "No Details"}
+              {refineData(GChatstate)?refineData(GChatstate).username : "No Details"}
             </Text>
 
             <Text style={styles.chatTime}>
               {GChatstate?.currentConversationData?.productId?.title || "No details"}
-              </Text>
+            </Text>
           </View>
         </View>
 
@@ -205,15 +220,22 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
         {/* Header */}
         {/* messages */}
         <View style={styles.container}>
-        <FlatList
+          {/* <FlatList
             ref={flatListRef} // Attach FlatList reference
             data={messages}
             renderItem={renderMessage}
             keyExtractor={(item, index) => item.timestamp?.toString() || index.toString()}
             inverted={true} // Optional: to show the newest message at the bottom
-        />
+        /> */}
+          <FlatList
+            ref={flatListRef}
+            data={messages || []} // Fallback to an empty array
+            renderItem={renderMessage}
+            keyExtractor={(item, index) => item?.timestamp?.toString() || index.toString()}
+            inverted
+          />
 
-        
+
         </View>
         {/* Tabs and Toggle */}
         <View style={{ alignItems: 'center', position: "relative", bottom: 2 }}>
@@ -375,7 +397,7 @@ const styles = StyleSheet.create({
   },
   nameAndTime: {
     flexDirection: 'column',
-    marginLeft:15
+    marginLeft: 15
   },
   profileName: {
     fontSize: 16,
