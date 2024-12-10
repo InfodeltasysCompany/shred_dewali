@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
 import { generatePriceDetails } from "../../../utils/Functions";
+import { sendMessage } from "../../../components/Modal/Search/FirebaseChatFunctions";
 
 const MakeOffer = () => {
   const [state, , , , GChatstate, setGChatstate] = useContext(AuthContext);
@@ -28,7 +29,57 @@ const MakeOffer = () => {
     console.log("Offer submitted:", offerAmount);
     // Handle API submission logic here
   };
+  const handleSend = async () => {
+    const message = customOffer || price;
 
+    if (message.trim()) {
+      console.log('Sending message:', message);
+  
+      // Log current conversation data for debugging
+      console.log("current conversationdata:=", GChatstate.currentConversationData);
+  
+      // Ensure necessary data exists in the current conversation state
+      const conversationData = GChatstate.currentConversationData;
+  
+      if (
+        conversationData &&
+        conversationData.productId && 
+        conversationData.productId.firebase_pid && 
+        conversationData.sellerId && 
+        conversationData.buyerId
+      ) {
+        const { productId } = conversationData.productId; // Product ID from conversation data
+        const firebase_pid = conversationData.productId.firebase_pid; // Firebase PID
+        const buyerId = conversationData.buyerId.firebase_uid; // Extract buyer's username as ID
+        const sellerId = conversationData.productId.firebase_pid; // Extract seller's username as ID
+        const senderID = state.f_id; // Sender ID from the app state (current user)
+  
+        // Log parameters for debugging
+        console.log("firebase user prod id is:", firebase_pid);
+        console.log("firebase product id is:", productId);
+        console.log("buyerId is:", buyerId);
+        console.log("sellerId is:", sellerId);
+        console.log("text is:", message);
+        console.log("senderid is:", senderID);
+  
+        // Validate required parameters
+        if (!buyerId || !sellerId || !firebase_pid || !message || !senderID) {
+          console.error("ERROR: Missing required parameters.");
+          return; // Return early if any parameter is missing
+        }
+  
+        // Send the message if all parameters are valid
+        try {
+          await sendMessage(productId, buyerId, firebase_pid, message, senderID);
+          console.log("Message sent successfully!");
+        } catch (error) {
+          console.error("Failed to send message:", error);
+        }
+      } else {
+        console.error("ERROR: Missing required conversation data.");
+      }
+    }
+  };
   // Update feedback based on price input
   const handlePriceChange = (text) => {
     const inputPrice = parseFloat(text) || 0; // Ensure numeric value
@@ -104,7 +155,7 @@ const MakeOffer = () => {
               ? { backgroundColor: "#ddd" }
               : { backgroundColor: "#007bff" },
           ]}
-          onPress={labelColorState === "red" ? null : handleSendOffer}
+          onPress={labelColorState === "red" ? null : handleSend}
           disabled={labelColorState === "red"}
         >
           <Text
@@ -129,19 +180,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f2f2f2",
-    padding: 20,
+    padding: 8,
   },
   offerListView: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   offerButton: {
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: 2,
+    paddingHorizontal: 3,
     marginHorizontal: 5,
   },
   greenOfferButton: {
@@ -159,23 +210,23 @@ const styles = StyleSheet.create({
   customOfferInput: {
     borderColor: "#ccc",
     borderRadius: 5,
-    padding: 10,
+    padding: 3,
     fontSize: 36,
-    marginBottom: 20,
+    // marginBottom: 20,
     fontWeight: "700",
     textAlign: "center",
     backgroundColor: "#80bdff",
   },
   feedbackContainer: {
     flexDirection: "row",
-    padding:15,
+    padding:5,
   },
   feedbackText: {
     textAlign: "center",
     color: "white",
     fontSize: 22,
     marginBottom: 20,
-    height: 80,
+    height: 40,
     width: "60%",
     justifyContent: "center",
     alignItems: "center",
@@ -186,16 +237,16 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   sendButton: {
-    paddingVertical: 12,
+    // paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
-    height: 80,
+    height: 42,
     width: "35%",
     marginLeft: 10,
   },
   sendButtonText: {
-    fontSize: 26,
+    fontSize: 18,
     fontWeight: "900",
   },
 });

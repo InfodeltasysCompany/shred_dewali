@@ -153,11 +153,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   suggestedMessage: {
-    paddingVertical: 10, 
-    paddingHorizontal: 15,
+    paddingVertical: 5, 
+    paddingHorizontal: 5,
     backgroundColor: '#f1f1f1',
     marginHorizontal: 5,
-    marginBottom: 35,
+    // marginBottom: 35,
     borderRadius: 20,
   },
   suggestedMessageText: {
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderTopWidth: 1,
     borderTopColor: '#ddd',
-    marginTop:-30
+    // marginTop:-30
   },
   textInput: {
     flex: 1,

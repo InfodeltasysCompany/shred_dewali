@@ -10,7 +10,50 @@ import { AuthContext } from "../../../redux/ContextApi/UserAuthProvider";
 import { v4 as uuidv4 } from "uuid";
 
 // Function to create user data in Firebase Realtime Database
-export const userCreatefirebaserealtime = async (firebase_uid, email, phone, username) => {
+// export const userCreatefirebaserealtime = async (firebase_uid, email, phone, username) => {
+//   if (firebase_uid && email && phone && username) {
+//     console.log("userCreatefirebaserealtime is called");
+
+//     try {
+//       // Reference to the user's data in Realtime Database
+//       const userRef = ref(realtimeDb, `users/${firebase_uid}`);
+
+//       // Check if the user already exists
+//       const snapshot = await get(userRef);
+//       if (snapshot.exists()) {
+//         return;
+//       }
+
+//       // If user does not exist, create the user
+//       await set(userRef, {
+//         firebase_uid,
+//         email,
+//         phone_number: phone || "0", // Default to "0" if phone is not provided
+//         username: username || "Anonymous", // Default to "Anonymous" if username is undefined
+//         verify: "false", // Set to false initially
+//       });
+
+//     } catch (error) {
+//       console.error("Error creating user:", error);
+//     }
+//   } else {
+//     console.log(`Fields are empty firebase_uid: ${firebase_uid}, username: ${username}, email: ${email}, phone: ${phone}`);
+//   }
+// };
+// Define the user data structure
+interface UserData {
+  email?: string;
+  phone_number?: string;
+  username?: string;
+  verify?: string;
+}
+
+export const userCreatefirebaserealtime = async (
+  firebase_uid: string,
+  email: string,
+  phone: string,
+  username: string
+) => {
   if (firebase_uid && email && phone && username) {
     console.log("userCreatefirebaserealtime is called");
 
@@ -21,20 +64,35 @@ export const userCreatefirebaserealtime = async (firebase_uid, email, phone, use
       // Check if the user already exists
       const snapshot = await get(userRef);
       if (snapshot.exists()) {
-        return;
+        const existingData: UserData = snapshot.val();
+
+        // Prepare the fields to be updated if they don't exist
+        const updates: Partial<UserData> = {};
+        if (!existingData.email) updates.email = email;
+        if (!existingData.phone_number) updates.phone_number = phone || "0";
+        if (!existingData.username) updates.username = username || "Anonymous";
+        if (existingData.verify === undefined) updates.verify = "false";
+
+        if (Object.keys(updates).length > 0) {
+          // Update missing fields
+          await update(userRef, updates);
+          console.log("User data updated with missing fields:", updates);
+        } else {
+          console.log("No updates needed. All fields exist.");
+        }
+      } else {
+        // If user does not exist, create the user
+        await set(userRef, {
+          firebase_uid,
+          email,
+          phone_number: phone || "0",
+          username: username || "Anonymous",
+          verify: "false",
+        });
+        console.log("New user created.");
       }
-
-      // If user does not exist, create the user
-      await set(userRef, {
-        firebase_uid,
-        email,
-        phone_number: phone || "0", // Default to "0" if phone is not provided
-        username: username || "Anonymous", // Default to "Anonymous" if username is undefined
-        verify: "false", // Set to false initially
-      });
-
     } catch (error) {
-      console.error("Error creating user:", error);
+      console.error("Error creating or updating user:", error);
     }
   } else {
     console.log(`Fields are empty firebase_uid: ${firebase_uid}, username: ${username}, email: ${email}, phone: ${phone}`);

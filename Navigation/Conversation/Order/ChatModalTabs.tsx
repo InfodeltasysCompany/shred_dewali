@@ -4,11 +4,11 @@ import { AntDesign } from '@expo/vector-icons';
 
 const ChatModalTabs = ({ activeTab, setActiveTab, ispressed, setIspressed }) => {
   return (
-    <View style={{ alignItems: 'center' }}>
+    <View style={{ alignItems: 'center',marginTop:-10 }}>
       <TouchableOpacity
         style={styles.opentab}
         onPress={() => setIspressed(!ispressed)}
-        activeOpacity={1}
+        activeOpacity={0}
       >
         <AntDesign name={ispressed ? 'up' : 'down'} size={25} color="#00457E" />
       </TouchableOpacity>
@@ -34,11 +34,11 @@ const ChatModalTabs = ({ activeTab, setActiveTab, ispressed, setIspressed }) => 
 };
 
 const styles = StyleSheet.create({
-  opentab: { backgroundColor: '#ddd', width: 100, height: 30, justifyContent: 'center', alignItems: 'center' },
+  opentab: { backgroundColor: '#ddd', width: 100, height: 30, justifyContent: 'center', alignItems: 'center' ,marginBottom:-10,zIndex:1,borderTopRightRadius:15,borderTopLeftRadius:15},
   tabs: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 5 },
-  tab: { flex: 1, padding: 10, alignItems: 'center', borderRadius: 5 },
+  tab: { flex: 1, padding: 10, alignItems: 'center', borderRadius: 5 ,backgroundColor:"#ddd",},
   activeTab: { borderBottomWidth: 3, borderBottomColor: '#00457E' },
-  tabText: { color: '#333' },
+  tabText: { color: '#333' ,fontSize:18},
   activeTabText: { color: '#00457E' },
 });
 

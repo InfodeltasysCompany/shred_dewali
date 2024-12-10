@@ -56,6 +56,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+    // zIndex:3,
+    // position:"relative",
   },
   profileSection: { flexDirection: 'row', alignItems: 'center', flex: 1 },
   profileImage: { width: 40, height: 40, borderRadius: 20 },

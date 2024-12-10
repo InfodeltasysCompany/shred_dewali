@@ -12,36 +12,51 @@ import { realtimeDb } from '../../../Config/Firebaseconfig';
 const Chat_MakeOfferModal = ({ visible, closeModal }) => {
   const [state, , , , GChatstate] = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('Chat');
-  const [ispressed, setIspressed] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
   const [messages, setMessages] = useState([]);
-  const tabanim = useRef(new Animated.Value(0)).current;
+  const tabAnim = useRef(new Animated.Value(0)).current;
+  const chatsAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(tabanim, { toValue: ispressed ? 1 : 0, duration: 300, useNativeDriver: true }).start();
-  }, [ispressed]);
+    Animated.spring(tabAnim, {
+      toValue: isPressed ? 1 : 0,
+      friction: 5,
+      tension: 40,
+      useNativeDriver: false,
+    }).start();
+
+    Animated.spring(chatsAnim, {
+      toValue: isPressed ? 1 : 0,
+      friction: 5,
+      tension: 40,
+      useNativeDriver: false,
+    }).start();
+  }, [isPressed]);
 
   useEffect(() => {
     if (visible && GChatstate && state) {
-      const messagesRef = ref(realtimeDb, `conversations/messages/${GChatstate?.currentConversationData?.conversationId}`);
+      const messagesRef = ref(
+        realtimeDb,
+        `conversations/messages/${GChatstate?.currentConversationData?.conversationId}`
+      );
       const unsubscribe = onValue(messagesRef, (snapshot) => {
         if (snapshot.exists()) {
-          const messagesData = snapshot.val(); // Get the data from Firebase
-          const formattedMessages = Object.entries(messagesData)  // Iterate over the entries
-            .map(([key, item]: [string, any]) => ({
-              content: item.text || '',  // Assuming your message data has text
-              status: item.status || 'unread',  // Assuming status exists
-              timestamp: item.timestamp || 0,  // Assuming timestamp exists
-              senderID: item.sender || '',  // Assuming sender ID exists
-            }))
-            .sort((a, b) => a.timestamp - b.timestamp);  // Sort messages by timestamp
-  
+          const messagesData = snapshot.val();
+          const formattedMessages = Object.entries(messagesData)
+          .map(([key, item]: [string, any]) => ({
+            content: item.text || '',
+            status: item.status || 'unread',
+            timestamp: item.timestamp || 0,
+            senderID: item.sender || '',
+          }))
+            .sort((a, b) => a.timestamp - b.timestamp);
+
           setMessages(formattedMessages);
         }
       });
       return () => unsubscribe();
     }
   }, [GChatstate, state, visible]);
-  
 
   const refineData = (GChatstate) => {
     if (!GChatstate || !state) return {};
@@ -49,23 +64,61 @@ const Chat_MakeOfferModal = ({ visible, closeModal }) => {
     return buyerId?.firebase_uid === state.f_id ? sellerId : buyerId;
   };
 
-  const translateY = tabanim.interpolate({ inputRange: [0, 1], outputRange: [380, 600] });
+  const chatHeight = chatsAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['95%', '75%'],
+  });
+
+  const tabsHeight = tabAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['9%', '30%'],
+  });
 
   return (
     <Modal animationType="none" transparent={false} visible={visible}>
+      <View style={{marginBottom:60}}>
       <Header closeModal={closeModal} refineData={refineData} GChatstate={GChatstate} />
-      <Animated.View style={[styles.modalContainer, { transform: [{ translateY }] }]}>
+
+      </View>
+
+      {/* Chats Section */}
+      <Animated.View style={[styles.chatsContainer, { height: chatHeight }]}>
         <Chats messages={messages} state={state} />
-        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} ispressed={ispressed} setIspressed={setIspressed} />
-        <View style={styles.body}>{activeTab === 'Chat' ? <Chat /> : <MakeOffer />}</View>
+      </Animated.View>
+
+      {/* Tabs Section */}
+      <Animated.View style={[styles.tabsContainer, { height: tabsHeight }]}>
+        <Tabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          ispressed={isPressed}
+          setIspressed={setIsPressed}
+        />
+        <View style={styles.body}>
+          {activeTab === 'Chat' ? <Chat /> : <MakeOffer />}
+        </View>
       </Animated.View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  modalContainer: { position: 'absolute', width: '100%', borderRadius: 10 },
-  body: { flex: 1, backgroundColor: '#f1f1f1' },
+  chatsContainer: {
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    zIndex: 1,
+  },
+  tabsContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    zIndex: 2,
+  },
+  body: {
+    flex: 1,
+    backgroundColor: '#f1f1f1',
+  },
 });
 
 export default Chat_MakeOfferModal;

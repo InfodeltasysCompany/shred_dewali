@@ -55,6 +55,8 @@ import SellBiddings from './Navigation/Conversation/Bidding/SellBiddings';
 import CombineChat from './Navigation/Conversation/Order/CombineChat';
 import CombineBidding from './Navigation/Conversation/Bidding/CombineBidding';
 import BuyingChats from './Navigation/Conversation/Order/BuyingChats';
+import Chat_MakeOfferModal from './Navigation/Conversation/Order/Chat_MakeOfferModal';
+import LoadingMessages from './Navigation/Conversation/Order/LoadingMessages';
 
 const App = () => {
   
@@ -100,6 +102,8 @@ useEffect(() => {
       {/* <SellChats/> */}
       {/* <SellBiddings/> */}
       {/* <CombineBidding/> */}
+      {/* <Chat_MakeOfferModal/> */}
+      
     </UserAuthProvider>
   );
 }
